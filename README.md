@@ -1,6 +1,6 @@
 # 🌿 LeafBloom — Offline Tomato Leaf Disease Diagnosis (Android)
 
-A field-ready, offline-first Android app for fast, accurate tomato-leaf disease detection using on-device machine learning — with upcoming soil analysis, farmer-focused UX, bilingual support, and a polished modern UI.
+A field‑ready, offline‑first Android app for fast, accurate tomato‑leaf disease detection using on‑device machine learning — with upcoming soil analysis, farmer‑focused UX, bilingual support, and a polished modern UI.
 
 ---
 
@@ -19,13 +19,13 @@ Everything runs *locally on the device*—no internet required. That means:
 * 🔒 **True privacy** (your leaf images never leave your phone)
 * 🏞️ **Perfect for farms with poor connectivity**
 
-Upcoming modules include **soil nutrient analysis**, **weather-aware crop guidance**, and a comprehensive **disease knowledgebase**.
+Upcoming modules include **soil nutrient analysis**, **weather‑aware crop guidance**, and a comprehensive **disease knowledgebase**.
 
 ---
 
 ## ✨ Feature Highlights
 
-### 🌱 **On-Device Machine Learning**
+### 🌱 **On‑Device Machine Learning**
 
 * Runs a lightweight, optimized PyTorch/TFLite model locally
 * Works offline at full accuracy
@@ -35,10 +35,10 @@ Upcoming modules include **soil nutrient analysis**, **weather-aware crop guidan
 
 * Guided camera overlay for perfect leaf framing
 * Automatic crop suggestion
-* Leaf vs. non-leaf pre-filter
-* Low-confidence warnings
+* Leaf vs. non‑leaf pre-filter
+* Low‑confidence warnings
 
-### 📊 **Clean, Expert-Grade Results**
+### 📊 **Clean, Expert‑Grade Results**
 
 * Primary diagnosis + confidence score
 * Probability breakdown for all four classes
@@ -48,13 +48,13 @@ Upcoming modules include **soil nutrient analysis**, **weather-aware crop guidan
 ### 📁 **History & Notes**
 
 * Each scan stored with image, label, confidence, and notes
-* Optional comparison mode (side-by-side)
+* Optional comparison mode (side‑by‑side)
 * Export as PDF or CSV
 
 ### ☁️ **Cloud Sync (Upcoming)**
 
 * Optional sync via Firebase
-* Offline-first with Wi-Fi-only upload policy
+* Offline-first with Wi‑Fi‑only upload policy
 
 ### 🌍 **Bilingual UI (English + Urdu)**
 
@@ -65,7 +65,7 @@ Upcoming modules include **soil nutrient analysis**, **weather-aware crop guidan
 
 ## 🎨 UI & Experience
 
-LeafBloom uses a **milky-white gradient UI** with soft glassy layers and leafy-green accents.
+LeafBloom uses a **milky-white gradient UI** with soft glassy layers and leafy‑green accents.
 
 ### Key Design Elements:
 
@@ -112,11 +112,11 @@ LeafBloom/
 ### Disease Model
 
 * Input: 224×224 RGB center-crop
-* Output: 4-class logits → softmax applied on device
+* Output: 4‑class logits → softmax applied on device
 * Normalization: ImageNet mean/std
 * Model versioning built into Settings
 
-### Leaf/Non-Leaf Pre-Filter
+### Leaf/Non‑Leaf Pre-Filter
 
 * Lightweight classifier to reject invalid scans
 * Threshold-based gating (default: 0.6)
@@ -167,3 +167,8 @@ This repository is currently private. Contributions are accepted from invited co
 ## 📩 Contact
 
 For collaboration or inquiries, contact the project owner.
+
+### 🔗 Figma Design File
+
+Minor X Global — UI/UX designs:
+[https://www.figma.com/design/ZO7MQ8XkGcQJyHemEgWD7E/Minor-X-Global?node-id=465-53&p=f&t=QIiV5bjmQiTI67rw-0](https://www.figma.com/design/ZO7MQ8XkGcQJyHemEgWD7E/Minor-X-Global?node-id=465-53&p=f&t=QIiV5bjmQiTI67rw-0)
