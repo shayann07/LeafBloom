@@ -5,7 +5,7 @@ A beautifully crafted Android app for farmers, growers, and researchers — deli
 ---
 
 <div align="center">
-  <img src="https://github.com/shayann07/LeafBloom/assets/logo_placeholder" width="140" style="opacity:0.8" />
+  <img src="https://github.com/shayann07/LeafBloom/assets/app_logo" width="140" style="opacity:0.8" />
   <br><br>
   <b>📱 Offline. 🎯 Accurate. 🌱 Farm-Ready.</b>
   <br>
