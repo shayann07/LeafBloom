@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Map semantic colors to Material3 tokens -->
+
+    <item name="colorBackground" type="color">@color/color_background</item>
+    <item name="colorOnBackground" type="color">@color/color_on_background</item>
+
+    <item name="colorSurface" type="color">@color/color_background</item>
+    <item name="colorOnSurface" type="color">@color/color_on_background</item>
+
+</resources>

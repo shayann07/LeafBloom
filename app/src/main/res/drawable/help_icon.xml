@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportWidth="18"
+    android:viewportHeight="18">
+    <path
+        android:pathData="M9 16.5c4.13 0 7.5-3.38 7.5-7.5 0-4.13-3.38-7.5-7.5-7.5-4.13 0-7.5 3.38-7.5 7.5 0 4.13 3.38 7.5 7.5 7.5Z"
+        android:strokeWidth="1.5"
+        android:strokeColor="#FF003300"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M9 6v3.75"
+        android:strokeWidth="1.5"
+        android:strokeColor="#FF003300"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M9 12h0"
+        android:strokeWidth="2"
+        android:strokeColor="#FF003300"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

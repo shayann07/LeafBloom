@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Startup / Splash Screen Theme -->
+    <style name="Theme.LeafBloom.Splash" parent="Theme.SplashScreen">
+        <!-- Background color -->
+        <item name="windowSplashScreenBackground">@color/color_background</item>
+
+        <!-- Your logo (MUST be drawable, SVG → VectorDrawable) -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo_wrapper</item>
+
+        <!-- Optional animation duration -->
+        <item name="windowSplashScreenAnimationDuration">300</item>
+
+        <!-- After splash, switch to your real theme -->
+        <item name="postSplashScreenTheme">@style/Theme.LeafBloom</item>
+    </style>
+
+</resources>
