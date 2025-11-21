@@ -53,4 +53,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.dotsindicator)
+    implementation(libs.androidx.vectordrawable.animated)
 }

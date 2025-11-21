@@ -12,23 +12,22 @@
         android:layout_marginTop="24dp"
         android:src="@drawable/walk3" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvTitle"
+        style="@style/LeafTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:gravity="center"
-        android:text="Your photos stay private"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:text="Your photos stay private and secure" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvSubtitle"
+        style="@style/LeafBody"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:gravity="center"
-        android:text="Images are analyzed on your device first. Data syncs securely when online"
-        android:textSize="14sp" />
+        android:text="Your images are processed on your device first. When online, data syncs securely to improve accuracy and keep your scans safe." />
 
 </LinearLayout>

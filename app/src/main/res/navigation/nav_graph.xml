@@ -3,12 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/walkthroughFragment">
+    app:startDestination="@id/modelDownloadFragment">
 
     <fragment
         android:id="@+id/walkthroughFragment"
         android:name="com.devsphere.leafbloom.WalkthroughFragment"
         android:label="Walkthrough"
         tools:layout="@layout/fragment_walkthrough" />
+
+    <fragment
+        android:id="@+id/modelDownloadFragment"
+        android:name="com.devsphere.leafbloom.ModelDownloadFragment"
+        android:label="Model Download"
+        tools:layout="@layout/fragment_model_download" />
 
 </navigation>

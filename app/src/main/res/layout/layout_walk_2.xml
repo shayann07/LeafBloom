@@ -12,23 +12,22 @@
         android:layout_marginTop="24dp"
         android:src="@drawable/walk2" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvTitle"
+        style="@style/LeafTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:gravity="center"
-        android:text="Instant diagnosis for tomato leaf diseases"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:text="Get instant leaf disease results" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvSubtitle"
+        style="@style/LeafBody"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:gravity="center"
-        android:text="We detect Early Blight, Late Blight, Septoria, and Healthy leaves using AI"
-        android:textSize="14sp" />
+        android:text="AI analyzes your photos to detect Early Blight, Late Blight, Septoria, or confirm healthy leaves — all within seconds." />
 
 </LinearLayout>

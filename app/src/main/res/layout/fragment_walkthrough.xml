@@ -37,59 +37,61 @@
         app:layout_constraintGuide_end="20dp" />
 
 
-    <!-- SKIP BUTTON -->
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/btnSkip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableEnd="@drawable/arrow_right"
-        android:drawablePadding="4dp"
-        android:text="Skip"
-        android:textColor="@color/color_on_background"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintTop_toTopOf="@id/guideline_top" />
-
-
-    <!-- MAIN VIEWPAGER -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPagerWalk"
+    <!-- WRAPPED LAYOUT -->
+    <LinearLayout
+        android:id="@+id/wrappedContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/dotsIndicator"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/guideline_top" />
-
-
-    <!-- DOT INDICATOR -->
-    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
-        android:id="@+id/dotsIndicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        app:dotsColor="#512563EB"
-        app:dotsCornerRadius="5dp"
-        app:dotsSize="8dp"
-        app:dotsSpacing="5dp"
-        app:dotsWidthFactor="3"
-        app:layout_constraintBottom_toTopOf="@id/btnNext"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:progressMode="true"
-        app:selectedDotColor="#408A10" />
-
-
-    <!-- NEXT BUTTON -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnNext"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:backgroundTint="#408A10"
-        android:text="Next"
-        android:textColor="@android:color/white"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintStart_toStartOf="@id/guideline_start" />
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toTopOf="@id/guideline_top">
+
+
+        <!-- SKIP BUTTON -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/btnSkip"
+            style="@style/LeafLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:drawableEnd="@drawable/arrow_right"
+            android:drawablePadding="3dp"
+            android:text="Skip" />
+
+
+        <!-- MAIN VIEWPAGER -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPagerWalk"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+
+        <!-- DOT INDICATOR -->
+        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+            android:id="@+id/dotsIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            app:dotsColor="@color/dots_default"
+            app:dotsCornerRadius="5dp"
+            app:dotsSize="8dp"
+            app:dotsSpacing="5dp"
+            app:dotsWidthFactor="3"
+            app:progressMode="true"
+            app:selectedDotColor="@color/dots_selected" />
+
+
+        <!-- NEXT BUTTON -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNext"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Next" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

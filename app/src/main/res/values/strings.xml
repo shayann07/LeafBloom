@@ -2,4 +2,9 @@
     <string name="app_name">LeafBloom</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="model_download_illustration_cd">Leaf animation while model is preparing</string>
+    <string name="model_download_title">Preparing Leaf Bloom model…</string>
+    <string name="model_download_subtitle">This happens only once. After this, scans work offline.</string>
+    <string name="model_download_done_subtitle">All set! Getting things ready…</string>
 </resources>

@@ -1,7 +1,86 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+<resources>
+
     <style name="Base.Theme.LeafBloom" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+
+        <!-- Backgrounds -->
+        <item name="android:colorBackground">@color/color_background</item>
+        <item name="colorSurface">@color/color_background</item>
+        <item name="colorOnSurface">@color/color_on_background</item>
+
+        <!-- Disable legacy highlight -->
+        <item name="android:colorControlHighlight">@null</item>
+        <item name="colorControlHighlight">@null</item>
+
+        <!-- Global font -->
+        <item name="fontFamily">@font/poppins</item>
+
+        <!-- GLOBAL overrides -->
+        <item name="materialButtonStyle">@style/LeafBloomButton</item>
+        <item name="android:textViewStyle">@style/LeafTextBase</item>
+
     </style>
+
+    <style name="Theme.LeafBloom" parent="Base.Theme.LeafBloom" />
+
+    <!-- FINAL Button style -->
+    <style name="LeafBloomButton" parent="Widget.Material3.Button">
+
+        <!-- Solid brand green -->
+        <item name="backgroundTint">@color/brand_green_primary</item>
+        <item name="android:backgroundTint">@color/brand_green_primary</item>
+
+        <!-- Dark-green ripple (no white) -->
+        <item name="rippleColor">@color/brand_green_ripple</item>
+
+        <!-- Pill shape -->
+        <item name="cornerRadius">999dp</item>
+
+        <!-- Flat look -->
+        <item name="android:elevation">0dp</item>
+        <item name="elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>\
+
+        <!-- Text always white -->
+        <item name="android:textColor">@android:color/white</item>
+
+    </style>
+
+
+    <!-- GLOBAL base TextView style -->
+    <style name="LeafTextBase" parent="Widget.MaterialComponents.TextView">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <!-- 1. Display (Big Titles / Hero text) -->
+    <style name="LeafDisplay" parent="LeafTextBase">
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <!-- 2. Title (Walkthrough titles / Section headers) -->
+    <style name="LeafTitle" parent="LeafTextBase">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <!-- 3. Body (Normal text / Descriptions) -->
+    <style name="LeafBody" parent="LeafTextBase">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:lineHeight">20sp</item>
+    </style>
+
+    <!-- 4. Label (Buttons, Skip, small UI text) -->
+    <style name="LeafLabel" parent="LeafTextBase">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+
 </resources>

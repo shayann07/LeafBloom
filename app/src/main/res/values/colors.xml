@@ -1,9 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- Base colors (from your design spec) -->
+    <color name="brand_background_light">#F4FAF4</color>
+    <color name="brand_green_primary">#408A10</color>
+    <color name="brand_green_gloss">#7EE37A</color>
+    <color name="brand_green_muted">#5BAA50</color>
+    <color name="brand_green_ripple">#2F6A0C</color>
+
+    <color name="text_primary">#0F1724</color>
+    <color name="text_secondary">#4B5563</color>
+
+    <!-- Semantic tokens -->
+    <color name="color_background">@color/brand_background_light</color>
+    <color name="color_on_background">@color/text_primary</color>
+
+    <color name="color_surface">@color/brand_background_light</color>
+    <color name="color_on_surface">@color/text_primary</color>
+
+    <!-- Dots indicator -->
+    <color name="dots_selected">#408A10</color>
+    <color name="dots_default">#512563EB</color>
+
+    <!-- Splash -->
+    <color name="ic_launcher_background">#F4FAF4</color>
+
+    <!-- Basic fallback -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-
-
-
 
 </resources>
