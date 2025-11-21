@@ -22,7 +22,10 @@ class MainActivity : AppCompatActivity() {
         val root = findViewById<View>(R.id.nav_host_fragment)
         ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(
+                systemBars.left, 0,                             // ⬅ NO TOP PADDING
+                systemBars.right, systemBars.bottom
+            )
             insets
         }
     }

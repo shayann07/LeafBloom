@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/modelDownloadFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/walkthroughFragment"
@@ -16,5 +16,11 @@
         android:name="com.devsphere.leafbloom.ModelDownloadFragment"
         android:label="Model Download"
         tools:layout="@layout/fragment_model_download" />
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.devsphere.leafbloom.LoginFragment"
+        android:label="Login Fragment"
+        tools:layout="@layout/fragment_login" />
 
 </navigation>

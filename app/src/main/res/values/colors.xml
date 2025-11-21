@@ -7,6 +7,7 @@
     <color name="brand_green_gloss">#7EE37A</color>
     <color name="brand_green_muted">#5BAA50</color>
     <color name="brand_green_ripple">#2F6A0C</color>
+    <color name="auth_input_background">#F6FFF4</color>
 
     <color name="text_primary">#0F1724</color>
     <color name="text_secondary">#4B5563</color>

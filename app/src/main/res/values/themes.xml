@@ -82,4 +82,29 @@
         <item name="android:letterSpacing">0.01</item>
     </style>
 
+    <!-- TRUE circular mask like Figma -->
+    <style name="ShapeAppearance.LeafBloom.AuthHeader" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+
+    <!-- Secondary white pill button for Google auth -->
+    <style name="LeafGoogleButton" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:backgroundTint">@color/white</item>
+
+        <item name="android:textColor">@color/text_primary</item>
+
+        <!-- Pill shape -->
+        <item name="cornerRadius">999dp</item>
+
+        <!-- Flat, no elevation -->
+        <item name="elevation">0dp</item>
+        <item name="android:elevation">0dp</item>
+
+        <!-- Reuse your dark green ripple -->
+        <item name="rippleColor">@color/brand_green_ripple</item>
+    </style>
+
 </resources>
