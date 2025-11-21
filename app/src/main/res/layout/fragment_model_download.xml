@@ -36,6 +36,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="20dp" />
 
+
     <!-- WRAPPED LAYOUT -->
     <LinearLayout
         android:id="@+id/wrappedContainer"
@@ -48,56 +49,43 @@
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toTopOf="@id/guideline_top">
 
-        <!-- Animated leaf illustration -->
+        <!-- Illustration (match walkthrough size + centerInside) -->
         <ImageView
             android:id="@+id/ivIllustration"
-            android:layout_width="match_parent"
-            android:layout_height="195dp"
+            android:layout_width="260dp"
+            android:layout_height="260dp"
             android:adjustViewBounds="true"
-            android:contentDescription="@string/model_download_illustration_cd"
             android:scaleType="centerInside"
             android:src="@drawable/loading_leaf_animated" />
 
-        <!-- Spacer -->
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="16dp" />
-
         <!-- Title -->
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvTitle"
+            style="@style/LeafTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/model_download_title"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:textColor="@color/black" />
+            android:layout_marginTop="28dp"
+            android:gravity="center"
+            android:text="@string/model_download_title" />
 
         <!-- Subtitle -->
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvSubtitle"
-            android:layout_width="wrap_content"
+            style="@style/LeafBody"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:alpha="0.8"
-            android:text="@string/model_download_subtitle"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-            android:textColor="@color/black" />
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:text="@string/model_download_subtitle" />
 
-        <!-- Spacer -->
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="16dp" />
-
-        <!-- Micro loader -->
+        <!-- Loader -->
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:indeterminate="true" />
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
