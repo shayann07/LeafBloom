@@ -4,7 +4,8 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_background">
+    android:background="@color/color_background"
+    android:fitsSystemWindows="false">
 
     <!-- Horizontal Guidelines -->
     <androidx.constraintlayout.widget.Guideline
@@ -50,13 +51,14 @@
         app:layout_constraintTop_toTopOf="@id/guideline_top">
 
         <!-- Illustration (match walkthrough size + centerInside) -->
-        <ImageView
-            android:id="@+id/ivIllustration"
+        <com.devsphere.leafbloom.LeafBloomLoadingView
+            android:id="@+id/leafBloom"
             android:layout_width="260dp"
             android:layout_height="260dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/loading_leaf_animated" />
+            android:layout_marginTop="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Title -->
         <com.google.android.material.textview.MaterialTextView

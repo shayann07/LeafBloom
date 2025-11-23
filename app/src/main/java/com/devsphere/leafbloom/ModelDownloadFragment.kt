@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.devsphere.leafbloom.databinding.FragmentModelDownloadBinding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -17,13 +20,18 @@ class ModelDownloadFragment : Fragment() {
     private var _binding: FragmentModelDownloadBinding? = null
     private val binding get() = _binding!!
 
-    private var leafAvd: AnimatedVectorDrawableCompat? = null
     private var isDownloadCompleted = false
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Enable edge-to-edge for this screen
+        requireActivity().window?.let { window ->
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
+    }
+
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentModelDownloadBinding.inflate(inflater, container, false)
         return binding.root
@@ -32,12 +40,26 @@ class ModelDownloadFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupInsets()
         setupTexts()
-        setupAnimatedLeaf()
-        startEnterAnimationAndLeaf()
+        startEnterAnimation()
 
-        // Testing hook – replace with real model download flow
+        // *** Temporary testing flow ***
         startModelDownloadFlowForTesting()
+    }
+
+    private fun setupInsets() {
+        // Push wrapped container away from status & nav bars for an edge-to-edge layout
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val sysBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            binding.wrappedContainer.setPadding(
+                binding.wrappedContainer.paddingLeft,
+                sysBars.top,
+                binding.wrappedContainer.paddingRight,
+                sysBars.bottom
+            )
+            insets
+        }
     }
 
     private fun setupTexts() {
@@ -46,45 +68,42 @@ class ModelDownloadFragment : Fragment() {
         binding.tvSubtitle.text = getString(R.string.model_download_subtitle)
     }
 
-    private fun setupAnimatedLeaf() {
-        leafAvd = AnimatedVectorDrawableCompat.create(
-            requireContext(),
-            R.drawable.loading_leaf_animated
-        )
-        binding.ivIllustration.setImageDrawable(leafAvd)
-    }
-
     /**
-     * One-time enter animation: fade + gentle scale in, then start the leaf AVD.
+     * Intro fade-in + slight overshoot scale-in animation.
+     * When done → starts the LeafBloomLoadingView animation loop.
      */
-    private fun startEnterAnimationAndLeaf() {
-        val imageView = binding.ivIllustration
+    private fun startEnterAnimation() {
+        val v = binding.leafBloom
 
-        imageView.apply {
-            alpha = 0f
-            scaleX = 0.9f
-            scaleY = 0.9f
-        }
+        v.alpha = 0f
+        v.scaleX = 0.9f
+        v.scaleY = 0.9f
 
-        imageView.animate()
+        v.animate()
             .alpha(1f)
-            .scaleX(1f)
-            .scaleY(1f)
-            .setDuration(700L)
+            .scaleX(1.02f)
+            .scaleY(1.02f)
+            .setDuration(650L)
+            .setInterpolator(DecelerateInterpolator())
             .withEndAction {
-                // Hero intro (segments) + continuous pulses/rock handled by the AVD itself
-                leafAvd?.start()
+                // Tiny settle-back for a premium feel
+                v.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(180L)
+                    .start()
+
+                binding.leafBloom.startLoop()   // start custom loop with its own entrance fade
             }
             .start()
     }
 
     /**
-     * Test: long-running download so you can see the idle loop.
-     * Replace this with your real model download logic.
+     * TEMP: Fake 20s download to demo animation.
+     * Replace this with real model download logic.
      */
     private fun startModelDownloadFlowForTesting() {
         viewLifecycleOwner.lifecycleScope.launch {
-            // Long enough to see the hero intro + idle motion
             delay(20_000L)
             onModelDownloadCompleted()
         }
@@ -92,46 +111,27 @@ class ModelDownloadFragment : Fragment() {
 
     private fun onModelDownloadCompleted() {
         if (!isAdded || isDownloadCompleted) return
-
         isDownloadCompleted = true
-
-        // Stop the drawable so it doesn't keep animating under the exit fade
-        leafAvd?.stop()
 
         binding.progressBar.visibility = View.GONE
         binding.tvSubtitle.text = getString(R.string.model_download_done_subtitle)
 
-        // Single, graceful exit → then navigate
-        runExitAnimation {
+        // Let the custom view play its own premium exit animation,
+        // then navigate once it's fully faded out.
+        binding.leafBloom.playCompletionAndStop {
             navigateToNextScreen()
         }
     }
 
-    /**
-     * EXIT fade: slow fade-out + slight scale-down.
-     */
-    private fun runExitAnimation(onEnd: () -> Unit) {
-        binding.ivIllustration.animate()
-            .alpha(0f)
-            .scaleX(0.85f)
-            .scaleY(0.85f)
-            .setDuration(700L)
-            .withEndAction { onEnd() }
-            .start()
-    }
-
     private fun navigateToNextScreen() {
-        // TODO: hook up to your actual navigation graph
-        // findNavController().navigate(R.id.action_modelDownloadFragment_to_onboardingFragment)
+        // TODO: replace with your real nav target
         findNavController().navigateUp()
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
-
-        leafAvd?.stop()
-        leafAvd = null
-
+        // HARD STOP to avoid orphan animators when the view hierarchy goes away
+        binding.leafBloom.stopLoop()
         _binding = null
+        super.onDestroyView()
     }
 }
