@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Spacing scale (4dp grid) -->
+    <dimen name="space_0">0dp</dimen>
+    <dimen name="space_2">2dp</dimen>
+    <dimen name="space_4">4dp</dimen>
+    <dimen name="space_6">6dp</dimen>
+    <dimen name="space_8">8dp</dimen>
+    <dimen name="space_10">10dp</dimen>
+    <dimen name="space_12">12dp</dimen>
+    <dimen name="space_14">14dp</dimen>
+    <dimen name="space_16">16dp</dimen>
+    <dimen name="space_18">18dp</dimen>
+    <dimen name="space_20">20dp</dimen>
+    <dimen name="space_24">24dp</dimen>
+    <dimen name="space_28">28dp</dimen>
+    <dimen name="space_32">32dp</dimen>
+    <dimen name="space_36">36dp</dimen>
+    <dimen name="space_40">40dp</dimen>
+    <dimen name="space_48">48dp</dimen>
+    <dimen name="space_56">56dp</dimen>
+
+    <!-- Screen paddings (matches your mock layout feel) -->
+    <dimen name="screen_padding_h">20dp</dimen>
+    <dimen name="screen_padding_v">16dp</dimen>
+
+    <!-- Radii -->
+    <dimen name="radius_8">8dp</dimen>
+    <dimen name="radius_12">12dp</dimen>
+    <dimen name="radius_16">16dp</dimen>
+    <dimen name="radius_20">20dp</dimen>
+    <dimen name="radius_24">24dp</dimen>
+    <dimen name="radius_32">32dp</dimen>
+    <dimen name="radius_pill">999dp</dimen>
+
+    <!-- Common component sizes -->
+    <dimen name="height_search">48dp</dimen>
+    <dimen name="height_chip">36dp</dimen>
+
+    <dimen name="size_icon_18">18dp</dimen>
+    <dimen name="size_icon_20">20dp</dimen>
+    <dimen name="size_icon_24">24dp</dimen>
+    <dimen name="size_icon_28">28dp</dimen>
+
+    <dimen name="size_avatar">72dp</dimen>
+    <dimen name="size_fab">56dp</dimen>
+
+    <!-- Cards -->
+    <dimen name="card_padding">16dp</dimen>
+    <dimen name="card_stroke">1dp</dimen>
+
+    <!-- Bottom navigation -->
+    <dimen name="bottom_nav_height">72dp</dimen>
+
+    <!-- Safe area used everywhere (replaces your guideline hardcoding) -->
+    <dimen name="safe_margin_h">20dp</dimen>
+    <dimen name="safe_margin_v">24dp</dimen>
+
+    <!-- Common -->
+    <dimen name="height_button">56dp</dimen>
+    <dimen name="height_input">56dp</dimen>
+
+    <!-- Auth -->
+    <dimen name="auth_header_height">265dp</dimen>
+
+    <!-- Walkthrough -->
+    <dimen name="walk_text_width">280dp</dimen>
+    <dimen name="walk_illustration_size">260dp</dimen>
+    <dimen name="walk_text_side_margin">32dp</dimen>
+
+    <dimen name="walk_page_horizontal_padding">24dp</dimen>
+
+    <!-- Chain positioning (same for all pages) -->
+    <dimen name="walk_chain_bias">0.42</dimen>
+    <dimen name="walk_image_width_percent">0.74</dimen>
+
+    <!-- Spacing (same for all pages) -->
+    <dimen name="walk_title_margin_top">18dp</dimen>
+    <dimen name="walk_subtitle_margin_top">10dp</dimen>
+
+    <!-- Keep heights stable (symmetry) -->
+    <dimen name="walk_title_min_height">32dp</dimen>
+
+    <!-- AutoSize for one-line titles -->
+    <dimen name="walk_title_auto_max">20sp</dimen>
+    <dimen name="walk_title_auto_min">16sp</dimen>
+
+    <!-- AutoSize for subtitles (keeps visual balance if screen is small) -->
+    <dimen name="walk_subtitle_auto_max">14sp</dimen>
+    <dimen name="walk_subtitle_auto_min">12sp</dimen>
+
+</resources>

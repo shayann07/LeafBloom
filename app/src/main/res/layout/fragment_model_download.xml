@@ -4,41 +4,38 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_background"
+    android:background="?android:attr/colorBackground"
     android:fitsSystemWindows="false">
 
-    <!-- Horizontal Guidelines -->
+    <!-- Guidelines -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="24dp" />
+        app:layout_constraintGuide_begin="@dimen/safe_margin_v" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="24dp" />
+        app:layout_constraintGuide_end="@dimen/safe_margin_v" />
 
-    <!-- Vertical Guidelines -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
+        app:layout_constraintGuide_begin="@dimen/safe_margin_h" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_end"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="20dp" />
+        app:layout_constraintGuide_end="@dimen/safe_margin_h" />
 
-
-    <!-- WRAPPED LAYOUT -->
     <LinearLayout
         android:id="@+id/wrappedContainer"
         android:layout_width="0dp"
@@ -50,44 +47,40 @@
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toTopOf="@id/guideline_top">
 
-        <!-- Illustration (match walkthrough size + centerInside) -->
         <com.devsphere.leafbloom.LeafBloomLoadingView
             android:id="@+id/leafBloom"
-            android:layout_width="260dp"
-            android:layout_height="260dp"
-            android:layout_marginTop="0dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_width="@dimen/walk_illustration_size"
+            android:layout_height="@dimen/walk_illustration_size" />
 
-        <!-- Title -->
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvTitle"
-            style="@style/LeafTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:gravity="center"
-            android:text="@string/model_download_title" />
+            android:layout_marginTop="@dimen/walk_title_margin_top"
+            android:includeFontPadding="false"
+            android:textColor="?attr/colorOnSurface"
+            android:text="@string/model_download_title"
+            android:textAppearance="?attr/textAppearanceTitleLarge" />
 
-        <!-- Subtitle -->
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvSubtitle"
-            style="@style/LeafBody"
-            android:layout_width="280dp"
+            android:layout_width="@dimen/walk_text_width"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/walk_subtitle_margin_top"
             android:gravity="center"
-            android:text="@string/model_download_subtitle" />
+            android:includeFontPadding="false"
+            android:text="@string/model_download_subtitle"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textColor="?attr/colorOnSurfaceVariant" />
 
-        <!-- Loader -->
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/space_24"
             android:indeterminate="true" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,32 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base colors (from your design spec) -->
+    <!-- =========================
+         Brand (KEEP + EXTENDED)
+         ========================= -->
     <color name="brand_background_light">#F4FAF4</color>
+
+    <!-- Primary green (buttons / selected) -->
     <color name="brand_green_primary">#408A10</color>
-    <color name="brand_green_gloss">#7EE37A</color>
-    <color name="brand_green_muted">#5BAA50</color>
     <color name="brand_green_ripple">#2F6A0C</color>
+
+    <!-- Supporting greens (from PNGs/icons) -->
+    <color name="brand_green_primary_dark">#223106</color>     <!-- deep leaf (icons/text on green containers) -->
+    <color name="brand_green_text">#355B20</color>             <!-- dark green text seen in UI -->
+    <color name="brand_green_muted">#5BAA50</color>
+    <color name="brand_green_gloss">#7EE37A</color>
+
+    <!-- Light green containers (cards/sections feel) -->
+    <color name="brand_green_container">#E2F5D8</color>
+    <color name="brand_green_container_2">#D6F0CC</color>
+
+    <!-- Auth inputs -->
     <color name="auth_input_background">#F6FFF4</color>
 
+    <!-- =========================
+         Text (KEEP + EXTENDED)
+         ========================= -->
     <color name="text_primary">#0F1724</color>
     <color name="text_secondary">#4B5563</color>
+    <color name="text_tertiary">#6B7280</color>
+    <color name="text_hint">#A7B39F</color>
+    <color name="text_on_dark">#FFFFFFFF</color>
 
-    <!-- Semantic tokens -->
+    <!-- =========================
+         Surfaces / outlines (from PNGs)
+         ========================= -->
+    <color name="surface_card">#FFFFFFFF</color>
+    <color name="surface_card_alt">#F6FFF4</color>
+    <color name="surface_variant">#F1F6F1</color>
+
+    <color name="outline_soft">#D7DEDA</color>
+    <color name="outline_soft_2">#DDDFDC</color>
+    <color name="divider">#E3E8E5</color>
+
+    <!-- Shadows / scrims -->
+    <color name="shadow_08">#14000000</color>   <!-- 8% black -->
+    <color name="shadow_12">#1F000000</color>   <!-- 12% black -->
+    <color name="scrim_40">#66000000</color>    <!-- 40% black -->
+
+    <!-- =========================
+         Feature / status accents (extracted from Disease tiles + Result donuts)
+         ========================= -->
+    <color name="accent_water_blue">#0288FF</color>
+    <color name="accent_sun_yellow">#FFD401</color>
+    <color name="accent_fertilizer_coral">#FF6F61</color>
+    <color name="accent_humidity_orange">#F28B2B</color>
+    <color name="accent_disease_purple">#735CC1</color>
+    <color name="accent_success_green">#6CA24C</color>
+
+    <!-- Optional semantic status -->
+    <color name="status_success">#16A34A</color>
+    <color name="status_warning">#F59E0B</color>
+    <color name="status_error">#DC2626</color>
+    <color name="status_info">#0288FF</color>
+
+    <!-- =========================
+         Semantic tokens (KEEP + EXTENDED)
+         ========================= -->
     <color name="color_background">@color/brand_background_light</color>
     <color name="color_on_background">@color/text_primary</color>
 
     <color name="color_surface">@color/brand_background_light</color>
     <color name="color_on_surface">@color/text_primary</color>
 
-    <!-- Dots indicator -->
+    <!-- Material-like aliases (used inside theme for consistency) -->
+    <color name="color_primary">@color/brand_green_primary</color>
+    <color name="color_on_primary">@color/white</color>
+    <color name="color_primary_container">@color/brand_green_container</color>
+    <color name="color_on_primary_container">@color/brand_green_primary_dark</color>
+
+    <color name="color_secondary">@color/brand_green_muted</color>
+    <color name="color_on_secondary">@color/white</color>
+
+    <color name="color_outline">@color/outline_soft</color>
+
+    <!-- Dots indicator (KEEP) -->
     <color name="dots_selected">#408A10</color>
     <color name="dots_default">#512563EB</color>
 
-    <!-- Splash -->
+    <!-- Splash (KEEP) -->
     <color name="ic_launcher_background">#F4FAF4</color>
 
-    <!-- Basic fallback -->
+    <!-- Basic fallback (KEEP) -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 

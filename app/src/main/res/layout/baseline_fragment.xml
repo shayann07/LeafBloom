@@ -4,7 +4,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_background">
+    android:background="?android:attr/colorBackground">
 
     <!-- Horizontal Guidelines -->
     <androidx.constraintlayout.widget.Guideline
@@ -12,14 +12,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="24dp" />
+        app:layout_constraintGuide_begin="@dimen/safe_margin_v" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="24dp" />
+        app:layout_constraintGuide_end="@dimen/safe_margin_v" />
 
     <!-- Vertical Guidelines -->
     <androidx.constraintlayout.widget.Guideline
@@ -27,17 +27,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
+        app:layout_constraintGuide_begin="@dimen/safe_margin_h" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_end"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="20dp" />
+        app:layout_constraintGuide_end="@dimen/safe_margin_h" />
 
-
-    <!-- WRAPPED LAYOUT -->
     <LinearLayout
         android:id="@+id/wrappedContainer"
         android:layout_width="0dp"
@@ -47,6 +45,8 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toTopOf="@id/guideline_top">
+
+        <!-- Start Coding Here -->
 
     </LinearLayout>
 

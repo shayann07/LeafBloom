@@ -4,7 +4,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_background"
+    android:background="?android:attr/colorBackground"
     android:fitsSystemWindows="false">
 
     <!-- Horizontal Guidelines -->
@@ -13,14 +13,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="24dp" />
+        app:layout_constraintGuide_begin="@dimen/safe_margin_v" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="24dp" />
+        app:layout_constraintGuide_end="@dimen/safe_margin_v" />
 
     <!-- Vertical Guidelines -->
     <androidx.constraintlayout.widget.Guideline
@@ -28,19 +28,19 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
+        app:layout_constraintGuide_begin="@dimen/safe_margin_h" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_end"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="20dp" />
+        app:layout_constraintGuide_end="@dimen/safe_margin_h" />
 
     <FrameLayout
         android:id="@+id/headerContainer"
         android:layout_width="match_parent"
-        android:layout_height="265dp"
+        android:layout_height="@dimen/auth_header_height"
         android:background="@drawable/auth_header_mask"
         android:clipToOutline="true"
         app:layout_constraintTop_toTopOf="parent">
@@ -53,7 +53,6 @@
             android:src="@drawable/auth_header" />
     </FrameLayout>
 
-    <!-- SCROLLABLE CONTENT BELOW HEADER -->
     <ScrollView
         android:id="@+id/scrollContent"
         android:layout_width="0dp"
@@ -68,128 +67,136 @@
             android:id="@+id/contentContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:gravity="start"
             android:orientation="vertical"
-            android:paddingTop="24dp"
-            android:paddingBottom="16dp">
+            android:paddingTop="@dimen/safe_margin_v"
+            android:paddingBottom="@dimen/safe_margin_v">
 
-            <!-- Welcome text -->
+            <!-- Welcome -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvWelcome"
-                style="@style/LeafDisplay"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Welcome Back" />
+                android:includeFontPadding="false"
+                android:text="@string/welcome_back"
+                android:textAlignment="viewStart"
+                android:textAppearance="?attr/textAppearanceHeadlineLarge" />
 
+            <!-- Subtitle -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvSubtitle"
-                style="@style/LeafBody"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="log in to your account" />
+                android:layout_marginTop="@dimen/space_4"
+                android:includeFontPadding="false"
+                android:text="@string/login_subtitle"
+                android:textAlignment="viewStart"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
             <!-- Username -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilUsername"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                style="@style/LeafTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                app:boxBackgroundColor="@color/auth_input_background"
-                app:boxBackgroundMode="filled"
-                app:boxCornerRadiusBottomEnd="18dp"
-                app:boxCornerRadiusBottomStart="18dp"
-                app:boxCornerRadiusTopEnd="18dp"
-                app:boxCornerRadiusTopStart="18dp">
+                android:layout_marginTop="@dimen/safe_margin_v"
+                android:hint="@string/username">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etUsername"
+                    style="@style/LeafTextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="User Name"
+                    android:layout_height="@dimen/height_input"
+                    android:autofillHints="username"
+                    android:imeOptions="actionNext"
                     android:inputType="textPersonName"
-                    android:textSize="14sp" />
+                    android:paddingStart="@dimen/space_16"
+                    android:paddingEnd="@dimen/space_16" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Password -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilPassword"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                style="@style/LeafTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:boxBackgroundColor="@color/auth_input_background"
-                app:boxBackgroundMode="filled"
-                app:boxCornerRadiusBottomEnd="18dp"
-                app:boxCornerRadiusBottomStart="18dp"
-                app:boxCornerRadiusTopEnd="18dp"
-                app:boxCornerRadiusTopStart="18dp"
+                android:layout_marginTop="@dimen/space_16"
+                android:hint="@string/password"
                 app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPassword"
+                    style="@style/LeafTextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Password"
+                    android:layout_height="@dimen/height_input"
+                    android:autofillHints="password"
+                    android:imeOptions="actionDone"
                     android:inputType="textPassword"
-                    android:textSize="14sp" />
+                    android:paddingStart="@dimen/space_16"
+                    android:paddingEnd="@dimen/space_16" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Forgot password -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvForgotPassword"
-                style="@style/LeafLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginTop="8dp"
-                android:text="Forget Password?"
-                android:textColor="@color/brand_green_primary" />
+                android:layout_marginTop="@dimen/space_8"
+                android:includeFontPadding="false"
+                android:text="@string/forgot_password"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="?attr/colorPrimary" />
 
-            <!-- Login button (uses global LeafBloomButton from theme) -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="28dp"
-                android:text="Login" />
+                android:layout_height="@dimen/height_button"
+                android:layout_marginTop="@dimen/space_28"
+                android:text="@string/login"
+                android:textAllCaps="false" />
 
-            <!-- Google button: forced white pill -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnContinueWithGoogle"
                 style="@style/LeafGoogleButton"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="16dp"
-                android:text="Continue with Google"
+                android:layout_height="@dimen/height_button"
+                android:layout_marginTop="@dimen/space_16"
+                android:text="@string/continue_with_google"
                 android:textAllCaps="false"
                 app:icon="@drawable/google_icon"
                 app:iconGravity="textStart"
-                app:iconPadding="8dp" />
+                app:iconPadding="@dimen/space_10"
+                app:iconTint="@null" />
 
-            <!-- Bottom sign-up text -->
+            <!-- Sign up row: keep centered even though parent is start -->
             <LinearLayout
                 android:id="@+id/signupRow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/space_24"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/LeafBody"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Don’t have an account? " />
+                    android:includeFontPadding="false"
+                    android:text="@string/dont_have_account"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tvSignUp"
-                    style="@style/LeafLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sign Up"
-                    android:textColor="@color/brand_green_primary" />
+                    android:layout_marginStart="@dimen/space_6"
+                    android:includeFontPadding="false"
+                    android:text="@string/sign_up"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?attr/colorPrimary" />
 
             </LinearLayout>
         </LinearLayout>

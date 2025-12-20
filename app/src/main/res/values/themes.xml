@@ -1,5 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- =========================================================
+         THEME
+         ========================================================= -->
     <style name="Base.Theme.LeafBloom" parent="Theme.Material3.DayNight.NoActionBar">
 
         <!-- Backgrounds -->
@@ -7,104 +11,339 @@
         <item name="colorSurface">@color/color_background</item>
         <item name="colorOnSurface">@color/color_on_background</item>
 
+        <!-- Material color scheme -->
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorOnPrimary">@color/color_on_primary</item>
+        <item name="colorPrimaryContainer">@color/color_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/color_on_primary_container</item>
+
+        <item name="colorSecondary">@color/color_secondary</item>
+        <item name="colorOnSecondary">@color/color_on_secondary</item>
+
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/text_tertiary</item>
+
+        <item name="colorOutline">@color/color_outline</item>
+        <item name="colorError">@color/status_error</item>
+        <item name="colorOnError">@color/white</item>
+
+        <!-- System bars -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/color_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">true</item>
+
         <!-- Disable legacy highlight -->
         <item name="android:colorControlHighlight">@null</item>
         <item name="colorControlHighlight">@null</item>
 
-        <!-- Global font -->
+        <!-- Global font family -->
+        <item name="android:fontFamily">@font/poppins</item>
         <item name="fontFamily">@font/poppins</item>
 
-        <!-- GLOBAL overrides -->
-        <item name="materialButtonStyle">@style/LeafBloomButton</item>
+        <!-- Typography mapping -->
         <item name="android:textViewStyle">@style/LeafTextBase</item>
+
+        <!-- Typography mapping (override ALL Material3 tokens to avoid random defaults) -->
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.LeafBloom.DisplayLarge</item>
+        <item name="textAppearanceDisplayMedium">@style/TextAppearance.LeafBloom.DisplayMedium
+        </item>
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.LeafBloom.DisplaySmall</item>
+
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.LeafBloom.HeadlineLarge
+        </item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.LeafBloom.HeadlineMedium
+        </item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.LeafBloom.HeadlineSmall
+        </item>
+
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.LeafBloom.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.LeafBloom.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.LeafBloom.TitleSmall</item>
+
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.LeafBloom.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.LeafBloom.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.LeafBloom.BodySmall</item>
+
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.LeafBloom.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.LeafBloom.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.LeafBloom.LabelSmall</item>
+
+        <!-- Component defaults -->
+        <item name="materialButtonStyle">@style/LeafBloomButton</item>
+        <item name="materialButtonOutlinedStyle">@style/LeafBloomButtonOutlined</item>
+
+        <item name="materialCardViewStyle">@style/LeafBloomCard</item>
+        <item name="chipStyle">@style/LeafChip</item>
+
+        <item name="textInputStyle">@style/LeafTextInputLayout</item>
+        <item name="editTextStyle">@style/LeafTextInputEditText</item>
 
     </style>
 
     <style name="Theme.LeafBloom" parent="Base.Theme.LeafBloom" />
 
-    <!-- FINAL Button style -->
-    <style name="LeafBloomButton" parent="Widget.Material3.Button">
 
-        <!-- Solid brand green -->
-        <item name="backgroundTint">@color/brand_green_primary</item>
-        <item name="android:backgroundTint">@color/brand_green_primary</item>
-
-        <!-- Dark-green ripple (no white) -->
-        <item name="rippleColor">@color/brand_green_ripple</item>
-
-        <!-- Pill shape -->
-        <item name="cornerRadius">999dp</item>
-
-        <!-- Flat look -->
-        <item name="android:elevation">0dp</item>
-        <item name="elevation">0dp</item>
-        <item name="android:stateListAnimator">@null</item>\
-
-        <!-- Text always white -->
-        <item name="android:textColor">@android:color/white</item>
-
-    </style>
-
-
-    <!-- GLOBAL base TextView style -->
+    <!-- =========================================================
+         TYPOGRAPHY (Theme-driven, GitPulse style)
+         ========================================================= -->
     <style name="LeafTextBase" parent="Widget.MaterialComponents.TextView">
         <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <!-- DISPLAY (hero) -->
+    <style name="TextAppearance.LeafBloom.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:textFontWeight">700</item>
         <item name="android:textColor">@color/text_primary</item>
     </style>
 
-    <!-- 1. Display (Big Titles / Hero text) -->
-    <style name="LeafDisplay" parent="LeafTextBase">
+    <style name="TextAppearance.LeafBloom.DisplayMedium" parent="TextAppearance.Material3.DisplayMedium">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:letterSpacing">0.01</item>
         <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="TextAppearance.LeafBloom.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <!-- HEADLINES (section headings) -->
+    <style name="TextAppearance.LeafBloom.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
         <item name="android:fontFamily">@font/poppins_bold</item>
-        <item name="android:letterSpacing">0.01</item>
+        <item name="fontFamily">@font/poppins_bold</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:letterSpacing">0.0</item>
     </style>
 
-    <!-- 2. Title (Walkthrough titles / Section headers) -->
-    <style name="LeafTitle" parent="LeafTextBase">
+    <style name="TextAppearance.LeafBloom.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="fontFamily">@font/poppins_bold</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:letterSpacing">0.0</item>
+    </style>
+
+    <style name="TextAppearance.LeafBloom.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="fontFamily">@font/poppins_bold</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:letterSpacing">0.0</item>
+    </style>
+
+    <!-- TITLES (cards / screen titles) -->
+    <style name="TextAppearance.LeafBloom.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="fontFamily">@font/poppins_bold</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:letterSpacing">0.0</item>
         <item name="android:textSize">20sp</item>
-        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+
+    <style name="TextAppearance.LeafBloom.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:textColor">@color/text_primary</item>
         <item name="android:letterSpacing">0.01</item>
     </style>
 
-    <!-- 3. Body (Normal text / Descriptions) -->
-    <style name="LeafBody" parent="LeafTextBase">
-        <item name="android:textSize">14sp</item>
-        <item name="android:fontFamily">@font/poppins_regular</item>
+    <style name="TextAppearance.LeafBloom.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <!-- BODY -->
+    <style name="TextAppearance.LeafBloom.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:textFontWeight">400</item>
         <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:lineHeight">20sp</item>
     </style>
 
-    <!-- 4. Label (Buttons, Skip, small UI text) -->
-    <style name="LeafLabel" parent="LeafTextBase">
+    <style name="TextAppearance.LeafBloom.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <style name="TextAppearance.LeafBloom.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textColor">@color/text_secondary</item>
         <item name="android:textSize">12sp</item>
-        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:lineHeight">16sp</item>
+    </style>
+
+    <!-- LABELS (buttons / chips / links) -->
+    <style name="TextAppearance.LeafBloom.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textFontWeight">600</item>
         <item name="android:textColor">@color/text_primary</item>
-        <item name="android:letterSpacing">0.01</item>
+        <item name="android:letterSpacing">0.0</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
-    <!-- TRUE circular mask like Figma -->
-    <style name="ShapeAppearance.LeafBloom.AuthHeader" parent="ShapeAppearance.Material3.LargeComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">50%</item>
+    <style name="TextAppearance.LeafBloom.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="TextAppearance.LeafBloom.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">11sp</item>
+    </style>
 
-    <!-- Secondary white pill button for Google auth -->
+    <!-- =========================================================
+         BUTTONS
+         ========================================================= -->
+    <style name="LeafBloomButton" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/brand_green_primary</item>
+        <item name="android:backgroundTint">@color/brand_green_primary</item>
+        <item name="rippleColor">@color/brand_green_ripple</item>
+
+        <item name="cornerRadius">@dimen/radius_pill</item>
+        <item name="android:elevation">0dp</item>
+        <item name="elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAllCaps">false</item>
+
+        <!-- IMPORTANT: force consistent weight through textAppearance -->
+        <item name="android:textAppearance">@style/TextAppearance.LeafBloom.LabelLarge</item>
+    </style>
+
+    <style name="LeafBloomButtonOutlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="cornerRadius">@dimen/radius_pill</item>
+        <item name="strokeColor">@color/brand_green_primary</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="android:textColor">@color/brand_green_primary</item>
+        <item name="rippleColor">@color/brand_green_ripple</item>
+
+        <item name="android:elevation">0dp</item>
+        <item name="elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textAppearance">@style/TextAppearance.LeafBloom.LabelLarge</item>
+    </style>
+
     <style name="LeafGoogleButton" parent="Widget.Material3.Button">
         <item name="backgroundTint">@color/white</item>
         <item name="android:backgroundTint">@color/white</item>
 
-        <item name="android:textColor">@color/text_primary</item>
-
-        <!-- Pill shape -->
-        <item name="cornerRadius">999dp</item>
-
-        <!-- Flat, no elevation -->
-        <item name="elevation">0dp</item>
+        <item name="cornerRadius">@dimen/radius_pill</item>
         <item name="android:elevation">0dp</item>
-
-        <!-- Reuse your dark green ripple -->
+        <item name="elevation">0dp</item>
         <item name="rippleColor">@color/brand_green_ripple</item>
+        <item name="android:stateListAnimator">@null</item>
+
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textAppearance">@style/TextAppearance.LeafBloom.LabelLarge</item>
+    </style>
+
+
+    <!-- =========================================================
+         CARDS / SHAPES
+         ========================================================= -->
+    <style name="LeafBloomCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/surface_card</item>
+        <item name="strokeColor">@color/outline_soft</item>
+        <item name="strokeWidth">@dimen/card_stroke</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.LeafCard</item>
+        <item name="cardElevation">0dp</item>
+    </style>
+
+    <style name="ShapeAppearance.LeafCard" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_16</item>
+    </style>
+
+
+    <!-- =========================================================
+         CHIPS
+         ========================================================= -->
+    <style name="LeafChip" parent="Widget.Material3.Chip.Assist">
+        <item name="chipBackgroundColor">@color/surface_card</item>
+        <item name="chipStrokeColor">@color/outline_soft</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipCornerRadius">@dimen/radius_pill</item>
+
+        <!-- Make chip text consistent too -->
+        <item name="android:textAppearance">@style/TextAppearance.LeafBloom.LabelMedium</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+
+    <!-- =========================================================
+         INPUTS
+         ========================================================= -->
+    <style name="LeafTextInputLayout" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/auth_input_background</item>
+        <item name="boxStrokeColor">@color/outline_soft</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
+
+        <item name="boxCornerRadiusTopStart">@dimen/radius_16</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/radius_16</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/radius_16</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/radius_16</item>
+
+        <item name="hintTextColor">@color/text_hint</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+
+        <item name="hintTextAppearance">@style/TextAppearance.LeafBloom.BodySmall</item>
+        <item name="helperTextTextAppearance">@style/TextAppearance.LeafBloom.BodySmall</item>
+        <item name="errorTextAppearance">@style/TextAppearance.LeafBloom.BodySmall</item>
+    </style>
+
+    <style name="LeafTextInputEditText" parent="Widget.Material3.TextInputEditText.FilledBox">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+    </style>
+
+
+    <!-- TRUE circular mask like Figma (KEEP) -->
+    <style name="ShapeAppearance.LeafBloom.AuthHeader" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
 
 </resources>

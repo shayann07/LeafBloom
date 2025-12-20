@@ -1,10 +1,131 @@
 <resources>
     <string name="app_name">LeafBloom</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
+    <!-- KEEP (yours) -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="model_download_illustration_cd">Leaf animation while model is preparing</string>
     <string name="model_download_title">Preparing Leaf Bloom model…</string>
     <string name="model_download_subtitle">This happens only once. After this, scans work offline.</string>
     <string name="model_download_done_subtitle">All set! Getting things ready…</string>
+
+    <!-- =========================
+         Dashboard
+         ========================= -->
+    <string name="your_location">Your location</string>
+    <string name="search_plants_hint">Search plants &amp; flowers</string>
+    <string name="check_your_plant">Check your plant</string>
+    <string name="check_your_plant_desc">Take photos, start diagnose diseases &amp; get plant care tips</string>
+    <string name="diagnose">Diagnose</string>
+
+    <string name="all_features">All Features</string>
+    <string name="feature_diagnose">Diagnose</string>
+    <string name="feature_diagnose_desc">Check your plant’s health</string>
+
+    <string name="feature_identify">Identify</string>
+    <string name="feature_identify_desc">Recognize a plant</string>
+
+    <string name="feature_iot_watering">IoT Watering</string>
+    <string name="feature_iot_watering_desc">Optimize watering for your plant</string>
+
+    <string name="feature_reminders">Reminders</string>
+    <string name="feature_reminders_desc">Stay on top of your plant care</string>
+
+    <string name="history">History</string>
+    <string name="healthy">Healthy</string>
+
+    <string name="tips_and_tricks">Tips &amp; Tricks</string>
+    <string name="tip_healthy_start">Healthy Start</string>
+    <string name="tip_healthy_start_desc">Use clean, disease-free seeds and fresh soil. Always disinfect your tools before use.</string>
+
+    <string name="tip_keep_air_flowing">Keep Air Flowing</string>
+    <string name="tip_keep_air_flowing_desc">Don’t overcrowd your plants. Proper spacing keeps leaves dry and reduces fungus.</string>
+
+    <!-- =========================
+         Scan / Camera
+         ========================= -->
+    <string name="point_camera_at_plant">Point Your Camera At Plant</string>
+    <string name="diagnose_now">Diagnose Now</string>
+    <string name="retake_picture">Retake Picture</string>
+
+    <!-- =========================
+         Disease Details
+         ========================= -->
+    <string name="overview">Overview</string>
+    <string name="symptoms">Symptoms</string>
+    <string name="treatment">Treatment</string>
+    <string name="prevention">Prevention</string>
+
+    <string name="water">Water</string>
+    <string name="sunlight">Sunlight</string>
+    <string name="fertilizer">Fertilizer</string>
+    <string name="humidity">Humidity</string>
+    <string name="sunlight_normal">Normal</string>
+
+    <!-- =========================
+         Result
+         ========================= -->
+    <string name="diagnose_result">Diagnose Result</string>
+    <string name="early_blight">Early Blight</string>
+    <string name="late_blight">Late Blight</string>
+    <string name="septoria">Septoria</string>
+
+    <string name="add_note">Add Note</string>
+    <string name="export">Export</string>
+    <string name="save">Save</string>
+
+    <!-- =========================
+         Auth
+         ========================= -->
+    <string name="welcome_back">Welcome Back</string>
+    <string name="login_subtitle">Log in to your account</string>
+    <string name="username">User Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+
+    <string name="forgot_password">Forgot password?</string>
+    <string name="login">Login</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="continue_with_google">Continue with Google</string>
+
+    <string name="dont_have_account">Don’t have an account?</string>
+    <string name="already_have_account">Already have an account?</string>
+
+    <string name="welcome">Welcome!</string>
+    <string name="signup_subtitle">Sign up to access app features</string>
+    <string name="log_in">Log In</string>
+
+    <!-- =========================
+         Profile / Settings
+         ========================= -->
+    <string name="model_management">Model Management</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="change_language">Change language</string>
+    <string name="account_setting">Account Setting</string>
+    <string name="legal">Legal</string>
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="help">Help</string>
+    <string name="logout">Logout</string>
+    <string name="version">Version %1$s</string>
+
+    <!-- Splash -->
+    <string name="splash_title">Tomato Care</string>
+
+    <!-- Walkthrough -->
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+    <string name="continue_text">Continue</string>
+    <string name="walk_illustration_cd">Walkthrough illustration</string>
+    <string name="walk1_title">Capture leaf photos</string>
+    <string name="walk1_subtitle">Center one leaf in the frame and snap a bright, close photo. Avoid shadows and busy backgrounds for best accuracy.</string>
+
+    <string name="walk2_title">Instant disease results</string>
+    <string name="walk2_subtitle">LeafBloom checks your photo for Early Blight, Late Blight, and Septoria — or confirms a healthy leaf in seconds.</string>
+
+    <string name="walk3_title">Private &amp; secure</string>
+    <string name="walk3_subtitle">Scans run on your device first. When online, data syncs securely to improve accuracy and protect your results.</string>
+
+
 </resources>

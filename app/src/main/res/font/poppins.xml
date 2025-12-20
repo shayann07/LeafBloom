@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <font-family xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Ultra-light (used rarely, for subtle meta text if needed) -->
     <font
         android:font="@font/poppins_thin"
         android:fontStyle="normal"
-        android:fontWeight="300" />
+        android:fontWeight="100" />
 
+    <!-- Default body text -->
     <font
         android:font="@font/poppins_regular"
         android:fontStyle="normal"
         android:fontWeight="400" />
 
+    <!-- Emphasised body / buttons -->
     <font
         android:font="@font/poppins_medium"
         android:fontStyle="normal"
         android:fontWeight="500" />
 
+    <!-- Section titles / cards headings (most of your UI) -->
     <font
         android:font="@font/poppins_semibold"
         android:fontStyle="normal"
         android:fontWeight="600" />
 
+    <!-- Big hero titles (splash, “GitPulse”, etc.) -->
     <font
         android:font="@font/poppins_bold"
         android:fontStyle="normal"

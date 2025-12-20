@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
@@ -26,19 +28,40 @@ class WalkthroughFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        applyInsets()
         setupViewPager()
+
+        // Skip → same destination as final "Continue"
+        binding.btnSkip.setOnClickListener {
+            findNavController().navigate(R.id.modelDownloadFragment)
+        }
+    }
+
+    private fun applyInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val sysBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(
+                v.paddingLeft, sysBars.top, v.paddingRight, v.paddingBottom
+            )
+            insets
+        }
     }
 
     private fun setupViewPager() {
         binding.viewPagerWalk.adapter = WalkthroughAdapter(layouts)
-
         binding.dotsIndicator.attachTo(binding.viewPagerWalk)
 
         binding.viewPagerWalk.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
 
             override fun onPageSelected(position: Int) {
-                binding.btnNext.text = if (position == layouts.size - 1) "Continue" else "Next"
+                binding.btnNext.text = if (position == layouts.size - 1) {
+                    getString(R.string.continue_text)
+                } else {
+                    getString(R.string.next)
+                }
             }
         })
 
