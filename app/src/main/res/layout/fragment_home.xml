@@ -79,8 +79,8 @@
                     android:layout_height="wrap_content"
                     android:alpha="0.9"
                     android:text="@string/your_location"
-                    android:textColor="@color/text_on_dark"
-                    android:textSize="12sp" />
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="@color/text_on_dark" />
 
                 <!-- Location row -->
                 <LinearLayout
@@ -102,10 +102,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/space_4"
-                        android:alpha="0.95"
+                        android:textAppearance="?attr/textAppearanceLabelLarge"
                         android:textColor="@color/text_on_dark"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
                         tools:text="Sargodha, Punjab, Pakistan" />
                 </LinearLayout>
 
@@ -135,8 +133,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/space_16"
                         android:text="@string/search_plants_hint"
-                        android:textColor="@color/text_hint"
-                        android:textSize="14sp" />
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -159,17 +157,18 @@
                 android:paddingTop="76dp"
                 android:paddingBottom="@dimen/safe_margin_v">
 
+                <!-- Start Coding Here -->
+
                 <!-- Weather card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardWeather"
+                    style="@style/LeafBloomCard.Large"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     android:layout_marginTop="@dimen/space_100"
-                    app:cardBackgroundColor="@color/surface_card"
-                    app:cardCornerRadius="@dimen/radius_24"
-                    app:cardElevation="@dimen/space_0"
-                    app:strokeColor="@color/outline_soft"
-                    app:strokeWidth="@dimen/card_stroke">
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -180,9 +179,7 @@
                             android:id="@+id/tvTemp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/brand_green_primary_dark"
-                            android:textSize="26sp"
-                            android:textStyle="bold"
+                            android:textAppearance="@style/TextAppearance.LeafBloom.Temperature"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:text="23°C" />
@@ -192,11 +189,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/space_4"
-                            android:textColor="@color/brand_green_text"
-                            android:textSize="14sp"
+                            android:textAppearance="@style/TextAppearance.LeafBloom.WeatherLocation"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/tvTemp"
-                            tools:text="Sargodha ,Pakistan" />
+                            tools:text="Sargodha, Pakistan" />
 
                         <ImageView
                             android:id="@+id/ivWeatherIcon"
@@ -211,7 +207,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Plant category chips -->
+                <!-- Plant category chips (Material Chips with collapse/expand) -->
                 <HorizontalScrollView
                     android:id="@+id/chipsScroll"
                     android:layout_width="match_parent"
@@ -220,163 +216,79 @@
                     android:clipToPadding="false"
                     android:scrollbars="none">
 
-                    <LinearLayout
-                        android:id="@+id/chipsRow"
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chipGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        app:selectionRequired="true"
+                        app:singleLine="true"
+                        app:singleSelection="true">
 
-                        <!-- Icon chip 1 -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="@dimen/height_chip"
-                            android:layout_height="@dimen/height_chip"
-                            app:cardBackgroundColor="@color/surface_card"
-                            app:cardCornerRadius="@dimen/radius_pill"
-                            app:cardElevation="@dimen/space_0"
-                            app:strokeColor="@color/outline_soft"
-                            app:strokeWidth="@dimen/card_stroke">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:contentDescription="@null"
-                                android:padding="@dimen/space_8"
-                                android:src="@drawable/tree_icon"
-                                app:tint="@color/brand_green_text" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <!-- Icon chip 2 -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="@dimen/height_chip"
-                            android:layout_height="@dimen/height_chip"
-                            android:layout_marginStart="@dimen/space_10"
-                            app:cardBackgroundColor="@color/surface_card"
-                            app:cardCornerRadius="@dimen/radius_pill"
-                            app:cardElevation="@dimen/space_0"
-                            app:strokeColor="@color/outline_soft"
-                            app:strokeWidth="@dimen/card_stroke">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:contentDescription="@null"
-                                android:padding="@dimen/space_8"
-                                android:src="@drawable/tree_icon"
-                                app:tint="@color/brand_green_text" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <!-- Selected chip (Tomato) -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/chipSelected"
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipPlant1"
+                            style="@style/LeafChip"
                             android:layout_width="wrap_content"
-                            android:layout_height="@dimen/height_chip"
-                            android:layout_marginStart="@dimen/space_10"
-                            app:cardBackgroundColor="@color/brand_green_primary"
-                            app:cardCornerRadius="@dimen/radius_pill"
-                            app:cardElevation="@dimen/space_0">
+                            android:layout_height="wrap_content"
+                            android:text="Rose"
+                            app:chipIcon="@drawable/home_bar1" />
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:paddingStart="@dimen/space_6"
-                                android:paddingEnd="@dimen/space_16">
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipPlant2"
+                            style="@style/LeafChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lily"
+                            app:chipIcon="@drawable/home_bar2" />
 
-                                <com.google.android.material.card.MaterialCardView
-                                    android:layout_width="@dimen/space_24"
-                                    android:layout_height="@dimen/space_24"
-                                    app:cardBackgroundColor="@color/surface_card"
-                                    app:cardCornerRadius="@dimen/radius_pill"
-                                    app:cardElevation="@dimen/space_0">
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipTomato"
+                            style="@style/LeafChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:text="Tomato"
+                            app:chipIcon="@drawable/home_bar3" />
 
-                                    <ImageView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:contentDescription="@null"
-                                        android:padding="@dimen/space_4"
-                                        android:src="@drawable/home_bar2" />
-                                </com.google.android.material.card.MaterialCardView>
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipPlant3"
+                            style="@style/LeafChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mint"
+                            app:chipIcon="@drawable/home_bar4" />
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/space_8"
-                                    android:text="Tomato"
-                                    android:textColor="@color/white"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
-                            </LinearLayout>
-                        </com.google.android.material.card.MaterialCardView>
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipPlant4"
+                            style="@style/LeafChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Basil"
+                            app:chipIcon="@drawable/home_bar5" />
 
-                        <!-- Icon chip 3 -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="@dimen/height_chip"
-                            android:layout_height="@dimen/height_chip"
-                            android:layout_marginStart="@dimen/space_10"
-                            app:cardBackgroundColor="@color/surface_card"
-                            app:cardCornerRadius="@dimen/radius_pill"
-                            app:cardElevation="@dimen/space_0"
-                            app:strokeColor="@color/outline_soft"
-                            app:strokeWidth="@dimen/card_stroke">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:contentDescription="@null"
-                                android:padding="@dimen/space_8"
-                                android:src="@drawable/tree_icon"
-                                app:tint="@color/brand_green_text" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <!-- Icon chip 4 -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="@dimen/height_chip"
-                            android:layout_height="@dimen/height_chip"
-                            android:layout_marginStart="@dimen/space_10"
-                            app:cardBackgroundColor="@color/surface_card"
-                            app:cardCornerRadius="@dimen/radius_pill"
-                            app:cardElevation="@dimen/space_0"
-                            app:strokeColor="@color/outline_soft"
-                            app:strokeWidth="@dimen/card_stroke">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:contentDescription="@null"
-                                android:padding="@dimen/space_8"
-                                android:src="@drawable/tree_icon"
-                                app:tint="@color/brand_green_text" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </LinearLayout>
+                    </com.google.android.material.chip.ChipGroup>
                 </HorizontalScrollView>
 
                 <!-- Check your plant card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardCheckPlant"
+                    style="@style/LeafBloomCard.Large"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/space_16"
-                    app:cardBackgroundColor="@color/surface_card"
-                    app:cardCornerRadius="@dimen/radius_24"
-                    app:cardElevation="@dimen/space_0"
-                    app:strokeColor="@color/outline_soft"
-                    app:strokeWidth="@dimen/card_stroke">
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/card_padding">
+                        android:padding="@dimen/space_12">
 
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/checkImageHolder"
-                            android:layout_width="@dimen/space_100"
-                            android:layout_height="@dimen/space_100"
+                            style="@style/LeafBloomCard.NoStroke"
+                            android:layout_width="115dp"
+                            android:layout_height="@dimen/check_plant_image_size"
                             app:cardBackgroundColor="@color/surface_variant"
-                            app:cardCornerRadius="@dimen/radius_16"
-                            app:cardElevation="@dimen/space_0"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent">
@@ -385,6 +297,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:contentDescription="@null"
+                                android:paddingTop="@dimen/space_12"
                                 android:scaleType="centerInside"
                                 android:src="@drawable/home_diagnose" />
                         </com.google.android.material.card.MaterialCardView>
@@ -393,11 +306,11 @@
                             android:id="@+id/tvCheckTitle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/space_12"
+                            android:layout_marginStart="@dimen/space_14"
+                            android:layout_marginTop="@dimen/space_8"
                             android:text="@string/check_your_plant"
-                            android:textColor="@color/brand_green_primary_dark"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:textColor="?attr/colorOnPrimaryContainer"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/checkImageHolder"
                             app:layout_constraintTop_toTopOf="@id/checkImageHolder" />
@@ -406,26 +319,23 @@
                             android:id="@+id/tvCheckDesc"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/space_12"
-                            android:layout_marginTop="@dimen/space_4"
+                            android:layout_marginStart="@dimen/space_14"
+                            android:layout_marginTop="@dimen/space_6"
                             android:text="@string/check_your_plant_desc"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="12sp"
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:textColor="?attr/colorOnSurfaceVariant"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/checkImageHolder"
                             app:layout_constraintTop_toBottomOf="@id/tvCheckTitle" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnDiagnose"
-                            android:layout_width="0dp"
+                            style="@style/LeafBloomButton.Compact"
+                            android:layout_width="wrap_content"
                             android:layout_height="@dimen/space_36"
-                            android:layout_marginStart="@dimen/space_12"
-                            android:layout_marginTop="@dimen/space_10"
+                            android:layout_marginStart="@dimen/space_14"
+                            android:layout_marginTop="@dimen/space_14"
                             android:text="@string/diagnose"
-                            android:textAllCaps="false"
-                            android:textSize="14sp"
-                            app:cornerRadius="@dimen/radius_pill"
-                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/checkImageHolder"
                             app:layout_constraintTop_toBottomOf="@id/tvCheckDesc" />
 
@@ -437,60 +347,62 @@
                     android:id="@+id/tvAllFeatures"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_20"
+                    android:layout_marginTop="@dimen/space_24"
                     android:text="@string/all_features"
-                    android:textColor="@color/text_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnSurface" />
 
-                <!-- Features 2x2 grid -->
-                <androidx.gridlayout.widget.GridLayout
-                    android:id="@+id/featuresGrid"
+                <!-- Features Row 1 (equal height cards) -->
+                <LinearLayout
+                    android:id="@+id/featuresRow1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/space_12"
-                    app:columnCount="2"
-                    app:rowCount="2">
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
 
                     <!-- Feature 1: Diagnose -->
                     <com.google.android.material.card.MaterialCardView
+                        style="@style/LeafBloomCard.Medium"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/space_6"
-                        android:layout_marginBottom="@dimen/space_12"
-                        app:cardBackgroundColor="@color/surface_card"
-                        app:cardCornerRadius="@dimen/radius_20"
-                        app:cardElevation="@dimen/space_0"
-                        app:layout_columnWeight="1"
-                        app:strokeColor="@color/outline_soft"
-                        app:strokeWidth="@dimen/card_stroke">
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:minHeight="@dimen/feature_card_min_height">
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="@dimen/card_padding">
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="@dimen/card_padding"
+                                android:layout_marginTop="@dimen/card_padding"
                                 android:text="@string/feature_diagnose"
-                                android:textColor="@color/brand_green_primary_dark"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
+                                android:textAppearance="?attr/textAppearanceTitleSmall"
+                                android:textColor="?attr/colorOnPrimaryContainer" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/card_padding"
                                 android:layout_marginTop="@dimen/space_4"
                                 android:text="@string/feature_diagnose_desc"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="11sp" />
+                                android:textAppearance="?attr/textAppearanceLabelSmall"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+
+                            <Space
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1" />
 
                             <ImageView
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/space_72"
-                                android:layout_marginTop="@dimen/space_10"
+                                android:layout_height="@dimen/feature_card_image_height"
                                 android:contentDescription="@null"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/home_feature1" />
@@ -499,87 +411,107 @@
 
                     <!-- Feature 2: Identify -->
                     <com.google.android.material.card.MaterialCardView
+                        style="@style/LeafBloomCard.Medium"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="@dimen/space_6"
-                        android:layout_marginBottom="@dimen/space_12"
-                        app:cardBackgroundColor="@color/surface_card"
-                        app:cardCornerRadius="@dimen/radius_20"
-                        app:cardElevation="@dimen/space_0"
-                        app:layout_columnWeight="1"
-                        app:strokeColor="@color/outline_soft"
-                        app:strokeWidth="@dimen/card_stroke">
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:minHeight="@dimen/feature_card_min_height">
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="@dimen/card_padding">
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="@dimen/card_padding"
+                                android:layout_marginTop="@dimen/card_padding"
                                 android:text="@string/feature_identify"
-                                android:textColor="@color/brand_green_primary_dark"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
+                                android:textAppearance="?attr/textAppearanceTitleSmall"
+                                android:textColor="?attr/colorOnPrimaryContainer" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/card_padding"
                                 android:layout_marginTop="@dimen/space_4"
                                 android:text="@string/feature_identify_desc"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="11sp" />
+                                android:textAppearance="?attr/textAppearanceLabelSmall"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+
+                            <Space
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1" />
 
                             <ImageView
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/space_72"
-                                android:layout_marginTop="@dimen/space_10"
+                                android:layout_height="@dimen/feature_card_image_height"
+                                android:layout_marginTop="@dimen/space_8"
                                 android:contentDescription="@null"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/home_feature2" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <!-- Features Row 2 (equal height cards) -->
+                <LinearLayout
+                    android:id="@+id/featuresRow2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_12"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
 
                     <!-- Feature 3: IoT Watering -->
                     <com.google.android.material.card.MaterialCardView
+                        style="@style/LeafBloomCard.Medium"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/space_6"
-                        app:cardBackgroundColor="@color/surface_card"
-                        app:cardCornerRadius="@dimen/radius_20"
-                        app:cardElevation="@dimen/space_0"
-                        app:layout_columnWeight="1"
-                        app:strokeColor="@color/outline_soft"
-                        app:strokeWidth="@dimen/card_stroke">
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:minHeight="@dimen/feature_card_min_height">
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="@dimen/card_padding">
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="@dimen/card_padding"
+
+                                android:layout_marginTop="@dimen/card_padding"
                                 android:text="@string/feature_iot_watering"
-                                android:textColor="@color/brand_green_primary_dark"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
+                                android:textAppearance="?attr/textAppearanceTitleSmall"
+                                android:textColor="?attr/colorOnPrimaryContainer" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/card_padding"
                                 android:layout_marginTop="@dimen/space_4"
                                 android:text="@string/feature_iot_watering_desc"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="11sp" />
+                                android:textAppearance="?attr/textAppearanceLabelSmall"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+
+                            <Space
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1" />
 
                             <ImageView
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/space_72"
-                                android:layout_marginTop="@dimen/space_10"
+                                android:layout_height="@dimen/feature_card_image_height"
+                                android:layout_marginTop="@dimen/space_8"
                                 android:contentDescription="@null"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/home_feature3" />
@@ -588,111 +520,81 @@
 
                     <!-- Feature 4: Reminders -->
                     <com.google.android.material.card.MaterialCardView
+                        style="@style/LeafBloomCard.Medium"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="@dimen/space_6"
-                        app:cardBackgroundColor="@color/surface_card"
-                        app:cardCornerRadius="@dimen/radius_20"
-                        app:cardElevation="@dimen/space_0"
-                        app:layout_columnWeight="1"
-                        app:strokeColor="@color/outline_soft"
-                        app:strokeWidth="@dimen/card_stroke">
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:minHeight="@dimen/feature_card_min_height">
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="@dimen/card_padding">
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="@dimen/card_padding"
+                                android:layout_marginTop="@dimen/card_padding"
                                 android:text="@string/feature_reminders"
-                                android:textColor="@color/brand_green_primary_dark"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
+                                android:textAppearance="?attr/textAppearanceTitleSmall"
+                                android:textColor="?attr/colorOnPrimaryContainer" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/card_padding"
                                 android:layout_marginTop="@dimen/space_4"
                                 android:text="@string/feature_reminders_desc"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="11sp" />
+                                android:textAppearance="?attr/textAppearanceLabelSmall"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+
+                            <Space
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1" />
 
                             <ImageView
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/space_72"
-                                android:layout_marginTop="@dimen/space_10"
+                                android:layout_height="@dimen/feature_card_image_height"
+                                android:layout_marginTop="@dimen/space_8"
                                 android:contentDescription="@null"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/home_feature4" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
-
-                </androidx.gridlayout.widget.GridLayout>
+                </LinearLayout>
 
                 <!-- History section title -->
                 <TextView
                     android:id="@+id/tvHistory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_20"
+                    android:layout_marginTop="@dimen/space_24"
                     android:text="@string/history"
-                    android:textColor="@color/text_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnSurface" />
 
                 <!-- History card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardHistory"
+                    style="@style/LeafBloomCard.Large"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_12"
-                    app:cardBackgroundColor="@color/surface_card"
-                    app:cardCornerRadius="@dimen/radius_24"
-                    app:cardElevation="@dimen/space_0"
-                    app:strokeColor="@color/outline_soft"
-                    app:strokeWidth="@dimen/card_stroke">
+                    android:layout_marginTop="@dimen/space_12">
 
-                    <LinearLayout
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvHistory"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/space_8">
-
-                        <!-- History item 1 -->
-                        <include
-                            android:id="@+id/historyItem1"
-                            layout="@layout/item_history" />
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginStart="@dimen/space_8"
-                            android:layout_marginEnd="@dimen/space_8"
-                            android:alpha="0.6"
-                            android:background="@color/outline_soft" />
-
-                        <!-- History item 2 -->
-                        <include
-                            android:id="@+id/historyItem2"
-                            layout="@layout/item_history" />
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginStart="@dimen/space_8"
-                            android:layout_marginEnd="@dimen/space_8"
-                            android:alpha="0.6"
-                            android:background="@color/outline_soft" />
-
-                        <!-- History item 3 -->
-                        <include
-                            android:id="@+id/historyItem3"
-                            layout="@layout/item_history" />
-
-                    </LinearLayout>
+                        android:overScrollMode="never"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="3"
+                        tools:listitem="@layout/item_history" />
                 </com.google.android.material.card.MaterialCardView>
 
                 <!-- Tips & Tricks section title -->
@@ -700,13 +602,12 @@
                     android:id="@+id/tvTips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_20"
+                    android:layout_marginTop="@dimen/space_24"
                     android:text="@string/tips_and_tricks"
-                    android:textColor="@color/text_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnSurface" />
 
-                <!-- Tips horizontal scroll -->
+                <!-- Tips horizontal scroll (equal height cards) -->
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -721,17 +622,16 @@
 
                         <!-- Tip card 1: Healthy Start -->
                         <com.google.android.material.card.MaterialCardView
-                            android:layout_width="@dimen/space_160"
+                            style="@style/LeafBloomCard.Medium"
+                            android:layout_width="@dimen/tip_card_width"
                             android:layout_height="wrap_content"
-                            app:cardBackgroundColor="@color/surface_card"
-                            app:cardCornerRadius="@dimen/radius_20"
-                            app:cardElevation="@dimen/space_0"
-                            app:strokeColor="@color/outline_soft"
-                            app:strokeWidth="@dimen/card_stroke">
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:minHeight="@dimen/tip_card_min_height">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:orientation="vertical"
                                 android:padding="@dimen/card_padding">
 
@@ -741,20 +641,19 @@
                                     android:gravity="center_vertical"
                                     android:orientation="horizontal">
 
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="🌱"
-                                        android:textSize="16sp" />
+                                    <ImageView
+                                        android:layout_width="@dimen/size_icon_18"
+                                        android:layout_height="@dimen/size_icon_18"
+                                        android:contentDescription="@null"
+                                        android:src="@drawable/home_bar4" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/space_6"
                                         android:text="@string/tip_healthy_start"
-                                        android:textColor="@color/text_primary"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold" />
+                                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                                        android:textColor="?attr/colorOnSurface" />
                                 </LinearLayout>
 
                                 <TextView
@@ -762,25 +661,24 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/space_8"
                                     android:text="@string/tip_healthy_start_desc"
-                                    android:textColor="@color/text_secondary"
-                                    android:textSize="11sp" />
+                                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant" />
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
 
                         <!-- Tip card 2: Keep Air Flowing -->
                         <com.google.android.material.card.MaterialCardView
-                            android:layout_width="@dimen/space_160"
+                            style="@style/LeafBloomCard.Medium"
+                            android:layout_width="@dimen/tip_card_width"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/space_12"
-                            app:cardBackgroundColor="@color/surface_card"
-                            app:cardCornerRadius="@dimen/radius_20"
-                            app:cardElevation="@dimen/space_0"
-                            app:strokeColor="@color/outline_soft"
-                            app:strokeWidth="@dimen/card_stroke">
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:minHeight="@dimen/tip_card_min_height">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:orientation="vertical"
                                 android:padding="@dimen/card_padding">
 
@@ -790,20 +688,19 @@
                                     android:gravity="center_vertical"
                                     android:orientation="horizontal">
 
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="🌞"
-                                        android:textSize="16sp" />
+                                    <ImageView
+                                        android:layout_width="@dimen/size_icon_18"
+                                        android:layout_height="@dimen/size_icon_18"
+                                        android:contentDescription="@null"
+                                        android:src="@drawable/sun_icon" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/space_6"
                                         android:text="@string/tip_keep_air_flowing"
-                                        android:textColor="@color/text_primary"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold" />
+                                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                                        android:textColor="?attr/colorOnSurface" />
                                 </LinearLayout>
 
                                 <TextView
@@ -811,8 +708,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/space_8"
                                     android:text="@string/tip_keep_air_flowing_desc"
-                                    android:textColor="@color/text_secondary"
-                                    android:textSize="11sp" />
+                                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                                    android:textColor="?attr/colorOnSurfaceVariant" />
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
 

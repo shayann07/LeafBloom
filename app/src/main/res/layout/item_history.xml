@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/space_10">
+    android:padding="@dimen/space_10"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackground">
 
     <!-- Plant thumbnail -->
     <com.google.android.material.card.MaterialCardView
@@ -24,8 +27,7 @@
             android:layout_height="match_parent"
             android:contentDescription="@null"
             android:padding="@dimen/space_6"
-            android:scaleType="centerInside"
-            android:src="@drawable/home_bar2" />
+            android:src="@drawable/history_item" />
     </com.google.android.material.card.MaterialCardView>
 
     <!-- Plant name -->
@@ -37,9 +39,8 @@
         android:layout_marginEnd="@dimen/space_8"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/brand_green_primary"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:textColor="?attr/colorPrimary"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
         app:layout_constraintEnd_toStartOf="@id/tvHistoryDate"
         app:layout_constraintStart_toEndOf="@id/historyThumb"
         app:layout_constraintTop_toTopOf="@id/historyThumb"
@@ -53,8 +54,8 @@
         android:layout_marginStart="@dimen/space_12"
         android:layout_marginTop="@dimen/space_2"
         android:text="@string/healthy"
-        android:textColor="@color/text_secondary"
-        android:textSize="12sp"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="?attr/colorOnSurfaceVariant"
         app:layout_constraintStart_toEndOf="@id/historyThumb"
         app:layout_constraintTop_toBottomOf="@id/tvHistoryPlant" />
 
@@ -90,8 +91,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/space_8"
-        android:textColor="@color/text_hint"
-        android:textSize="10sp"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textAppearance="?attr/textAppearanceLabelSmall"
         app:layout_constraintEnd_toStartOf="@id/ivHistoryArrow"
         app:layout_constraintTop_toTopOf="@id/tvHistoryPlant"
         tools:text="25 November 2026, 12:00 am" />
@@ -99,13 +100,13 @@
     <!-- Arrow icon -->
     <ImageView
         android:id="@+id/ivHistoryArrow"
-        android:layout_width="@dimen/size_icon_18"
-        android:layout_height="@dimen/size_icon_18"
+        android:layout_width="@dimen/size_icon_14"
+        android:layout_height="@dimen/size_icon_14"
         android:contentDescription="@null"
         android:src="@drawable/arrow_right"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/text_secondary" />
+        app:tint="?attr/colorOnSurfaceVariant" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

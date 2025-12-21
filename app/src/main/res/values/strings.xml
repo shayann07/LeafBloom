@@ -15,7 +15,7 @@
     <string name="your_location">Your location</string>
     <string name="search_plants_hint">Search plants &amp; flowers</string>
     <string name="check_your_plant">Check your plant</string>
-    <string name="check_your_plant_desc">Take photos, start diagnose diseases &amp; get plant care tips</string>
+    <string name="check_your_plant_desc">Scan plants, diagnose disease &amp; get care tips</string>
     <string name="diagnose">Diagnose</string>
 
     <string name="all_features">All Features</string>

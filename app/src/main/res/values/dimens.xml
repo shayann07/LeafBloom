@@ -24,6 +24,15 @@
     <dimen name="space_72">72dp</dimen>
     <dimen name="space_100">100dp</dimen>
     <dimen name="space_160">160dp</dimen>
+    <dimen name="space_180">180dp</dimen>
+
+    <!-- Home screen specific -->
+    <dimen name="feature_card_image_height">120dp</dimen>
+    <dimen name="feature_card_min_height">180dp</dimen>
+    <dimen name="tip_card_width">175dp</dimen>
+    <dimen name="tip_card_min_height">135dp</dimen>
+    <dimen name="history_thumb_size">72dp</dimen>
+    <dimen name="check_plant_image_size">120dp</dimen>
 
     <!-- Screen paddings (matches your mock layout feel) -->
     <dimen name="screen_padding_h">20dp</dimen>
@@ -40,8 +49,10 @@
 
     <!-- Common component sizes -->
     <dimen name="height_search">48dp</dimen>
-    <dimen name="height_chip">36dp</dimen>
+    <dimen name="height_chip">48dp</dimen>
 
+
+    <dimen name="size_icon_14">14dp</dimen>
     <dimen name="size_icon_18">18dp</dimen>
     <dimen name="size_icon_20">20dp</dimen>
     <dimen name="size_icon_24">24dp</dimen>
