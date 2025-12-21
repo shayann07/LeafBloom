@@ -21,7 +21,7 @@
     <color name="brand_green_container_2">#D6F0CC</color>
 
     <!-- Auth inputs -->
-    <color name="auth_input_background">#F6FFF4</color>
+    <color name="auth_input_background">#F5F5F5</color>
 
     <!-- =========================
          Text (KEEP + EXTENDED)
@@ -94,5 +94,8 @@
     <!-- Basic fallback (KEEP) -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="auth_input_background_focused">#EEF8EE</color>
+    <color name="leaf_ripple">#1F408A10</color> <!-- ~12% alpha green -->
 
 </resources>

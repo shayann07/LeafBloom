@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/walkthroughFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/walkthroughFragment"
@@ -22,5 +22,17 @@
         android:name="com.devsphere.leafbloom.LoginFragment"
         android:label="Login Fragment"
         tools:layout="@layout/fragment_login" />
+
+    <fragment
+        android:id="@+id/signupFragment"
+        android:name="com.devsphere.leafbloom.SignupFragment"
+        android:label="Signup Fragment"
+        tools:layout="@layout/fragment_signup" />
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.devsphere.leafbloom.HomeFragment"
+        android:label="Home Fragment"
+        tools:layout="@layout/fragment_home" />
 
 </navigation>

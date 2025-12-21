@@ -34,8 +34,13 @@
         <item name="android:windowLightNavigationBar">true</item>
 
         <!-- Disable legacy highlight -->
-        <item name="android:colorControlHighlight">@null</item>
-        <item name="colorControlHighlight">@null</item>
+        <!-- Fix ripples/highlights (no more pink nonsense) -->
+        <item name="android:colorControlHighlight">@color/leaf_ripple</item>
+        <item name="colorControlHighlight">@color/leaf_ripple</item>
+
+        <!-- Make toggles/icons use your green -->
+        <item name="colorControlActivated">@color/brand_green_primary</item>
+        <item name="android:colorControlActivated">@color/brand_green_primary</item>
 
         <!-- Global font family -->
         <item name="android:fontFamily">@font/poppins</item>
@@ -313,30 +318,50 @@
     <!-- =========================================================
          INPUTS
          ========================================================= -->
-    <style name="LeafTextInputLayout" parent="Widget.Material3.TextInputLayout.FilledBox">
-        <item name="boxBackgroundColor">@color/auth_input_background</item>
-        <item name="boxStrokeColor">@color/outline_soft</item>
-        <item name="boxStrokeWidth">1dp</item>
-        <item name="boxStrokeWidthFocused">1dp</item>
+    <style name="LeafTextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
 
+        <!-- Filled look (keep your nice background) -->
+        <item name="boxBackgroundColor">@color/leaf_input_box_bg</item>
+
+        <!-- Full outline border (NOT underline) -->
+        <item name="boxStrokeColor">@color/leaf_input_stroke</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">1.5dp</item>
+
+        <!-- Rounded corners -->
         <item name="boxCornerRadiusTopStart">@dimen/radius_16</item>
         <item name="boxCornerRadiusTopEnd">@dimen/radius_16</item>
         <item name="boxCornerRadiusBottomStart">@dimen/radius_16</item>
         <item name="boxCornerRadiusBottomEnd">@dimen/radius_16</item>
 
-        <item name="hintTextColor">@color/text_hint</item>
-        <item name="android:textColorHint">@color/text_hint</item>
+        <!-- Fix "glued" label/text spacing -->
+        <item name="boxCollapsedPaddingTop">14dp</item>
+
+        <!-- Label colors (idle vs focused) -->
+        <item name="hintTextColor">@color/leaf_input_label</item>
+        <item name="android:textColorHint">@color/leaf_input_label</item>
+
+        <!-- End icon (eye) tint + ripple (no ugly defaults) -->
+        <item name="endIconTint">@color/leaf_input_icon_tint</item>
 
         <item name="hintTextAppearance">@style/TextAppearance.LeafBloom.BodySmall</item>
         <item name="helperTextTextAppearance">@style/TextAppearance.LeafBloom.BodySmall</item>
         <item name="errorTextAppearance">@style/TextAppearance.LeafBloom.BodySmall</item>
     </style>
 
-    <style name="LeafTextInputEditText" parent="Widget.Material3.TextInputEditText.FilledBox">
+    <style name="LeafTextInputEditText" parent="Widget.Material3.TextInputEditText.OutlinedBox">
         <item name="android:fontFamily">@font/poppins</item>
         <item name="fontFamily">@font/poppins</item>
+
+        <item name="android:background">@null</item>
+
+        <!-- REAL spacing: fixes text being glued to the label -->
+        <item name="android:paddingStart">@dimen/space_16</item>
+        <item name="android:paddingEnd">@dimen/space_16</item>
+        <item name="android:paddingTop">@dimen/space_20</item>
+        <item name="android:paddingBottom">@dimen/space_12</item>
+
         <item name="android:textColor">@color/text_primary</item>
-        <item name="android:textColorHint">@color/text_hint</item>
     </style>
 
 

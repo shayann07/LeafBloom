@@ -36,6 +36,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="@dimen/safe_margin_h" />
 
+    <!-- WRAPPED LAYOUT -->
     <LinearLayout
         android:id="@+id/wrappedContainer"
         android:layout_width="0dp"
@@ -45,6 +46,7 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toTopOf="@id/guideline_top">
+
 
         <!-- Start Coding Here -->
 

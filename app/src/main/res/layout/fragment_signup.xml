@@ -82,7 +82,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:includeFontPadding="false"
-                    android:text="@string/welcome_back"
+                    android:text="@string/welcome"
                     android:textAlignment="viewStart"
                     android:textAppearance="?attr/textAppearanceHeadlineLarge" />
 
@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/space_4"
                     android:includeFontPadding="false"
-                    android:text="@string/login_subtitle"
+                    android:text="@string/signup_subtitle"
                     android:textAlignment="viewStart"
                     android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:textColor="?attr/colorOnSurfaceVariant" />
@@ -118,6 +118,26 @@
                         android:minHeight="@dimen/height_input" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Email -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilEmail"
+                    style="@style/LeafTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_16"
+                    android:hint="@string/email">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEmail"
+                        style="@style/LeafTextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="username"
+                        android:imeOptions="actionNext"
+                        android:inputType="textEmailAddress"
+                        android:minHeight="@dimen/height_input" />
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <!-- Password -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilPassword"
@@ -139,24 +159,33 @@
                         android:minHeight="@dimen/height_input" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Forgot password -->
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tvForgotPassword"
-                    android:layout_width="wrap_content"
+                <!-- Confirm Password -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilConfirmPassword"
+                    style="@style/LeafTextInputLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="@dimen/space_8"
-                    android:includeFontPadding="false"
-                    android:text="@string/forgot_password"
-                    android:textAppearance="?attr/textAppearanceLabelMedium"
-                    android:textColor="?attr/colorPrimary" />
+                    android:layout_marginTop="@dimen/space_16"
+                    android:hint="@string/confirm_password"
+                    app:endIconMode="password_toggle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etConfirmPassword"
+                        style="@style/LeafTextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="password"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword"
+                        android:minHeight="@dimen/height_input" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnLogin"
+                    android:id="@+id/btnSignup"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/height_button"
                     android:layout_marginTop="@dimen/space_28"
-                    android:text="@string/login"
+                    android:text="@string/sign_up"
                     android:textAllCaps="false" />
 
                 <com.google.android.material.button.MaterialButton
@@ -185,17 +214,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:includeFontPadding="false"
-                        android:text="@string/dont_have_account"
+                        android:text="@string/already_have_account"
                         android:textAppearance="?attr/textAppearanceBodyLarge"
                         android:textColor="?attr/colorOnSurfaceVariant" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/tvSignUp"
+                        android:id="@+id/tvLogin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/space_6"
                         android:includeFontPadding="false"
-                        android:text="@string/sign_up"
+                        android:text="@string/log_in"
                         android:textAppearance="?attr/textAppearanceLabelLarge"
                         android:textColor="?attr/colorPrimary" />
 

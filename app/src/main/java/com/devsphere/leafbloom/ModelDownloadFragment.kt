@@ -5,9 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -15,7 +13,7 @@ import com.devsphere.leafbloom.databinding.FragmentModelDownloadBinding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class ModelDownloadFragment : Fragment() {
+class ModelDownloadFragment : BaseFragment() {
 
     private var _binding: FragmentModelDownloadBinding? = null
     private val binding get() = _binding!!
@@ -40,26 +38,11 @@ class ModelDownloadFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupInsets()
         setupTexts()
         startEnterAnimation()
 
         // *** Temporary testing flow ***
         startModelDownloadFlowForTesting()
-    }
-
-    private fun setupInsets() {
-        // Push wrapped container away from status & nav bars for an edge-to-edge layout
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
-            val sysBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            binding.wrappedContainer.setPadding(
-                binding.wrappedContainer.paddingLeft,
-                sysBars.top,
-                binding.wrappedContainer.paddingRight,
-                sysBars.bottom
-            )
-            insets
-        }
     }
 
     private fun setupTexts() {
@@ -79,23 +62,13 @@ class ModelDownloadFragment : Fragment() {
         v.scaleX = 0.9f
         v.scaleY = 0.9f
 
-        v.animate()
-            .alpha(1f)
-            .scaleX(1.02f)
-            .scaleY(1.02f)
-            .setDuration(650L)
-            .setInterpolator(DecelerateInterpolator())
-            .withEndAction {
+        v.animate().alpha(1f).scaleX(1.02f).scaleY(1.02f).setDuration(650L)
+            .setInterpolator(DecelerateInterpolator()).withEndAction {
                 // Tiny settle-back for a premium feel
-                v.animate()
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .setDuration(180L)
-                    .start()
+                v.animate().scaleX(1f).scaleY(1f).setDuration(180L).start()
 
                 binding.leafBloom.startLoop()   // start custom loop with its own entrance fade
-            }
-            .start()
+            }.start()
     }
 
     /**
@@ -119,13 +92,17 @@ class ModelDownloadFragment : Fragment() {
         // Let the custom view play its own premium exit animation,
         // then navigate once it's fully faded out.
         binding.leafBloom.playCompletionAndStop {
+//            navigateToNextScreen()
+        }
+
+        binding.leafBloom.setOnClickListener {
             navigateToNextScreen()
         }
     }
 
     private fun navigateToNextScreen() {
         // TODO: replace with your real nav target
-        findNavController().navigateUp()
+        findNavController().navigate(R.id.loginFragment)
     }
 
     override fun onDestroyView() {

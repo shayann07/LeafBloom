@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/space_10">
+
+    <!-- Plant thumbnail -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/historyThumb"
+        android:layout_width="@dimen/space_56"
+        android:layout_height="@dimen/space_56"
+        app:cardBackgroundColor="@color/surface_variant"
+        app:cardCornerRadius="@dimen/radius_12"
+        app:cardElevation="@dimen/space_0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivHistoryThumb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:padding="@dimen/space_6"
+            android:scaleType="centerInside"
+            android:src="@drawable/home_bar2" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Plant name -->
+    <TextView
+        android:id="@+id/tvHistoryPlant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_12"
+        android:layout_marginEnd="@dimen/space_8"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/brand_green_primary"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/tvHistoryDate"
+        app:layout_constraintStart_toEndOf="@id/historyThumb"
+        app:layout_constraintTop_toTopOf="@id/historyThumb"
+        tools:text="Anthurium" />
+
+    <!-- Status text -->
+    <TextView
+        android:id="@+id/tvHistoryStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_12"
+        android:layout_marginTop="@dimen/space_2"
+        android:text="@string/healthy"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/historyThumb"
+        app:layout_constraintTop_toBottomOf="@id/tvHistoryPlant" />
+
+    <!-- Status indicators row -->
+    <LinearLayout
+        android:id="@+id/statusIndicators"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_12"
+        android:layout_marginTop="@dimen/space_4"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toEndOf="@id/historyThumb"
+        app:layout_constraintTop_toBottomOf="@id/tvHistoryStatus">
+
+        <ImageView
+            android:layout_width="@dimen/size_icon_18"
+            android:layout_height="@dimen/size_icon_18"
+            android:contentDescription="@null"
+            android:src="@drawable/drop_icon" />
+
+        <ImageView
+            android:layout_width="@dimen/size_icon_18"
+            android:layout_height="@dimen/size_icon_18"
+            android:layout_marginStart="@dimen/space_4"
+            android:contentDescription="@null"
+            android:src="@drawable/sun_icon" />
+    </LinearLayout>
+
+    <!-- Date -->
+    <TextView
+        android:id="@+id/tvHistoryDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/space_8"
+        android:textColor="@color/text_hint"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toStartOf="@id/ivHistoryArrow"
+        app:layout_constraintTop_toTopOf="@id/tvHistoryPlant"
+        tools:text="25 November 2026, 12:00 am" />
+
+    <!-- Arrow icon -->
+    <ImageView
+        android:id="@+id/ivHistoryArrow"
+        android:layout_width="@dimen/size_icon_18"
+        android:layout_height="@dimen/size_icon_18"
+        android:contentDescription="@null"
+        android:src="@drawable/arrow_right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/text_secondary" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,14 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.devsphere.leafbloom.databinding.FragmentWalkthroughBinding
 
-class WalkthroughFragment : Fragment() {
+class WalkthroughFragment : BaseFragment() {
 
     private var _binding: FragmentWalkthroughBinding? = null
     private val binding get() = _binding!!
@@ -29,23 +26,12 @@ class WalkthroughFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        applyInsets()
+        applySystemBarInsets(binding.root)
         setupViewPager()
 
         // Skip → same destination as final "Continue"
         binding.btnSkip.setOnClickListener {
             findNavController().navigate(R.id.modelDownloadFragment)
-        }
-    }
-
-    private fun applyInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val sysBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(
-                v.paddingLeft, sysBars.top, v.paddingRight, v.paddingBottom
-            )
-            insets
         }
     }
 

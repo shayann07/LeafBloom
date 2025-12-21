@@ -4,20 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.devsphere.leafbloom.databinding.FragmentLoginBinding
+import com.devsphere.leafbloom.databinding.FragmentSignupBinding
 
-class LoginFragment : BaseFragment() {
-    private var _binding: FragmentLoginBinding? = null
+class SignupFragment : BaseFragment() {
+
+    private var _binding: FragmentSignupBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        _binding = FragmentSignupBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -25,7 +24,7 @@ class LoginFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            btnLogin.setOnClickListener {
+            btnSignup.setOnClickListener {
                 // Handle login button click
                 findNavController().navigate(R.id.homeFragment)
             }
@@ -35,9 +34,9 @@ class LoginFragment : BaseFragment() {
                 findNavController().navigate(R.id.homeFragment)
             }
 
-            tvSignUp.setOnClickListener {
+            tvLogin.setOnClickListener {
                 // Handle continue with Google button click
-                findNavController().navigate(R.id.signupFragment)
+                findNavController().navigate(R.id.loginFragment)
             }
         }
     }
