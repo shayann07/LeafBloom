@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners
+        android:topLeftRadius="24dp"
+        android:topRightRadius="24dp"
+        android:bottomLeftRadius="24dp"
+        android:bottomRightRadius="24dp" />
+    <solid android:color="#23408A10" /> <!-- Semi-transparent black 30% approx -->
+    <stroke
+        android:width="0.75dp"
+        android:color="#408A10" /> <!-- White stroke with transparency -->
+</shape>

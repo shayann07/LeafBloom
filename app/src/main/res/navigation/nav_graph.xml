@@ -35,4 +35,10 @@
         android:label="Home Fragment"
         tools:layout="@layout/fragment_home" />
 
+    <fragment
+        android:id="@+id/scannerFragment"
+        android:name="com.devsphere.leafbloom.ScannerFragment"
+        android:label="Scanner Fragment"
+        tools:layout="@layout/fragment_scanner" />
+
 </navigation>

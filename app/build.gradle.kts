@@ -31,8 +31,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+        }
     }
     buildFeatures {
         viewBinding = true
@@ -54,4 +56,19 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.dotsindicator)
     implementation(libs.androidx.vectordrawable.animated)
+
+    // kotlin stable version = 2.0.21
+    // CameraX core library using the camera2 implementation
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.camera.extensions)
+
+    // Guava
+    implementation(libs.guava)
+
+    // Location
+    implementation(libs.play.services.location)
+    implementation(libs.glide)
 }

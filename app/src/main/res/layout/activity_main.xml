@@ -2,19 +2,88 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground"
-    android:fitsSystemWindows="false"
-    tools:context=".MainActivity">
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:defaultNavHost="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/nav_graph" />
+
+    <!-- Bottom area (background + nav + indicator + FAB) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_nav_container"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/bottom_nav_height"
+        android:background="@android:color/transparent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- Glow behind FAB (Custom View for pure blur) -->
+        <com.devsphere.leafbloom.GlowView
+            android:id="@+id/fab_glow"
+            android:layout_width="@dimen/fab_glow_size"
+            android:layout_height="@dimen/fab_glow_size"
+            app:layout_constraintStart_toStartOf="@id/fab_scan"
+            app:layout_constraintEnd_toEndOf="@id/fab_scan"
+            app:layout_constraintTop_toTopOf="@id/fab_scan"
+            app:layout_constraintBottom_toBottomOf="@id/fab_scan" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_nav"
+            style="@style/Widget.LeafBloom.BottomNav"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bottom_nav"
+            android:backgroundTint="@null"
+            android:elevation="0dp"
+            app:backgroundTint="@null"
+            app:itemBackground="@null"
+            app:itemRippleColor="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:menu="@menu/menu_bottom_nav" />
+
+        <!-- Green dot indicator (YOUR drawable) -->
+        <ImageView
+            android:id="@+id/bottom_nav_indicator"
+            android:layout_width="@dimen/bottom_nav_indicator_size"
+            android:layout_height="@dimen/bottom_nav_indicator_size"
+            android:layout_marginBottom="@dimen/bottom_nav_indicator_bottom_margin"
+            app:layout_constraintBottom_toBottomOf="@id/bottom_nav"
+            app:layout_constraintStart_toStartOf="@id/bottom_nav"
+            app:srcCompat="@drawable/bottom_nav_indicator_icon"
+            tools:ignore="ContentDescription" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_scan"
+            style="@style/Widget.LeafBloom.FabScan"
+            android:layout_width="@dimen/size_fab"
+            android:layout_height="@dimen/size_fab"
+            android:layout_marginBottom="@dimen/bottom_nav_fab_bottom_margin"
+            android:contentDescription="@string/nav_scan"
+            android:src="@drawable/fab_scan_icon"
+            app:layout_constraintBottom_toBottomOf="@id/bottom_nav"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="@android:color/white"
+            app:useCompatPadding="true" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

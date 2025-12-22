@@ -155,7 +155,7 @@
                 android:gravity="start"
                 android:orientation="vertical"
                 android:paddingTop="76dp"
-                android:paddingBottom="@dimen/safe_margin_v">
+                android:paddingBottom="120dp">
 
                 <!-- Start Coding Here -->
 
@@ -165,7 +165,6 @@
                     style="@style/LeafBloomCard.Large"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:layout_marginTop="@dimen/space_100"
                     android:clickable="true"
                     android:focusable="true">

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/home_icon"
+        android:title="@string/nav_home" />
+
+    <item
+        android:id="@+id/nav_team"
+        android:icon="@drawable/team_icon"
+        android:title="@string/nav_team" />
+
+    <!-- Spacer slot (center gap for the FAB) -->
+    <item
+        android:id="@+id/nav_center_spacer"
+        android:enabled="false"
+        android:checkable="false"
+        android:icon="@drawable/ic_nav_spacer"
+        android:title="@string/nav_scan" />
+
+    <item
+        android:id="@+id/nav_help"
+        android:icon="@drawable/tree_icon"
+        android:title="@string/nav_help" />
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/profile_icon"
+        android:title="@string/nav_profile" />
+
+</menu>

@@ -127,5 +127,9 @@
     <string name="walk3_title">Private &amp; secure</string>
     <string name="walk3_subtitle">Scans run on your device first. When online, data syncs securely to improve accuracy and protect your results.</string>
 
-
+    <string name="nav_home">Home</string>
+    <string name="nav_team">Team</string>
+    <string name="nav_scan">Scan</string>
+    <string name="nav_help">Help</string>
+    <string name="nav_profile">Profile</string>
 </resources>

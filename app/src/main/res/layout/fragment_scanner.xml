@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Captured Image Preview (Hidden by default) -->
+    <ImageView
+        android:id="@+id/imgCapturedPreview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <!-- Back Button -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/btnBack"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="48dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="13dp"
+            android:src="@drawable/back_icon"
+            app:tint="@color/text_primary" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Top Pill Instruction (Camera Mode) -->
+    <TextView
+        android:id="@+id/txtInstruction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/scanner_pill_bg"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Point Your Camera At Plant"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnBack" />
+
+    <!-- Scanner Frame Container (Camera Mode) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/scannerFrameContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clipChildren="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4">
+
+        <!-- Scanning Line (Animated) - constrained to PARENT (container) -->
+        <ImageView
+            android:id="@+id/scannerLine"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:alpha="0.4"
+            android:scaleType="fitXY"
+            android:src="@drawable/scanner_line"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Scanner Frame Image -->
+        <ImageView
+            android:id="@+id/scannerFrame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/scanner_frame" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ========= CAMERA CONTROLS (Bottom) ========= -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutCameraControls"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/bg_scanner_bottom_bar"
+        android:paddingHorizontal="@dimen/space_20"
+        android:paddingVertical="@dimen/space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- Capture Trigger (Center) -->
+        <ImageButton
+            android:id="@+id/btnCapture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/scan_icon"
+            android:contentDescription="Capture"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Gallery Thumbnail (Left) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btnGallery"
+            style="@style/LeafBloomCard.NoStroke"
+            android:layout_width="@dimen/space_56"
+            android:layout_height="@dimen/space_56"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imgGalleryThumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/profile_header" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Flip Camera (Right) -->
+        <ImageView
+            android:id="@+id/btnFlip"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:background="@drawable/rotate_camera_icon"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@android:color/white" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ========= PREVIEW ACTIONS (Bottom - Hidden by default) ========= -->
+    <LinearLayout
+        android:id="@+id/layoutPreviewActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="gone">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDiagnose"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="@dimen/space_12"
+            android:text="Diagnose Now"
+            android:textAllCaps="false" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRetake"
+            style="@style/LeafSemiTransparentButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Retake Picture" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupCameraUI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="scannerFrameContainer, txtInstruction, layoutCameraControls" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
