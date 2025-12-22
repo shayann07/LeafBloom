@@ -71,4 +71,7 @@ dependencies {
     // Location
     implementation(libs.play.services.location)
     implementation(libs.glide)
+
+    implementation(libs.pytorch.android.lite)
+    implementation(libs.pytorch.android.torchvision.lite)
 }

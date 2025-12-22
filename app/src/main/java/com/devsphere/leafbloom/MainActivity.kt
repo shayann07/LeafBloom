@@ -49,8 +49,7 @@ class MainActivity : AppCompatActivity() {
         fun moveIndicator(itemId: Int) {
             val itemView = bottomNav.findViewById<View>(itemId) ?: return
             indicator.post {
-                indicator.translationX =
-                    itemView.left + itemView.width / 2f - indicator.width / 2f
+                indicator.translationX = itemView.left + itemView.width / 2f - indicator.width / 2f
             }
         }
 
@@ -63,10 +62,11 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             moveIndicator(destination.id)
-            
-            val isScanner = destination.id == R.id.scannerFragment
-            val visibility = if (isScanner) View.GONE else View.VISIBLE
-            
+
+            val isFullscreen =
+                destination.id == R.id.scannerFragment || destination.id == R.id.diagnoseResultFragment
+            val visibility = if (isFullscreen) View.GONE else View.VISIBLE
+
             bottomNav.visibility = visibility
             fab.visibility = visibility
             indicator.visibility = visibility
@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
         // FAB → Scan destination (use nav_graph)
         fab.setOnClickListener {
-             navController.navigate(R.id.scannerFragment)
+            navController.navigate(R.id.scannerFragment)
         }
     }
 }

@@ -1,80 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/LeafBloomCard.Large"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="24dp"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="24dp"
-    app:cardElevation="8dp">
+    android:layout_margin="@dimen/safe_margin_v"
+    app:cardElevation="@dimen/space_8">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:padding="24dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/space_24">
 
         <ImageView
             android:id="@+id/icon"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/scan_icon"
+            android:layout_width="@dimen/space_64"
+            android:layout_height="@dimen/space_64"
+            android:layout_marginBottom="@dimen/space_16"
+            android:src="@drawable/app_logo"
             app:tint="@color/brand_green_primary" />
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:fontFamily="@font/poppins_bold"
-            android:text="Permission Required"
-            android:textColor="@color/text_primary"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/space_8"
+            android:text="@string/permissions_required"
+            android:textAppearance="?attr/textAppearanceTitleLarge" />
 
         <TextView
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:fontFamily="@font/poppins"
+            android:layout_marginBottom="@dimen/space_24"
             android:gravity="center"
-            android:text="This app needs access to your camera to scan plants."
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp" />
+            android:text="@string/permissions_required_dialog_desc"
+            android:textAppearance="?attr/textAppearanceBodyMedium" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancel"
+                style="@style/LeafBloomButtonSurfaceVariant.Compact"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="@dimen/space_8"
                 android:layout_weight="1"
-                android:backgroundTint="@color/surface_variant"
-                android:fontFamily="@font/poppins_semibold"
-                android:stateListAnimator="@null"
-                android:text="Not Now"
-                android:textColor="@color/text_secondary" />
+                android:text="@string/not_now" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAllow"
+                style="@style/LeafBloomButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="@dimen/space_8"
                 android:layout_weight="1"
-                android:backgroundTint="@color/brand_green_primary"
-                android:fontFamily="@font/poppins_semibold"
-                android:stateListAnimator="@null"
-                android:text="Continue"
-                android:textColor="@color/white" />
+                android:text="@string/continue_text" />
         </LinearLayout>
-
     </LinearLayout>
-
 </com.google.android.material.card.MaterialCardView>

@@ -39,6 +39,16 @@
         android:id="@+id/scannerFragment"
         android:name="com.devsphere.leafbloom.ScannerFragment"
         android:label="Scanner Fragment"
-        tools:layout="@layout/fragment_scanner" />
+        tools:layout="@layout/fragment_scanner" >
+        <action
+            android:id="@+id/action_scannerFragment_to_diagnoseResultFragment"
+            app:destination="@id/diagnoseResultFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/diagnoseResultFragment"
+        android:name="com.devsphere.leafbloom.DiagnoseResultFragment"
+        android:label="@string/diagnose_result"
+        tools:layout="@layout/fragment_diagnose_result" />
 
 </navigation>

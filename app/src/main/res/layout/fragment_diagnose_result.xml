@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground">
+
+    <!-- Horizontal Guidelines -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/safe_margin_v" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="@dimen/safe_margin_v" />
+
+    <!-- Vertical Guidelines -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/safe_margin_h" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/safe_margin_h" />
+
+    <!-- WRAPPED LAYOUT -->
+    <LinearLayout
+        android:id="@+id/wrappedContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toTopOf="@id/guideline_top">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/contentRoot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Back Button (same as Scanner) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnBack"
+                android:layout_width="@dimen/space_40"
+                android:layout_height="@dimen/space_40"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/radius_20"
+                app:cardElevation="@dimen/space_0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/space_12"
+                    android:src="@drawable/back_icon"
+                    app:tint="@color/text_primary" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Title -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/diagnose_result_title"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                app:layout_constraintBottom_toBottomOf="@id/btnBack"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btnBack" />
+
+            <!-- Bottom Actions (fixed) -->
+            <LinearLayout
+                android:id="@+id/actionBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_12"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/space_12"
+                android:paddingBottom="@dimen/space_8"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/actionAddNote"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/space_8">
+
+                    <ImageView
+                        android:layout_width="@dimen/size_icon_24"
+                        android:layout_height="@dimen/size_icon_24"
+                        android:contentDescription="@null"
+                        android:src="@drawable/add_note_icon"
+                        app:tint="@color/text_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_8"
+                        android:text="@string/add_note"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textColor="?attr/colorOnSurface" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/actionExport"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/space_8">
+
+                    <ImageView
+                        android:layout_width="@dimen/size_icon_24"
+                        android:layout_height="@dimen/size_icon_24"
+                        android:contentDescription="@null"
+                        android:src="@drawable/export_icon"
+                        app:tint="@color/text_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_8"
+                        android:text="@string/export"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textColor="?attr/colorOnSurface" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/actionSave"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/space_8">
+
+                    <ImageView
+                        android:layout_width="@dimen/size_icon_24"
+                        android:layout_height="@dimen/size_icon_24"
+                        android:contentDescription="@null"
+                        android:src="@drawable/save_icon"
+                        app:tint="@color/text_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_8"
+                        android:text="@string/save"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textColor="?attr/colorOnSurface" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Scrollable Content -->
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollContent"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:fillViewport="true"
+                android:scrollbars="none"
+                app:layout_constraintBottom_toTopOf="@id/actionBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnBack">
+
+                <LinearLayout
+                    android:id="@+id/contentContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="@dimen/space_20"
+                    android:paddingBottom="@dimen/space_16">
+
+                    <!-- Gauge Grid: Row 1 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <!-- Early Blight -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cardEarlyBlight"
+                            style="@style/LeafBloomCard.Medium"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/space_160"
+                            android:layout_marginEnd="@dimen/space_8"
+                            android:layout_weight="1">
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="@dimen/card_padding">
+
+                                <com.google.android.material.progressindicator.CircularProgressIndicator
+                                    android:id="@+id/progressEarlyBlight"
+                                    style="@style/LeafBloomGauge"
+                                    android:layout_gravity="center"
+                                    android:indeterminate="false"
+                                    android:max="100"
+                                    android:progress="75"
+                                    app:indicatorColor="@color/accent_disease_purple" />
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tvEarlyBlightPercent"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/percent_zero"
+                                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                                        android:textColor="@color/text_hint" />
+
+                                    <TextView
+                                        android:id="@+id/tvEarlyBlightLabel"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/early_blight"
+                                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                                        android:textColor="@color/accent_disease_purple" />
+                                </LinearLayout>
+
+                            </FrameLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Healthy -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cardHealthy"
+                            style="@style/LeafBloomCard.Medium"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/space_160"
+                            android:layout_marginStart="@dimen/space_8"
+                            android:layout_weight="1">
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="@dimen/card_padding">
+
+                                <com.google.android.material.progressindicator.CircularProgressIndicator
+                                    android:id="@+id/progressHealthy"
+                                    style="@style/LeafBloomGauge"
+                                    android:layout_gravity="center"
+                                    android:indeterminate="false"
+                                    android:max="100"
+                                    android:progress="75"
+                                    app:indicatorColor="@color/accent_success_green" />
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tvHealthyPercent"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/percent_zero"
+                                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                                        android:textColor="@color/text_hint" />
+
+                                    <TextView
+                                        android:id="@+id/tvHealthyLabel"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/healthy"
+                                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                                        android:textColor="@color/accent_success_green" />
+                                </LinearLayout>
+
+                            </FrameLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
+
+                    <!-- Gauge Grid: Row 2 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_16"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <!-- Late Blight -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cardLateBlight"
+                            style="@style/LeafBloomCard.Medium"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/space_160"
+                            android:layout_marginEnd="@dimen/space_8"
+                            android:layout_weight="1">
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="@dimen/card_padding">
+
+                                <com.google.android.material.progressindicator.CircularProgressIndicator
+                                    android:id="@+id/progressLateBlight"
+                                    style="@style/LeafBloomGauge"
+                                    android:layout_gravity="center"
+                                    android:indeterminate="false"
+                                    android:max="100"
+                                    android:progress="75"
+                                    app:indicatorColor="@color/accent_fertilizer_coral" />
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tvLateBlightPercent"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/percent_zero"
+                                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                                        android:textColor="@color/text_hint" />
+
+                                    <TextView
+                                        android:id="@+id/tvLateBlightLabel"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/late_blight"
+                                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                                        android:textColor="@color/accent_fertilizer_coral" />
+                                </LinearLayout>
+
+                            </FrameLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Septoria -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cardSeptoria"
+                            style="@style/LeafBloomCard.Medium"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/space_160"
+                            android:layout_marginStart="@dimen/space_8"
+                            android:layout_weight="1">
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="@dimen/card_padding">
+
+                                <com.google.android.material.progressindicator.CircularProgressIndicator
+                                    android:id="@+id/progressSeptoria"
+                                    style="@style/LeafBloomGauge"
+                                    android:layout_gravity="center"
+                                    android:indeterminate="false"
+                                    android:max="100"
+                                    android:progress="75"
+                                    app:indicatorColor="@color/accent_humidity_orange" />
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tvSeptoriaPercent"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/percent_zero"
+                                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                                        android:textColor="@color/text_hint" />
+
+                                    <TextView
+                                        android:id="@+id/tvSeptoriaLabel"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/septoria"
+                                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                                        android:textColor="@color/accent_humidity_orange" />
+                                </LinearLayout>
+
+                            </FrameLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
+
+                    <!-- Tips -->
+                    <TextView
+                        android:id="@+id/tvTipsTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_24"
+                        android:text="@string/tips_and_tricks"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardTips"
+                        style="@style/LeafBloomCard.Large"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_12">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="@dimen/card_padding">
+
+                            <TextView
+                                android:id="@+id/tvTip1Title"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tip_remove_infected_leaves_title"
+                                android:textAppearance="?attr/textAppearanceTitleSmall"
+                                android:textColor="?attr/colorOnSurface" />
+
+                            <TextView
+                                android:id="@+id/tvTip1Desc"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/space_4"
+                                android:text="@string/tip_remove_infected_leaves_desc"
+                                android:textAppearance="?attr/textAppearanceLabelSmall"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+
+                            <Space
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/space_16" />
+
+                            <TextView
+                                android:id="@+id/tvTip2Title"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tip_water_at_base_title"
+                                android:textAppearance="?attr/textAppearanceTitleSmall"
+                                android:textColor="?attr/colorOnSurface" />
+
+                            <TextView
+                                android:id="@+id/tvTip2Desc"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/space_4"
+                                android:text="@string/tip_water_at_base_desc"
+                                android:textAppearance="?attr/textAppearanceLabelSmall"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

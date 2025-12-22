@@ -132,4 +132,39 @@
     <string name="nav_scan">Scan</string>
     <string name="nav_help">Help</string>
     <string name="nav_profile">Profile</string>
+
+    <!-- Scan / Camera -->
+    <string name="capture">Capture</string>
+
+    <!-- Permissions / Rationale -->
+    <string name="permissions_required">Permissions Required</string>
+    <string name="permissions_required_dialog_desc">We need this permission to continue.</string>
+    <string name="permissions_required_scanner_desc">LeafBloom needs Camera access to scan, and Storage access to save/load images.</string>
+    <string name="not_now">Not Now</string>
+
+    <!-- Toasts / Messages -->
+    <string name="camera_permission_required_to_scan">Camera permission required to scan</string>
+    <string name="storage_permission_needed_to_save_photo">Storage permission needed to save photo</string>
+    <string name="capture_failed">Capture failed: %1$s</string>
+    <string name="proceeding_to_diagnosis">Proceeding to diagnosis…</string>
+    <string name="no_image_to_diagnose">No image to diagnose</string>
+
+    <!-- Home permissions -->
+    <string name="location_permission_denied">Location permission denied</string>
+    <string name="location_services_required">Location services are required for local weather</string>
+    <string name="enable_location_title">Enable Location</string>
+    <string name="enable_location_desc">We use location to show local weather data for your plants.</string>
+    <string name="enable_notifications_title">Enable Notifications</string>
+    <string name="enable_notifications_desc">Receive timely reminders to water and care for your plants.</string>
+
+    <string name="diagnose_result_title">Diagnose Result</string>
+
+    <string name="percent_zero">0.00%</string>
+
+    <string name="tip_remove_infected_leaves_title">Remove Infected Leaves</string>
+    <string name="tip_remove_infected_leaves_desc">Cut off any spotted or damaged leaves immediately — it stops the spread fast.</string>
+
+    <string name="tip_water_at_base_title">Water at the Base</string>
+    <string name="tip_water_at_base_desc">Only water at the soil level. Wet leaves make the infection worse.</string>
+
 </resources>

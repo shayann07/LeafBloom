@@ -35,6 +35,7 @@ class HomeFragment : BaseFragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     // Location Permission Launcher
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private val requestLocationLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val isGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true ||
@@ -42,20 +43,21 @@ class HomeFragment : BaseFragment() {
             if (isGranted) {
                 checkLocationSettings()
             } else {
-                Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show()
                 // Proceed to ask for notifications even if location denied
                 checkNotificationPermission()
             }
         }
 
     // Location Settings Resolution Launcher (GPS enable dialog)
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private val locationSettingsLauncher = registerForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
         if (result.resultCode == android.app.Activity.RESULT_OK) {
             fetchLocation()
         } else {
-            Toast.makeText(requireContext(), "Location services are required for local weather", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.location_services_required), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -135,8 +137,8 @@ class HomeFragment : BaseFragment() {
             checkNotificationPermission()
         } else if (PermissionManager.shouldShowRationale(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
             RationaleDialog(
-                titleStr = "Enable Location",
-                descriptionStr = "We use location to show local weather data for your plants.",
+                titleStr = getString(R.string.enable_location_title),
+                descriptionStr = getString(R.string.enable_location_desc),
                 iconResId = R.drawable.location_icon,
                 onPositive = {
                     requestLocationLauncher.launch(
@@ -152,6 +154,7 @@ class HomeFragment : BaseFragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun checkLocationSettings() {
         val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000).build()
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
@@ -231,8 +234,8 @@ class HomeFragment : BaseFragment() {
         if (!PermissionManager.hasPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS)) {
              if (PermissionManager.shouldShowRationale(requireActivity(), Manifest.permission.POST_NOTIFICATIONS)) {
                  RationaleDialog(
-                    titleStr = "Enable Notifications",
-                    descriptionStr = "Receive timely reminders to water and care for your plants.",
+                    titleStr = getString(R.string.enable_notifications_title),
+                    descriptionStr = getString(R.string.enable_notifications_desc),
                     iconResId = R.drawable.tree_icon,
                     onPositive = { requestNotificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) },
                     onNegative = {}

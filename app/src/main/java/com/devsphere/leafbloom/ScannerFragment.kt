@@ -52,7 +52,7 @@ class ScannerFragment : Fragment() {
             if (cameraGranted) {
                 startCamera()
             } else {
-                Toast.makeText(requireContext(), "Camera permission required to scan", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.camera_permission_required_to_scan), Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
             }
 
@@ -130,8 +130,8 @@ class ScannerFragment : Fragment() {
 
     private fun showPermissionRationale(permissionsToRequest: Array<String>) {
         RationaleDialog(
-            titleStr = "Permissions Required",
-            descriptionStr = "LeafBloom needs Camera access to scan, and Storage access to save/load images.",
+            titleStr = getString(R.string.permissions_required),
+            descriptionStr = getString(R.string.permissions_required_scanner_desc),
             iconResId = R.drawable.scan_icon, 
             onPositive = { requestPermissionLauncher.launch(permissionsToRequest) },
             onNegative = { findNavController().popBackStack() }
@@ -161,10 +161,9 @@ class ScannerFragment : Fragment() {
 
         binding.btnDiagnose.setOnClickListener {
             if (currentImageUri != null) {
-                Toast.makeText(requireContext(), "Proceeding to diagnosis...", Toast.LENGTH_SHORT).show()
-                // TODO: Navigate to Analysis fragment
+                findNavController().navigate(R.id.action_scannerFragment_to_diagnoseResultFragment)
             } else {
-                Toast.makeText(requireContext(), "No image to diagnose", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.no_image_to_diagnose), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -249,7 +248,7 @@ class ScannerFragment : Fragment() {
         // If critical permission missing, do not proceed.
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P && 
             ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(requireContext(), "Storage permission needed to save photo", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.storage_permission_needed_to_save_photo), Toast.LENGTH_SHORT).show()
             // Could re-request here, but simple toast is safer loop wise
             return
         }
@@ -264,7 +263,11 @@ class ScannerFragment : Fragment() {
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
-                    Toast.makeText(requireContext(), "Capture failed: ${exc.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.capture_failed, exc.message ?: ""),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
@@ -294,10 +297,13 @@ class ScannerFragment : Fragment() {
     private fun showPreviewUI(uri: Uri) {
         currentImageUri = uri
         stopScanningAnimation()
-        
-        binding.groupCameraUI.visibility = View.GONE
-        binding.previewView.visibility = View.GONE 
-        
+
+        binding.scannerFrameContainer.visibility = View.GONE
+        binding.txtInstruction.visibility = View.GONE
+        binding.layoutCameraControls.visibility = View.GONE
+
+        binding.previewView.visibility = View.GONE
+
         binding.imgCapturedPreview.visibility = View.VISIBLE
         binding.layoutPreviewActions.visibility = View.VISIBLE
 
@@ -308,10 +314,13 @@ class ScannerFragment : Fragment() {
 
     private fun showCameraUI() {
         currentImageUri = null
-        
-        binding.groupCameraUI.visibility = View.VISIBLE
+
+        binding.scannerFrameContainer.visibility = View.VISIBLE
+        binding.txtInstruction.visibility = View.VISIBLE
+        binding.layoutCameraControls.visibility = View.VISIBLE
+
         binding.previewView.visibility = View.VISIBLE
-        
+
         binding.imgCapturedPreview.visibility = View.GONE
         binding.layoutPreviewActions.visibility = View.GONE
 
