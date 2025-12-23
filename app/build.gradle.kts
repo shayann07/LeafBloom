@@ -39,6 +39,12 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 dependencies {
@@ -74,4 +80,5 @@ dependencies {
 
     implementation(libs.pytorch.android.lite)
     implementation(libs.pytorch.android.torchvision.lite)
+    implementation(libs.androidx.exifinterface)
 }

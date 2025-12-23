@@ -42,3 +42,35 @@ google-services.json
 # OS Generated
 .DS_Store
 Thumbs.db
+
+# --------------------------
+# PYTHON / ML ADDITIONS
+# --------------------------
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# Virtual Environments
+venv/
+env/
+ml_env/
+.env
+
+# Large Model Weights (Training checkpoints)
+# We exclude these to save space, but keep the deployed .ptl file
+*.pth
+*.pt
+*.h5
+*.ckpt
+*.onnx
+
+# Datasets (Images)
+ml/Tomato Leaf Disease*/
+ml/dataset/
+data/
+
+# IDE specific for Python
+.vscode/

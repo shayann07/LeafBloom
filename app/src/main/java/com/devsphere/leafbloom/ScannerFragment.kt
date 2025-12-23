@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -26,11 +27,18 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.devsphere.leafbloom.databinding.FragmentScannerBinding
 import com.devsphere.leafbloom.ui.dialog.RationaleDialog
+import com.devsphere.leafbloom.util.DiseaseClassifier
 import com.devsphere.leafbloom.util.MediaHelper
 import com.devsphere.leafbloom.util.PermissionManager
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import android.graphics.Bitmap
+import android.util.Log
 
 class ScannerFragment : Fragment() {
 
@@ -45,6 +53,7 @@ class ScannerFragment : Fragment() {
     private var currentImageUri: Uri? = null
 
     // Consolidated Permission Launcher
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val cameraGranted = permissions[Manifest.permission.CAMERA] ?: false
@@ -81,16 +90,20 @@ class ScannerFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         checkPermissions() // Replaces individual checks
+        
+        classifier = DiseaseClassifier(requireContext())
 
         setupUI()
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun checkPermissions() {
         val permissions = mutableListOf(Manifest.permission.CAMERA)
         
@@ -128,6 +141,7 @@ class ScannerFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun showPermissionRationale(permissionsToRequest: Array<String>) {
         RationaleDialog(
             titleStr = getString(R.string.permissions_required),
@@ -160,11 +174,120 @@ class ScannerFragment : Fragment() {
         }
 
         binding.btnDiagnose.setOnClickListener {
-            if (currentImageUri != null) {
-                findNavController().navigate(R.id.action_scannerFragment_to_diagnoseResultFragment)
+            val uri = currentImageUri
+            if (uri != null) {
+                diagnoseImage(uri)
             } else {
                 Toast.makeText(requireContext(), getString(R.string.no_image_to_diagnose), Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private lateinit var classifier: com.devsphere.leafbloom.util.DiseaseClassifier
+
+    private fun diagnoseImage(uri: Uri) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                withContext(Dispatchers.Main) {
+                    binding.btnDiagnose.isEnabled = false
+                    binding.btnDiagnose.text = "Diagnosing..."
+                }
+
+                // 0. Load Bitmap & Fix Rotation (Crucial for Model!)
+                var bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    val source = android.graphics.ImageDecoder.createSource(requireContext().contentResolver, uri)
+                    android.graphics.ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                        decoder.isMutableRequired = true
+                    }
+                } else {
+                    MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+                }
+                
+                // Fix Rotation: Read EXIF and rotate if needed
+                // NOTE: ImageDecoder (API P+) handles rotation automatically. Only double-rotate if < P.
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                    val input = requireContext().contentResolver.openInputStream(uri)
+                    val exif = input?.let { androidx.exifinterface.media.ExifInterface(it) }
+                    val orientation = exif?.getAttributeInt(androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION, androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL)
+                    input?.close()
+
+                    when (orientation) {
+                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 -> bitmap = rotateBitmap(bitmap, 90f)
+                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 -> bitmap = rotateBitmap(bitmap, 180f)
+                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 -> bitmap = rotateBitmap(bitmap, 270f)
+                    }
+                }
+
+                // 1. Resize to 224x224 (SQUASHING to match Training Logic)
+                // The training script uses transforms.Resize((224, 224)) which squashes the image.
+                // We must replicate that exactly, as the model learned features on distorted aspect ratios.
+                val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, true)
+
+                // 2. Show the EXACT image being used for inference
+                withContext(Dispatchers.Main) {
+                    binding.imgCapturedPreview.scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
+                    binding.imgCapturedPreview.setBackgroundColor(android.graphics.Color.BLACK) 
+                    binding.imgCapturedPreview.setImageBitmap(resizedBitmap)
+                }
+
+                // 3. Ensure ARGB_8888 & Predict
+                val inputBitmap = resizedBitmap.copy(Bitmap.Config.ARGB_8888, true)
+                
+                val scores = classifier.predict(inputBitmap)
+                
+                // Logic
+                var maxScore = -1f
+                var maxIndex = -1
+                
+                for (i in scores.indices) {
+                    if (scores[i] > maxScore) {
+                        maxScore = scores[i]
+                        maxIndex = i
+                    }
+                }
+
+                withContext(Dispatchers.Main) {
+                    binding.btnDiagnose.isEnabled = true
+                    binding.btnDiagnose.text = "Diagnose Now"
+                    
+                    // Safety check: if low confidence (< 50%), then block.
+                    if (maxScore < 0.50f) {
+                        val winnerName = getClassName(maxIndex)
+                        val msg = "Result Unsure. Best: $winnerName (${(maxScore * 100).toInt()}%)"
+                        Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+                        return@withContext
+                    }
+
+                    // Navigate
+                    val bundle = Bundle().apply {
+
+                        putFloat("score_unknown", scores[com.devsphere.leafbloom.util.DiseaseClassifier.INDEX_UNKNOWN])
+                        putFloat("score_early_blight", scores[com.devsphere.leafbloom.util.DiseaseClassifier.INDEX_EARLY_BLIGHT])
+                        putFloat("score_healthy", scores[com.devsphere.leafbloom.util.DiseaseClassifier.INDEX_HEALTHY])
+                        putFloat("score_late_blight", scores[com.devsphere.leafbloom.util.DiseaseClassifier.INDEX_LATE_BLIGHT])
+                        putFloat("score_septoria", scores[com.devsphere.leafbloom.util.DiseaseClassifier.INDEX_SEPTORIA])
+                        putString("predicted_class_name", getClassName(maxIndex))
+                    }
+                    findNavController().navigate(R.id.action_scannerFragment_to_diagnoseResultFragment, bundle)
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                   binding.btnDiagnose.isEnabled = true
+                   binding.btnDiagnose.text = "Diagnose Now"
+                   Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+    private fun getClassName(index: Int): String {
+        return when (index) {
+            1 -> "Early Blight"
+            2 -> "Healthy"
+            3 -> "Late Blight"
+            4 -> "Septoria"
+            else -> "Unknown"
         }
     }
 
@@ -362,7 +485,7 @@ class ScannerFragment : Fragment() {
                         .placeholder(R.color.text_hint)
                         .into(binding.imgGalleryThumbnail)
                 }
-            }
+                }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -373,5 +496,12 @@ class ScannerFragment : Fragment() {
         scanAnimator?.cancel()
         cameraExecutor.shutdown()
         _binding = null
+    }
+
+    private fun rotateBitmap(source: Bitmap, angle: Float): Bitmap {
+        android.util.Log.d("ScannerFragment", "Rotating bitmap by angle: $angle")
+        val matrix = android.graphics.Matrix()
+        matrix.postRotate(angle)
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
     }
 }

@@ -221,6 +221,8 @@
                                 <com.google.android.material.progressindicator.CircularProgressIndicator
                                     android:id="@+id/progressEarlyBlight"
                                     style="@style/LeafBloomGauge"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:indeterminate="false"
                                     android:max="100"
@@ -271,6 +273,8 @@
                                 <com.google.android.material.progressindicator.CircularProgressIndicator
                                     android:id="@+id/progressHealthy"
                                     style="@style/LeafBloomGauge"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:indeterminate="false"
                                     android:max="100"
@@ -331,6 +335,8 @@
                                 <com.google.android.material.progressindicator.CircularProgressIndicator
                                     android:id="@+id/progressLateBlight"
                                     style="@style/LeafBloomGauge"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:indeterminate="false"
                                     android:max="100"
@@ -381,6 +387,8 @@
                                 <com.google.android.material.progressindicator.CircularProgressIndicator
                                     android:id="@+id/progressSeptoria"
                                     style="@style/LeafBloomGauge"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:indeterminate="false"
                                     android:max="100"

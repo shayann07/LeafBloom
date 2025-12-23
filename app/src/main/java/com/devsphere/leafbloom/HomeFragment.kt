@@ -195,10 +195,13 @@ class HomeFragment : BaseFragment() {
                     // For production, use coroutines. Kept simple here per request structure.
                     
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        geocoder.getFromLocation(location.latitude, location.longitude, 1) { addresses ->
-                            if (addresses.isNotEmpty()) {
-                                updateLocationUI(addresses[0])
+                        try {
+                            com.devsphere.leafbloom.util.LocationUtils.getFromLocationAndroid13(geocoder, location.latitude, location.longitude) { address ->
+                                if (address != null) updateLocationUI(address)
                             }
+                        } catch (e: Exception) {
+                            // Fallback or ignore
+                            e.printStackTrace()
                         }
                     } else {
                         @Suppress("DEPRECATION")
