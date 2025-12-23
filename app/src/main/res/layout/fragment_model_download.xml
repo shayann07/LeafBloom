@@ -47,7 +47,7 @@
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toTopOf="@id/guideline_top">
 
-        <com.devsphere.leafbloom.LeafBloomLoadingView
+        <com.devsphere.leafbloom.ui.components.LeafBloomLoadingView
             android:id="@+id/leafBloom"
             android:layout_width="@dimen/walk_illustration_size"
             android:layout_height="@dimen/walk_illustration_size" />

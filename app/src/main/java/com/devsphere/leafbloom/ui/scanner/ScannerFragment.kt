@@ -1,4 +1,4 @@
-package com.devsphere.leafbloom
+package com.devsphere.leafbloom.ui.scanner
 
 import android.Manifest
 import android.animation.ObjectAnimator
@@ -27,7 +27,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.devsphere.leafbloom.databinding.FragmentScannerBinding
 import com.devsphere.leafbloom.ui.dialog.RationaleDialog
-import com.devsphere.leafbloom.util.DiseaseClassifier
+import com.devsphere.leafbloom.data.source.local.DiseaseClassifier
 import com.devsphere.leafbloom.util.MediaHelper
 import com.devsphere.leafbloom.util.PermissionManager
 import java.io.File
@@ -98,7 +98,11 @@ class ScannerFragment : Fragment() {
 
         checkPermissions() // Replaces individual checks
         
-        classifier = DiseaseClassifier(requireContext())
+        // Manual DI for now
+        val repository = com.devsphere.leafbloom.data.repository.DiseaseRepository(requireContext())
+        viewModel = ScannerViewModel(repository)
+        
+        observeViewModel()
 
         setupUI()
     }
@@ -183,17 +187,59 @@ class ScannerFragment : Fragment() {
         }
     }
 
-    private lateinit var classifier: com.devsphere.leafbloom.util.DiseaseClassifier
+    private lateinit var viewModel: ScannerViewModel
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            viewModel.uiState.collect { state ->
+                when (state) {
+                    is ScannerUiState.Idle -> {
+                        binding.btnDiagnose.isEnabled = true
+                        binding.btnDiagnose.text = "Diagnose Now"
+                    }
+                    is ScannerUiState.Loading -> {
+                        binding.btnDiagnose.isEnabled = false
+                        binding.btnDiagnose.text = "Diagnosing..."
+                    }
+                    is ScannerUiState.Success -> {
+                        binding.btnDiagnose.isEnabled = true
+                        binding.btnDiagnose.text = "Diagnose Now"
+                        handleSuccess(state.result)
+                        viewModel.resetState() 
+                    }
+                    is ScannerUiState.Error -> {
+                        binding.btnDiagnose.isEnabled = true
+                        binding.btnDiagnose.text = "Diagnose Now"
+                        Toast.makeText(requireContext(), "Error: ${state.message}", Toast.LENGTH_SHORT).show()
+                        viewModel.resetState()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleSuccess(result: com.devsphere.leafbloom.data.model.PredictionResult) {
+        if (result.confidence < 0.50f) {
+            val msg = "Result Unsure. Best: ${result.predictedClass} (${(result.confidence * 100).toInt()}%)"
+            Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val bundle = Bundle().apply {
+            putFloat("score_unknown", result.scores["Unknown"] ?: 0f)
+            putFloat("score_early_blight", result.scores["Early Blight"] ?: 0f)
+            putFloat("score_healthy", result.scores["Healthy"] ?: 0f)
+            putFloat("score_late_blight", result.scores["Late Blight"] ?: 0f)
+            putFloat("score_septoria", result.scores["Septoria"] ?: 0f)
+            putString("predicted_class_name", result.predictedClass)
+        }
+        findNavController().navigate(R.id.action_scannerFragment_to_diagnoseResultFragment, bundle)
+    }
 
     private fun diagnoseImage(uri: Uri) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                withContext(Dispatchers.Main) {
-                    binding.btnDiagnose.isEnabled = false
-                    binding.btnDiagnose.text = "Diagnosing..."
-                }
-
-                // 0. Load Bitmap & Fix Rotation (Crucial for Model!)
+                // 0. Load Bitmap & Fix Rotation
                 var bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     val source = android.graphics.ImageDecoder.createSource(requireContext().contentResolver, uri)
                     android.graphics.ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
@@ -203,8 +249,7 @@ class ScannerFragment : Fragment() {
                     MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
                 }
                 
-                // Fix Rotation: Read EXIF and rotate if needed
-                // NOTE: ImageDecoder (API P+) handles rotation automatically. Only double-rotate if < P.
+                // Fix Rotation (Legacy)
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
                     val input = requireContext().contentResolver.openInputStream(uri)
                     val exif = input?.let { androidx.exifinterface.media.ExifInterface(it) }
@@ -218,78 +263,29 @@ class ScannerFragment : Fragment() {
                     }
                 }
 
-                // 1. Resize to 224x224 (SQUASHING to match Training Logic)
-                // The training script uses transforms.Resize((224, 224)) which squashes the image.
-                // We must replicate that exactly, as the model learned features on distorted aspect ratios.
+                // 1. Resize to 224x224 (SQUASHING logic)
                 val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, true)
 
-                // 2. Show the EXACT image being used for inference
+                // 2. Show Preview
                 withContext(Dispatchers.Main) {
                     binding.imgCapturedPreview.scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
                     binding.imgCapturedPreview.setBackgroundColor(android.graphics.Color.BLACK) 
                     binding.imgCapturedPreview.setImageBitmap(resizedBitmap)
-                }
-
-                // 3. Ensure ARGB_8888 & Predict
-                val inputBitmap = resizedBitmap.copy(Bitmap.Config.ARGB_8888, true)
-                
-                val scores = classifier.predict(inputBitmap)
-                
-                // Logic
-                var maxScore = -1f
-                var maxIndex = -1
-                
-                for (i in scores.indices) {
-                    if (scores[i] > maxScore) {
-                        maxScore = scores[i]
-                        maxIndex = i
-                    }
-                }
-
-                withContext(Dispatchers.Main) {
-                    binding.btnDiagnose.isEnabled = true
-                    binding.btnDiagnose.text = "Diagnose Now"
                     
-                    // Safety check: if low confidence (< 50%), then block.
-                    if (maxScore < 0.50f) {
-                        val winnerName = getClassName(maxIndex)
-                        val msg = "Result Unsure. Best: $winnerName (${(maxScore * 100).toInt()}%)"
-                        Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
-                        return@withContext
-                    }
-
-                    // Navigate
-                    val bundle = Bundle().apply {
-
-                        putFloat("score_unknown", scores[com.devsphere.leafbloom.util.DiseaseClassifier.INDEX_UNKNOWN])
-                        putFloat("score_early_blight", scores[com.devsphere.leafbloom.util.DiseaseClassifier.INDEX_EARLY_BLIGHT])
-                        putFloat("score_healthy", scores[com.devsphere.leafbloom.util.DiseaseClassifier.INDEX_HEALTHY])
-                        putFloat("score_late_blight", scores[com.devsphere.leafbloom.util.DiseaseClassifier.INDEX_LATE_BLIGHT])
-                        putFloat("score_septoria", scores[com.devsphere.leafbloom.util.DiseaseClassifier.INDEX_SEPTORIA])
-                        putString("predicted_class_name", getClassName(maxIndex))
-                    }
-                    findNavController().navigate(R.id.action_scannerFragment_to_diagnoseResultFragment, bundle)
+                     // 3. Ensure ARGB_8888 & Pass to ViewModel
+                    val inputBitmap = resizedBitmap.copy(Bitmap.Config.ARGB_8888, true)
+                    viewModel.analyzeImage(inputBitmap)
                 }
 
             } catch (e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                   binding.btnDiagnose.isEnabled = true
-                   binding.btnDiagnose.text = "Diagnose Now"
-                   Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                   Toast.makeText(requireContext(), "Error process image: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
-    private fun getClassName(index: Int): String {
-        return when (index) {
-            1 -> "Early Blight"
-            2 -> "Healthy"
-            3 -> "Late Blight"
-            4 -> "Septoria"
-            else -> "Unknown"
-        }
-    }
+
 
     private fun startScanningAnimation() {
         if (scanAnimator?.isRunning == true) return

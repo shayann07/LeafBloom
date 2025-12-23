@@ -1,9 +1,10 @@
-package com.devsphere.leafbloom
+package com.devsphere.leafbloom.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.devsphere.leafbloom.databinding.ItemHistoryBinding
+import com.devsphere.leafbloom.data.model.HistoryItem
 
 class HistoryAdapter(private val items: List<HistoryItem>) :
     RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {

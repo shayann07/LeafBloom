@@ -1,4 +1,4 @@
-package com.devsphere.leafbloom
+package com.devsphere.leafbloom.ui.common
 
 import android.view.View
 import androidx.core.view.ViewCompat

@@ -1,4 +1,4 @@
-package com.devsphere.leafbloom
+package com.devsphere.leafbloom.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View

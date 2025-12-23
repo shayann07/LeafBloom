@@ -1,4 +1,4 @@
-package com.devsphere.leafbloom
+package com.devsphere.leafbloom.ui.modelDownload
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.core.view.WindowCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.devsphere.leafbloom.databinding.FragmentModelDownloadBinding

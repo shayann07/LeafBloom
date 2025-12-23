@@ -25,7 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LeafBloom">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.LeafBloom.Splash">
             <intent-filter>

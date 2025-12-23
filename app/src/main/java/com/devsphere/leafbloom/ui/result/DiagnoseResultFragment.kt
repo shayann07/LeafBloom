@@ -1,4 +1,4 @@
-package com.devsphere.leafbloom
+package com.devsphere.leafbloom.ui.result
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.devsphere.leafbloom.databinding.FragmentDiagnoseResultBinding
+import com.devsphere.leafbloom.ui.common.BaseFragment
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import java.util.Locale
 import kotlin.math.roundToInt

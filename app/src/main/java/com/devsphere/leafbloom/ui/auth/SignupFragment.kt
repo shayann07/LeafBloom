@@ -1,4 +1,4 @@
-package com.devsphere.leafbloom
+package com.devsphere.leafbloom.ui.auth
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.devsphere.leafbloom.databinding.FragmentSignupBinding
+import com.devsphere.leafbloom.ui.common.BaseFragment
 
 class SignupFragment : BaseFragment() {
 

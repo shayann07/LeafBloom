@@ -1,4 +1,4 @@
-package com.devsphere.leafbloom
+package com.devsphere.leafbloom.ui.home
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -13,6 +13,7 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import com.devsphere.leafbloom.databinding.FragmentHomeBinding
+import com.devsphere.leafbloom.ui.common.BaseFragment
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +28,8 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
 import com.google.android.material.chip.Chip
 import java.util.Locale
+import com.devsphere.leafbloom.ui.adapter.HistoryAdapter
+import com.devsphere.leafbloom.data.model.HistoryItem
 
 class HomeFragment : BaseFragment() {
     private var _binding: FragmentHomeBinding? = null

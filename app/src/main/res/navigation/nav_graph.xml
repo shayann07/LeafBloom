@@ -7,37 +7,37 @@
 
     <fragment
         android:id="@+id/walkthroughFragment"
-        android:name="com.devsphere.leafbloom.WalkthroughFragment"
+        android:name="com.devsphere.leafbloom.ui.walkthrough.WalkthroughFragment"
         android:label="Walkthrough"
         tools:layout="@layout/fragment_walkthrough" />
 
     <fragment
         android:id="@+id/modelDownloadFragment"
-        android:name="com.devsphere.leafbloom.ModelDownloadFragment"
+        android:name="com.devsphere.leafbloom.ui.modelDownload.ModelDownloadFragment"
         android:label="Model Download"
         tools:layout="@layout/fragment_model_download" />
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.devsphere.leafbloom.LoginFragment"
+        android:name="com.devsphere.leafbloom.ui.auth.LoginFragment"
         android:label="Login Fragment"
         tools:layout="@layout/fragment_login" />
 
     <fragment
         android:id="@+id/signupFragment"
-        android:name="com.devsphere.leafbloom.SignupFragment"
+        android:name="com.devsphere.leafbloom.ui.auth.SignupFragment"
         android:label="Signup Fragment"
         tools:layout="@layout/fragment_signup" />
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.devsphere.leafbloom.HomeFragment"
+        android:name="com.devsphere.leafbloom.ui.home.HomeFragment"
         android:label="Home Fragment"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/scannerFragment"
-        android:name="com.devsphere.leafbloom.ScannerFragment"
+        android:name="com.devsphere.leafbloom.ui.scanner.ScannerFragment"
         android:label="Scanner Fragment"
         tools:layout="@layout/fragment_scanner" >
         <action
@@ -47,7 +47,7 @@
 
     <fragment
         android:id="@+id/diagnoseResultFragment"
-        android:name="com.devsphere.leafbloom.DiagnoseResultFragment"
+        android:name="com.devsphere.leafbloom.ui.result.DiagnoseResultFragment"
         android:label="@string/diagnose_result"
         tools:layout="@layout/fragment_diagnose_result" />
 

@@ -33,7 +33,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <!-- Glow behind FAB (Custom View for pure blur) -->
-        <com.devsphere.leafbloom.GlowView
+        <com.devsphere.leafbloom.ui.components.GlowView
             android:id="@+id/fab_glow"
             android:layout_width="@dimen/fab_glow_size"
             android:layout_height="@dimen/fab_glow_size"

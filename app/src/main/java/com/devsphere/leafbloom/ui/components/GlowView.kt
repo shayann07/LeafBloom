@@ -1,4 +1,4 @@
-package com.devsphere.leafbloom
+package com.devsphere.leafbloom.ui.components
 
 import android.content.Context
 import android.graphics.BlurMaskFilter

@@ -1,4 +1,4 @@
-package com.devsphere.leafbloom
+package com.devsphere.leafbloom.ui.main
 
 import android.os.Bundle
 import android.view.View
