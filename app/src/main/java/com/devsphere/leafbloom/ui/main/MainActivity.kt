@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.devsphere.leafbloom.R
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI

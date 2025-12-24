@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.devsphere.leafbloom.R
 import com.devsphere.leafbloom.databinding.FragmentSignupBinding
 import com.devsphere.leafbloom.ui.common.BaseFragment
 

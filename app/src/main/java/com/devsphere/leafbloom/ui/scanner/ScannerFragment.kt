@@ -27,7 +27,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.devsphere.leafbloom.databinding.FragmentScannerBinding
 import com.devsphere.leafbloom.ui.dialog.RationaleDialog
-import com.devsphere.leafbloom.data.source.local.DiseaseClassifier
+import com.devsphere.leafbloom.R
 import com.devsphere.leafbloom.util.MediaHelper
 import com.devsphere.leafbloom.util.PermissionManager
 import java.io.File
@@ -51,6 +51,8 @@ class ScannerFragment : Fragment() {
     private var lensFacing = CameraSelector.LENS_FACING_BACK
 
     private var currentImageUri: Uri? = null
+
+    private lateinit var viewModel: ScannerViewModel
 
     // Consolidated Permission Launcher
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -187,7 +189,7 @@ class ScannerFragment : Fragment() {
         }
     }
 
-    private lateinit var viewModel: ScannerViewModel
+
 
     private fun observeViewModel() {
         lifecycleScope.launch {

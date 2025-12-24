@@ -6,7 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import com.devsphere.leafbloom.R
 import com.devsphere.leafbloom.databinding.FragmentWalkthroughBinding
+import com.devsphere.leafbloom.ui.adapter.WalkthroughAdapter
+import com.devsphere.leafbloom.ui.common.BaseFragment
 
 class WalkthroughFragment : BaseFragment() {
 

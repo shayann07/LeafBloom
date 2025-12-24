@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/modelDownloadFragment"
-        android:name="com.devsphere.leafbloom.ui.modelDownload.ModelDownloadFragment"
+        android:name="com.devsphere.leafbloom.ui.model.ModelDownloadFragment"
         android:label="Model Download"
         tools:layout="@layout/fragment_model_download" />
 

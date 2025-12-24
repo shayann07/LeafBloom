@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.devsphere.leafbloom.R
 import androidx.navigation.fragment.findNavController
 import com.devsphere.leafbloom.databinding.FragmentDiagnoseResultBinding
 import com.devsphere.leafbloom.ui.common.BaseFragment

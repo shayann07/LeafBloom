@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import com.devsphere.leafbloom.databinding.FragmentHomeBinding
 import com.devsphere.leafbloom.ui.common.BaseFragment
 import androidx.core.content.ContextCompat
+import com.devsphere.leafbloom.R
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionManager
@@ -82,7 +83,7 @@ class HomeFragment : BaseFragment() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         // Auto-start permission flow
@@ -196,7 +197,7 @@ class HomeFragment : BaseFragment() {
                     // Geocoder might be blocking, usually better on background thread, 
                     // but usually fast enough for simple UI updates on recent Android versions or cached.
                     // For production, use coroutines. Kept simple here per request structure.
-                    
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         try {
                             com.devsphere.leafbloom.util.LocationUtils.getFromLocationAndroid13(geocoder, location.latitude, location.longitude) { address ->
@@ -227,7 +228,7 @@ class HomeFragment : BaseFragment() {
         val city = address.locality ?: address.subAdminArea ?: "Unknown City"
         val country = address.countryName ?: "Unknown Country"
         val text = "$city, $country"
-        
+
         requireActivity().runOnUiThread {
             binding.tvLocationValue.text = text
             binding.tvWeatherLocation.text = text

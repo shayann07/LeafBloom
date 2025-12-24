@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.core.view.WindowCompat
+import com.devsphere.leafbloom.R
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.devsphere.leafbloom.databinding.FragmentModelDownloadBinding
+import com.devsphere.leafbloom.ui.common.BaseFragment
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

@@ -8,6 +8,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.devsphere.leafbloom.R
 import com.devsphere.leafbloom.databinding.FragmentLoginBinding
 import com.devsphere.leafbloom.ui.common.BaseFragment
 
