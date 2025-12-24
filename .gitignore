@@ -74,3 +74,13 @@ ml/dataset/
 
 # IDE specific for Python
 .vscode/
+
+# --------------------------
+# CLOUD FUNCTIONS
+# --------------------------
+functions/node_modules/
+functions/firebase-debug.log
+functions/firebase-debug.*.log
+functions/.env
+functions/.env.*
+functions/coverage/

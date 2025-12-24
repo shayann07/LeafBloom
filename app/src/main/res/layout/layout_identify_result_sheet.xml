@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomSheet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bottom_sheet_bg"
+    android:padding="24dp"
+    app:behavior_peekHeight="300dp"
+    app:behavior_hideable="false"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Handle Bar -->
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bottom_sheet_handle" />
+
+        <!-- Content Container -->
+        <LinearLayout
+            android:id="@+id/contentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:id="@+id/tvMatchLimit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Best Match"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <TextView
+                android:id="@+id/tvCommonName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                tools:text="Tomato"
+                android:textAppearance="?attr/textAppearanceDisplaySmall"
+                android:textColor="?attr/colorOnSurface"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvScientificName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Solanum lycopersicum"
+                android:textStyle="italic"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+            
+            <com.google.android.material.chip.ChipGroup
+                 android:id="@+id/chipGroupTags"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginTop="12dp">
+                 
+                 <com.google.android.material.chip.Chip
+                     android:id="@+id/scoreChip"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     tools:text="98% Match"
+                     app:chipBackgroundColor="@color/surface_variant" />
+                     
+                 <com.google.android.material.chip.Chip
+                     android:id="@+id/familyChip"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     tools:text="Solanaceae"
+                     app:chipBackgroundColor="@color/surface_variant" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?attr/colorOutlineVariant"
+                android:layout_marginVertical="24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Care Tips (Soon)"
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Automated care tips for identified plants will be available soon in LeafBloom Pro."
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

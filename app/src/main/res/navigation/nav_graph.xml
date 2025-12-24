@@ -33,7 +33,11 @@
         android:id="@+id/homeFragment"
         android:name="com.devsphere.leafbloom.ui.home.HomeFragment"
         android:label="Home Fragment"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_scannerFragment"
+            app:destination="@id/scannerFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/scannerFragment"
@@ -43,6 +47,9 @@
         <action
             android:id="@+id/action_scannerFragment_to_diagnoseResultFragment"
             app:destination="@id/diagnoseResultFragment" />
+        <action
+            android:id="@+id/action_scannerFragment_to_identifyResultFragment"
+            app:destination="@id/identifyResultFragment" />
     </fragment>
 
     <fragment
@@ -50,5 +57,11 @@
         android:name="com.devsphere.leafbloom.ui.result.DiagnoseResultFragment"
         android:label="@string/diagnose_result"
         tools:layout="@layout/fragment_diagnose_result" />
+
+    <fragment
+        android:id="@+id/identifyResultFragment"
+        android:name="com.devsphere.leafbloom.ui.result.IdentifyResultFragment"
+        android:label="Identify Result"
+        tools:layout="@layout/fragment_identify_result" />
 
 </navigation>

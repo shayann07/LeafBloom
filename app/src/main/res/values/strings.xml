@@ -141,6 +141,7 @@
     <string name="permissions_required_dialog_desc">We need this permission to continue.</string>
     <string name="permissions_required_scanner_desc">LeafBloom needs Camera access to scan, and Storage access to save/load images.</string>
     <string name="not_now">Not Now</string>
+    <string name="back">Back</string>
 
     <!-- Toasts / Messages -->
     <string name="camera_permission_required_to_scan">Camera permission required to scan</string>

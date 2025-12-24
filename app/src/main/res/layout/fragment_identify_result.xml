@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false">
+
+    <!-- Header Image (Full Screen behind sheet) -->
+    <ImageView
+        android:id="@+id/ivCapturedImage"
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/home_header"
+        app:layout_anchorGravity="top" />
+
+    <!-- Back Button -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/btnBack"
+        android:layout_width="@dimen/space_40"
+        android:layout_height="@dimen/space_40"
+        android:layout_marginTop="@dimen/space_24"
+        android:layout_marginStart="@dimen/space_24"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/radius_20"
+        app:cardElevation="@dimen/space_0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/space_12"
+            android:src="@drawable/back_icon"
+            app:tint="@color/text_primary" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Loading Overlay -->
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:alpha="0"
+        android:visibility="gone"
+        android:elevation="10dp"
+        tools:visibility="visible"
+        tools:alpha="1">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Identifying Plant..."
+                android:textColor="@color/white"
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Included Bottom Sheet -->
+    <include
+        android:id="@+id/sheetIncluded"
+        layout="@layout/layout_identify_result_sheet" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

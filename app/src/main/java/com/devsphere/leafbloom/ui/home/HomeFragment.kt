@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.navigation.fragment.findNavController
 import androidx.annotation.RequiresApi
 import com.devsphere.leafbloom.databinding.FragmentHomeBinding
 import com.devsphere.leafbloom.ui.common.BaseFragment
@@ -119,6 +120,15 @@ class HomeFragment : BaseFragment() {
             // Reminders Card
             featuresRow2.getChildAt(1)?.setOnClickListener {
                 checkNotificationPermission()
+            }
+            
+            // Feature: Identify -> Navigate to Scanner with mode=IDENTIFY
+            // featuresRow1 child 1 is Identify Card
+            featuresRow1.getChildAt(1)?.setOnClickListener {
+                 val bundle = Bundle().apply {
+                     putString("scan_mode", "IDENTIFY")
+                 }
+                 findNavController().navigate(R.id.action_homeFragment_to_scannerFragment, bundle)
             }
 
             // Initialize History RecyclerView
