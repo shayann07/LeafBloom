@@ -52,4 +52,15 @@ class ScannerViewModel(private val repository: DiseaseRepository) : ViewModel() 
     fun resetState() {
         _uiState.value = ScannerUiState.Idle
     }
+
+    class Factory(private val application: android.app.Application) : androidx.lifecycle.ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(ScannerViewModel::class.java)) {
+                val repository = com.devsphere.leafbloom.data.repository.DiseaseRepository(application)
+                return ScannerViewModel(repository) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
+    }
 }

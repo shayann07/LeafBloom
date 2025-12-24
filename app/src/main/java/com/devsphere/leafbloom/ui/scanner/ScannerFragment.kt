@@ -24,6 +24,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.devsphere.leafbloom.databinding.FragmentScannerBinding
 import com.devsphere.leafbloom.ui.dialog.RationaleDialog
@@ -48,11 +49,14 @@ class ScannerFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
     private var scanAnimator: ObjectAnimator? = null
     private var imageCapture: ImageCapture? = null
+    private var cameraProvider: ProcessCameraProvider? = null
     private var lensFacing = CameraSelector.LENS_FACING_BACK
 
     private var currentImageUri: Uri? = null
 
-    private lateinit var viewModel: ScannerViewModel
+    private val viewModel: ScannerViewModel by activityViewModels {
+        ScannerViewModel.Factory(requireActivity().application)
+    }
 
     // Consolidated Permission Launcher
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -100,9 +104,9 @@ class ScannerFragment : Fragment() {
 
         checkPermissions() // Replaces individual checks
         
-        // Manual DI for now
-        val repository = com.devsphere.leafbloom.data.repository.DiseaseRepository(requireContext())
-        viewModel = ScannerViewModel(repository)
+        // ViewModel is already initialized by delegate
+        
+        observeViewModel()
         
         observeViewModel()
 
@@ -221,6 +225,12 @@ class ScannerFragment : Fragment() {
     }
 
     private fun handleSuccess(result: com.devsphere.leafbloom.data.model.PredictionResult) {
+        // block navigation if Unknown
+        if (result.predictedClass.equals("Unknown", ignoreCase = true)) {
+             Toast.makeText(requireContext(), "Cannot identify leaf. Please try closer or better lighting.", Toast.LENGTH_LONG).show()
+             return
+        }
+
         if (result.confidence < 0.50f) {
             val msg = "Result Unsure. Best: ${result.predictedClass} (${(result.confidence * 100).toInt()}%)"
             Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
@@ -323,7 +333,10 @@ class ScannerFragment : Fragment() {
             // Check if fragment is attached before using context
             if (!isAdded) return@addListener
             
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            if (!isAdded) return@addListener
+            
+            cameraProvider = cameraProviderFuture.get()
+            val cameraProvider = cameraProvider ?: return@addListener
 
             val preview = Preview.Builder()
                 .build()
@@ -493,6 +506,11 @@ class ScannerFragment : Fragment() {
         super.onDestroyView()
         scanAnimator?.cancel()
         cameraExecutor.shutdown()
+        try {
+            cameraProvider?.unbindAll()
+        } catch (e: Exception) {
+            // Ignore unbind errors
+        }
         _binding = null
     }
 
