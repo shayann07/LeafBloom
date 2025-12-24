@@ -24,6 +24,44 @@ class ScannerViewModel(private val repository: DiseaseRepository) : ViewModel() 
     private val _uiState = MutableStateFlow<ScannerUiState>(ScannerUiState.Idle)
     val uiState: StateFlow<ScannerUiState> = _uiState.asStateFlow()
 
+    private val _latestGalleryUri = MutableStateFlow<android.net.Uri?>(null)
+    val latestGalleryUri: StateFlow<android.net.Uri?> = _latestGalleryUri.asStateFlow()
+
+    init {
+        // ASYNC INIT: Load model in background to avoid main thread freeze
+        viewModelScope.launch {
+            repository.initialize()
+        }
+    }
+    
+    fun loadLatestGalleryImage(contentResolver: android.content.ContentResolver) {
+         viewModelScope.launch(Dispatchers.IO) {
+            val projection = arrayOf(
+                android.provider.MediaStore.Images.ImageColumns._ID,
+                android.provider.MediaStore.Images.ImageColumns.DATE_TAKEN
+            )
+            val sortOrder = "${android.provider.MediaStore.Images.ImageColumns.DATE_TAKEN} DESC"
+
+            try {
+                contentResolver.query(
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    projection,
+                    null,
+                    null,
+                    sortOrder
+                )?.use { cursor ->
+                    if (cursor.moveToFirst()) {
+                        val idColumn = cursor.getColumnIndexOrThrow(android.provider.MediaStore.Images.ImageColumns._ID)
+                        val id = cursor.getLong(idColumn)
+                        val contentUri = android.content.ContentUris.withAppendedId(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                        _latestGalleryUri.value = contentUri
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
     fun analyzeImage(bitmap: Bitmap) {
         _uiState.value = ScannerUiState.Loading
         

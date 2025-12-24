@@ -50,6 +50,7 @@ class ScannerFragment : Fragment() {
     private var scanAnimator: ObjectAnimator? = null
     private var imageCapture: ImageCapture? = null
     private var cameraProvider: ProcessCameraProvider? = null
+    private var camera: androidx.camera.core.Camera? = null
     private var lensFacing = CameraSelector.LENS_FACING_BACK
 
     private var currentImageUri: Uri? = null
@@ -63,20 +64,25 @@ class ScannerFragment : Fragment() {
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val cameraGranted = permissions[Manifest.permission.CAMERA] ?: false
-            
+
             if (cameraGranted) {
                 startCamera()
             } else {
-                Toast.makeText(requireContext(), getString(R.string.camera_permission_required_to_scan), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.camera_permission_required_to_scan),
+                    Toast.LENGTH_SHORT
+                ).show()
                 findNavController().popBackStack()
             }
 
             // Check storage grants for gallery thumbnail
             val readImagesGranted = permissions[Manifest.permission.READ_MEDIA_IMAGES] == true
             val readExternalGranted = permissions[Manifest.permission.READ_EXTERNAL_STORAGE] == true
-            
+
             if (readImagesGranted || readExternalGranted) {
-                loadLatestGalleryImage()
+                // MVVM Pattern: Ask ViewModel to fetch data
+                viewModel.loadLatestGalleryImage(requireContext().contentResolver)
             }
         }
 
@@ -85,6 +91,54 @@ class ScannerFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 showPreviewUI(uri)
+                // PRE-LOAD OPTIMIZATION: Decode immediately so "Diagnose" is instant
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        var bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            val source = android.graphics.ImageDecoder.createSource(
+                                requireContext().contentResolver,
+                                uri
+                            )
+                            android.graphics.ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                                decoder.isMutableRequired = true
+                            }
+                        } else {
+                            MediaStore.Images.Media.getBitmap(
+                                requireContext().contentResolver,
+                                uri
+                            )
+                        }
+
+                        // Fix Rotation (Legacy support mainly, modern pickers usually handle this but good to be safe)
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                            requireContext().contentResolver.openInputStream(uri)
+                                ?.use { input ->
+                                    val exif =
+                                        androidx.exifinterface.media.ExifInterface(input)
+                                    val orientation = exif.getAttributeInt(
+                                        androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION,
+                                        androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
+                                    )
+                                    when (orientation) {
+                                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 -> bitmap =
+                                            rotateBitmap(bitmap, 90f)
+
+                                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 -> bitmap =
+                                            rotateBitmap(bitmap, 180f)
+
+                                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 -> bitmap =
+                                            rotateBitmap(bitmap, 270f)
+                                    }
+                                }
+                        }
+
+                        currentBitmap = bitmap
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        // If preload fails, currentBitmap will be null/stale,
+                        // diagnoseImage will fall back to URI load (slower but works).
+                    }
+                }
             }
         }
 
@@ -108,8 +162,6 @@ class ScannerFragment : Fragment() {
         
         observeViewModel()
         
-        observeViewModel()
-
         setupUI()
     }
 
@@ -135,7 +187,8 @@ class ScannerFragment : Fragment() {
 
         if (notGranted.isEmpty()) {
             startCamera()
-            loadLatestGalleryImage()
+            // MVVM: Use ViewModel to load gallery image
+            viewModel.loadLatestGalleryImage(requireContext().contentResolver)
         } else {
             // If any critical permission (Camera) needs rationale, show it.
             // We can be simpler: if ANY need rationale, show it.
@@ -191,50 +244,74 @@ class ScannerFragment : Fragment() {
                 Toast.makeText(requireContext(), getString(R.string.no_image_to_diagnose), Toast.LENGTH_SHORT).show()
             }
         }
+        
+        setupCameraGestures()
     }
 
+    private fun setupCameraGestures() {
+        val scaleGestureDetector = android.view.ScaleGestureDetector(requireContext(), object : android.view.ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: android.view.ScaleGestureDetector): Boolean {
+                val cam = camera ?: return false
+                val currentZoomRatio = cam.cameraInfo.zoomState.value?.zoomRatio ?: 1f
+                val delta = detector.scaleFactor
+                cam.cameraControl.setZoomRatio(currentZoomRatio * delta)
+                return true
+            }
+        })
 
+        binding.previewView.setOnTouchListener { view, event ->
+            scaleGestureDetector.onTouchEvent(event)
 
-    private fun observeViewModel() {
-        lifecycleScope.launch {
-            viewModel.uiState.collect { state ->
-                when (state) {
-                    is ScannerUiState.Idle -> {
-                        binding.btnDiagnose.isEnabled = true
-                        binding.btnDiagnose.text = "Diagnose Now"
-                    }
-                    is ScannerUiState.Loading -> {
-                        binding.btnDiagnose.isEnabled = false
-                        binding.btnDiagnose.text = "Diagnosing..."
-                    }
-                    is ScannerUiState.Success -> {
-                        binding.btnDiagnose.isEnabled = true
-                        binding.btnDiagnose.text = "Diagnose Now"
-                        handleSuccess(state.result)
-                        viewModel.resetState() 
-                    }
-                    is ScannerUiState.Error -> {
-                        binding.btnDiagnose.isEnabled = true
-                        binding.btnDiagnose.text = "Diagnose Now"
-                        Toast.makeText(requireContext(), "Error: ${state.message}", Toast.LENGTH_SHORT).show()
-                        viewModel.resetState()
-                    }
+            if (event.action == android.view.MotionEvent.ACTION_UP && !scaleGestureDetector.isInProgress) {
+                val cam = camera
+                if (cam != null) {
+                    val factory = binding.previewView.meteringPointFactory
+                    val point = factory.createPoint(event.x, event.y)
+                    val action = androidx.camera.core.FocusMeteringAction.Builder(point, androidx.camera.core.FocusMeteringAction.FLAG_AF)
+                        .setAutoCancelDuration(3, java.util.concurrent.TimeUnit.SECONDS)
+                        .build()
+                    cam.cameraControl.startFocusAndMetering(action)
+                    
+                    // Optional: Visual Feedback could be added here (e.g., drawing a rectangle)
+                    view.performClick()
                 }
             }
+            true
         }
     }
 
+
+
+
+
     private fun handleSuccess(result: com.devsphere.leafbloom.data.model.PredictionResult) {
-        // block navigation if Unknown
+        // 1. Block Navigation if Unknown
         if (result.predictedClass.equals("Unknown", ignoreCase = true)) {
              Toast.makeText(requireContext(), "Cannot identify leaf. Please try closer or better lighting.", Toast.LENGTH_LONG).show()
              return
         }
 
-        if (result.confidence < 0.50f) {
-            val msg = "Result Unsure. Best: ${result.predictedClass} (${(result.confidence * 100).toInt()}%)"
+        // 2. Strict Confidence Threshold (Increased to 0.70)
+        // This filters out "weak" matches like the blurry fan case.
+        if (result.confidence < 0.70f) {
+            val msg = "Unsure (${(result.confidence * 100).toInt()}%). Please retry with a clearer plant image."
             Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
             return
+        }
+
+        // 3. Margin Check (Top 1 vs Top 2)
+        // Ensure the winner is significantly better than the runner-up.
+        val sortedScores = result.scores.values.sortedDescending()
+        if (sortedScores.size >= 2) {
+            val top1 = sortedScores[0]
+            val top2 = sortedScores[1]
+            val margin = top1 - top2
+            
+            if (margin < 0.10f) {
+                 val msg = "Ambiguous result. Too close to call. Please retry."
+                 Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+                 return
+            }
         }
 
         val bundle = Bundle().apply {
@@ -248,41 +325,61 @@ class ScannerFragment : Fragment() {
         findNavController().navigate(R.id.action_scannerFragment_to_diagnoseResultFragment, bundle)
     }
 
-    private fun diagnoseImage(uri: Uri) {
+    private fun diagnoseImage(uri: Uri?) {
+        // FAST PATH: Use cached bitmap if available (from Camera capture)
+        // If uri is provided (e.g. Gallery pick), we load from that.
+        val targetBitmap = currentBitmap
+
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 // 0. Load Bitmap & Fix Rotation
-                var bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    val source = android.graphics.ImageDecoder.createSource(requireContext().contentResolver, uri)
-                    android.graphics.ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
-                        decoder.isMutableRequired = true
+                // If we already have the bitmap in memory (from camera), use it!
+                var bitmap: Bitmap
+                
+                if (targetBitmap != null && uri == currentImageUri) {
+                    // We captured this fresh, use the memory instance
+                    bitmap = targetBitmap
+                } else if (uri != null) {
+                    // Load from URI (Gallery/File) - Legacy Slow Path
+                    bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        val source = android.graphics.ImageDecoder.createSource(requireContext().contentResolver, uri)
+                        android.graphics.ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                            decoder.isMutableRequired = true
+                        }
+                    } else {
+                        MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+                    }
+                    
+                    // Fix Rotation for Gallery Images
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                         val input = requireContext().contentResolver.openInputStream(uri)
+                         val exif = input?.let { androidx.exifinterface.media.ExifInterface(it) }
+                         val orientation = exif?.getAttributeInt(androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION, androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL)
+                         input?.close()
+     
+                         when (orientation) {
+                             androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 -> bitmap = rotateBitmap(bitmap, 90f)
+                             androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 -> bitmap = rotateBitmap(bitmap, 180f)
+                             androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 -> bitmap = rotateBitmap(bitmap, 270f)
+                         }
                     }
                 } else {
-                    MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+                    return@launch // No image source
                 }
                 
-                // Fix Rotation (Legacy)
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                    val input = requireContext().contentResolver.openInputStream(uri)
-                    val exif = input?.let { androidx.exifinterface.media.ExifInterface(it) }
-                    val orientation = exif?.getAttributeInt(androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION, androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL)
-                    input?.close()
-
-                    when (orientation) {
-                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 -> bitmap = rotateBitmap(bitmap, 90f)
-                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 -> bitmap = rotateBitmap(bitmap, 180f)
-                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 -> bitmap = rotateBitmap(bitmap, 270f)
-                    }
-                }
+                // --- MODEL LOGIC STARTS HERE (PRESERVED) ---
 
                 // 1. Resize to 224x224 (SQUASHING logic)
                 val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, true)
 
-                // 2. Show Preview
+                // 2. Show Preview (Ensure updated if we came from Gallery)
                 withContext(Dispatchers.Main) {
-                    binding.imgCapturedPreview.scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
-                    binding.imgCapturedPreview.setBackgroundColor(android.graphics.Color.BLACK) 
-                    binding.imgCapturedPreview.setImageBitmap(resizedBitmap)
+                   // If we came from gallery load, update preview
+                   if (targetBitmap == null) {
+                        binding.imgCapturedPreview.scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
+                        binding.imgCapturedPreview.setBackgroundColor(android.graphics.Color.BLACK) 
+                        binding.imgCapturedPreview.setImageBitmap(resizedBitmap)
+                   }
                     
                      // 3. Ensure ARGB_8888 & Pass to ViewModel
                     val inputBitmap = resizedBitmap.copy(Bitmap.Config.ARGB_8888, true)
@@ -327,42 +424,53 @@ class ScannerFragment : Fragment() {
     }
 
     private fun startCamera() {
+        if (cameraProvider != null) {
+            bindCameraUseCases()
+            return
+        }
+
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
         cameraProviderFuture.addListener({
             // Check if fragment is attached before using context
             if (!isAdded) return@addListener
             
-            if (!isAdded) return@addListener
-            
-            cameraProvider = cameraProviderFuture.get()
-            val cameraProvider = cameraProvider ?: return@addListener
-
-            val preview = Preview.Builder()
-                .build()
-                .also {
-                    it.setSurfaceProvider(binding.previewView.surfaceProvider)
-                }
-
-            imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .build()
-
-            val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
-
             try {
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture
-                )
-                
-                showCameraUI()
-
-            } catch (exc: Exception) {
-               // Log.e(TAG, "Use case binding failed", exc)
+                cameraProvider = cameraProviderFuture.get()
+                bindCameraUseCases()
+            } catch (e: Exception) {
+               // Log.e(TAG, "Camera provider extraction failed", e)
             }
 
         }, ContextCompat.getMainExecutor(requireContext()))
+    }
+
+    private fun bindCameraUseCases() {
+        val cameraProvider = cameraProvider ?: return
+        
+        val preview = Preview.Builder()
+            .build()
+            .also {
+                it.setSurfaceProvider(binding.previewView.surfaceProvider)
+            }
+
+        imageCapture = ImageCapture.Builder()
+            .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+            .build()
+
+        val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
+
+        try {
+            cameraProvider.unbindAll()
+            camera = cameraProvider.bindToLifecycle(
+                this, cameraSelector, preview, imageCapture
+            )
+            
+            showCameraUI()
+
+        } catch (exc: Exception) {
+           // Log.e(TAG, "Use case binding failed", exc)
+        }
     }
 
     private fun flipCamera() {
@@ -371,64 +479,91 @@ class ScannerFragment : Fragment() {
         } else {
             CameraSelector.LENS_FACING_BACK
         }
-        startCamera()
+        // Optimized: bypass Future lookup, rebind directly
+        bindCameraUseCases()
     }
     
+    private var currentBitmap: Bitmap? = null // Cache for instant diagnosis
+
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
 
-        // 1. Check Write Permission again for Safety on Legacy Devices?
-        // Our 'checkPermissions' runs at start, but user might have denied it partially?
-        // If critical permission missing, do not proceed.
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P && 
-            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(requireContext(), getString(R.string.storage_permission_needed_to_save_photo), Toast.LENGTH_SHORT).show()
-            // Could re-request here, but simple toast is safer loop wise
-            return
+        // 1. Shutter Animation (Visual Feedback)
+        binding.previewView.post {
+            binding.previewView.alpha = 0.5f
+            binding.previewView.animate().alpha(1.0f).setDuration(100).start()
         }
 
-        // Save to cache first
-        val photoFile = File(requireContext().cacheDir, "temp_capture_${System.currentTimeMillis()}.jpg")
-        
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-
+        // 2. Capture to Memory (Zero Latency)
+        // We use OnImageCapturedCallback to get the image data directly without disk IO first.
         imageCapture.takePicture(
-            outputOptions,
-            ContextCompat.getMainExecutor(requireContext()),
-            object : ImageCapture.OnImageSavedCallback {
+            cameraExecutor, 
+            object : ImageCapture.OnImageCapturedCallback() {
                 override fun onError(exc: ImageCaptureException) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.capture_failed, exc.message ?: ""),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    activity?.runOnUiThread {
+                         Toast.makeText(requireContext(), "Capture failed: ${exc.message}", Toast.LENGTH_SHORT).show()
+                    }
                 }
 
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    if (!isAdded) return 
+                @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class) 
+                override fun onCaptureSuccess(image: androidx.camera.core.ImageProxy) {
+                    try {
+                        // A. Convert ImageProxy to Bitmap
+                        val buffer = image.planes[0].buffer
+                        val bytes = ByteArray(buffer.remaining())
+                        buffer.get(bytes)
+                        
+                        // Decode bounds to check if scaling needed (optional, but good for 12MP+ images)
+                        // For speed, just decode.
+                        var bitmap = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        
+                        // B. Handle Rotation
+                        // ImageProxy often comes with rotation metadata
+                        val rotationDegrees = image.imageInfo.rotationDegrees
+                        if (rotationDegrees != 0) {
+                            val matrix = android.graphics.Matrix()
+                            matrix.postRotate(rotationDegrees.toFloat())
+                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                        }
 
-                    // Save to Gallery via our Helper
-                    val bitmap = android.graphics.BitmapFactory.decodeFile(photoFile.absolutePath)
-                    
-                    // This might throw if permission not actually granted on legacy device
-                     val savedUri = try {
-                         MediaHelper.saveImageToGallery(requireContext(), bitmap)
-                     } catch (e: Exception) {
-                         null
-                     }
-                    
-                    if (savedUri != null) {
-                        showPreviewUI(savedUri)
-                    } else {
-                        // Fallback if gallery save fails
-                        showPreviewUI(Uri.fromFile(photoFile))
+                        // Close proxy immediately
+                        image.close()
+
+                        // Update Cache
+                        currentBitmap = bitmap
+
+                        // C. Instant Preview (Main Thread)
+                        activity?.runOnUiThread {
+                            showPreviewUI(null) // null uri means use currentBitmap or just show image
+                            binding.imgCapturedPreview.setImageBitmap(bitmap)
+                        }
+
+                        // D. Async Save to Gallery (Background)
+                        // This happens silently while user looks at preview
+                        try {
+                             val savedUri = MediaHelper.saveImageToGallery(requireContext(), bitmap)
+                             // Update URI for reference (e.g. if they want to share later, though not key requirement now)
+                             activity?.runOnUiThread {
+                                 currentImageUri = savedUri
+                             }
+                        } catch (e: Exception) {
+                             // Log or ignore, preview is already shown so UX is fine
+                             e.printStackTrace()
+                        }
+
+                    } catch (e: Exception) {
+                         e.printStackTrace()
+                         image.close()
+                         activity?.runOnUiThread {
+                             Toast.makeText(requireContext(), "Error processing image", Toast.LENGTH_SHORT).show()
+                         }
                     }
                 }
             }
         )
     }
 
-    private fun showPreviewUI(uri: Uri) {
+    private fun showPreviewUI(uri: Uri?) {
         currentImageUri = uri
         stopScanningAnimation()
 
@@ -441,9 +576,11 @@ class ScannerFragment : Fragment() {
         binding.imgCapturedPreview.visibility = View.VISIBLE
         binding.layoutPreviewActions.visibility = View.VISIBLE
 
-        Glide.with(this)
-            .load(uri)
-            .into(binding.imgCapturedPreview)
+        if (uri != null) {
+            Glide.with(this)
+                .load(uri)
+                .into(binding.imgCapturedPreview)
+        }
     }
 
     private fun showCameraUI() {
@@ -461,44 +598,46 @@ class ScannerFragment : Fragment() {
         startScanningAnimation()
     }
 
-    private fun loadLatestGalleryImage() {
-        // Double check read permission before querying
-        val readPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) 
-            Manifest.permission.READ_MEDIA_IMAGES else Manifest.permission.READ_EXTERNAL_STORAGE
-            
-        if (ContextCompat.checkSelfPermission(requireContext(), readPermission) != PackageManager.PERMISSION_GRANTED) {
-            return
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            viewModel.uiState.collect { state ->
+                when (state) {
+                    is ScannerUiState.Idle -> {
+                        binding.btnDiagnose.isEnabled = true
+                        binding.btnDiagnose.text = "Diagnose Now"
+                    }
+                    is ScannerUiState.Loading -> {
+                        binding.btnDiagnose.isEnabled = false
+                        binding.btnDiagnose.text = "Diagnosing..."
+                    }
+                    is ScannerUiState.Success -> {
+                        binding.btnDiagnose.isEnabled = true
+                        binding.btnDiagnose.text = "Diagnose Now"
+                        handleSuccess(state.result)
+                        viewModel.resetState() 
+                    }
+                    is ScannerUiState.Error -> {
+                        binding.btnDiagnose.isEnabled = true
+                        binding.btnDiagnose.text = "Diagnose Now"
+                        Toast.makeText(requireContext(), "Error: ${state.message}", Toast.LENGTH_SHORT).show()
+                        viewModel.resetState()
+                        // Ensure animation stops if we were scanning
+                        stopScanningAnimation()
+                    }
+                }
+            }
         }
 
-        val projection = arrayOf(
-            MediaStore.Images.ImageColumns._ID,
-            MediaStore.Images.ImageColumns.DATE_TAKEN
-        )
-        
-        val sortOrder = "${MediaStore.Images.ImageColumns.DATE_TAKEN} DESC"
-
-        try {
-            requireContext().contentResolver.query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                null,
-                null,
-                sortOrder
-            )?.use { cursor ->
-                if (cursor.moveToFirst()) {
-                    val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns._ID)
-                    val id = cursor.getLong(idColumn)
-                    val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-
-                    binding.imgGalleryThumbnail.scaleType = android.widget.ImageView.ScaleType.CENTER_CROP
-                    Glide.with(this)
-                        .load(contentUri)
-                        .placeholder(R.color.text_hint)
-                        .into(binding.imgGalleryThumbnail)
-                }
-                }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        lifecycleScope.launch {
+            viewModel.latestGalleryUri.collect { uri ->
+                 if (uri != null) {
+                      binding.imgGalleryThumbnail.scaleType = android.widget.ImageView.ScaleType.CENTER_CROP
+                      Glide.with(this@ScannerFragment)
+                          .load(uri)
+                          .placeholder(R.color.text_hint)
+                          .into(binding.imgGalleryThumbnail)
+                 }
+            }
         }
     }
 

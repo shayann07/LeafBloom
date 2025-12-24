@@ -7,7 +7,12 @@ import com.devsphere.leafbloom.data.source.local.DiseaseClassifier
 
 class DiseaseRepository(context: Context) {
     
+
     private val classifier = DiseaseClassifier(context)
+
+    suspend fun initialize() {
+        classifier.loadModel()
+    }
 
     fun predict(bitmap: Bitmap): PredictionResult {
         // Run inference
