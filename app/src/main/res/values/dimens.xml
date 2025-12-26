@@ -78,7 +78,8 @@
     <dimen name="height_input">56dp</dimen>
 
     <!-- Auth -->
-    <dimen name="auth_header_height">265dp</dimen>
+    <dimen name="auth_header_max_width">520dp</dimen> <!-- ~512dp figma -->
+    <dimen name="auth_header_height">280dp</dimen>   <!-- your existing -->
 
     <!-- Walkthrough -->
     <dimen name="walk_text_width">280dp</dimen>

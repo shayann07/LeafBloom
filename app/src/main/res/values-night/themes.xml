@@ -273,6 +273,29 @@
         <item name="android:textAppearance">@style/TextAppearance.LeafBloom.LabelLarge</item>
     </style>
 
+    <style name="LeafBloomButtonSurfaceVariant" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/surface_variant</item>
+        <item name="android:backgroundTint">@color/surface_variant</item>
+        <item name="rippleColor">@color/leaf_ripple</item>
+
+        <item name="cornerRadius">@dimen/radius_pill</item>
+        <item name="android:elevation">0dp</item>
+        <item name="elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+
+        <item name="android:textColor">@color/brand_green_primary</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textAppearance">@style/TextAppearance.LeafBloom.LabelLarge</item>
+    </style>
+
+    <style name="LeafBloomButtonSurfaceVariant.Compact" parent="LeafBloomButtonSurfaceVariant">
+        <item name="android:minHeight">@dimen/space_40</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
     <style name="LeafGoogleButton" parent="Widget.Material3.Button">
         <item name="backgroundTint">@color/white</item>
         <item name="android:backgroundTint">@color/white</item>
@@ -285,6 +308,23 @@
 
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textAppearance">@style/TextAppearance.LeafBloom.LabelLarge</item>
+    </style>
+
+    <style name="LeafSemiTransparentButton" parent="Widget.Material3.Button">
+        <item name="backgroundTint">#2C408A10</item>
+        <item name="android:backgroundTint">#2C408A10</item>
+
+        <item name="cornerRadius">@dimen/radius_pill</item>
+        <item name="android:elevation">0dp</item>
+        <item name="elevation">0dp</item>
+        <item name="rippleColor">@color/leaf_ripple</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="strokeColor">@color/brand_green_primary</item>
+        <item name="strokeWidth">1dp</item>
+
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/text_on_dark</item>
         <item name="android:textAppearance">@style/TextAppearance.LeafBloom.LabelLarge</item>
     </style>
 
@@ -326,6 +366,25 @@
         <item name="cornerSize">@dimen/radius_20</item>
     </style>
 
+    <!-- =========================================================
+     SHAPES – IMAGE CLIPPING
+     ========================================================= -->
+
+    <!-- Home header: rounded ONLY at bottom -->
+    <style name="ShapeAppearance.LeafBloom.HomeHeader"
+        parent="ShapeAppearance.Material3.LargeComponent">
+
+        <item name="cornerFamily">rounded</item>
+
+        <!-- top stays sharp -->
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+
+        <!-- bottom rounded -->
+        <item name="cornerSizeBottomLeft">28dp</item>
+        <item name="cornerSizeBottomRight">28dp</item>
+
+    </style>
 
     <!-- =========================================================
          CHIPS (Filter style with collapse/expand behavior)
@@ -437,5 +496,11 @@
         <item name="pressedTranslationZ">2dp</item>
     </style>
 
+    <style name="LeafBloomGauge" parent="Widget.Material3.CircularProgressIndicator">
+        <item name="indicatorSize">@dimen/space_100</item>
+        <item name="trackThickness">@dimen/space_8</item>
+        <item name="indicatorInset">@dimen/space_0</item>
+        <item name="trackColor">@color/progress_track</item>
+    </style>
 
 </resources>

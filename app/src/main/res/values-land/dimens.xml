@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 
+       Override the max width constraint for landscape. 
+       Making it very large effectively removes the "box" limit 
+       so the header can stretch to the full screen width.
+    -->
+    <dimen name="auth_header_max_width">3000dp</dimen>
+
+</resources>

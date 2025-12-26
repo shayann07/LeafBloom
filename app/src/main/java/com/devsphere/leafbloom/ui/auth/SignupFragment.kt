@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.devsphere.leafbloom.R
 import com.devsphere.leafbloom.databinding.FragmentSignupBinding
@@ -24,6 +23,7 @@ class SignupFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupAdaptiveHeader(binding.headerContainer, binding.ivHeader)
 
         binding.apply {
             btnSignup.setOnClickListener {

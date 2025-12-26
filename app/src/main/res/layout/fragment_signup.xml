@@ -45,18 +45,25 @@
 
         <FrameLayout
             android:id="@+id/headerContainer"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="@dimen/auth_header_height"
-            android:background="@drawable/auth_header_mask"
-            android:clipToOutline="true"
-            app:layout_constraintTop_toTopOf="parent">
+            android:clipChildren="true"
+            android:clipToPadding="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_max="@dimen/auth_header_max_width"
+            app:layout_constraintHorizontal_bias="0.5">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivHeader"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:layout_gravity="top|center_horizontal"
                 android:scaleType="centerCrop"
-                android:src="@drawable/auth_header" />
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.LeafBloom.AuthHeader"
+                app:srcCompat="@drawable/auth_header" />
+
         </FrameLayout>
 
         <FrameLayout

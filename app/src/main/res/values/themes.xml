@@ -366,6 +366,14 @@
         <item name="cornerSize">@dimen/radius_20</item>
     </style>
 
+    <!-- =========================================================
+         SHAPES – IMAGE CLIPPING
+         ========================================================= -->
+
+    <style name="ShapeAppearance.LeafBloom.AuthHeader" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@fraction/corner_50</item>
+    </style>
 
     <!-- =========================================================
          CHIPS (Filter style with collapse/expand behavior)
@@ -426,13 +434,6 @@
         <item name="android:paddingTop">@dimen/space_20</item>
         <item name="android:paddingBottom">@dimen/space_12</item>
         <item name="android:textColor">@color/text_primary</item>
-    </style>
-
-
-    <!-- TRUE circular mask -->
-    <style name="ShapeAppearance.LeafBloom.AuthHeader" parent="ShapeAppearance.Material3.LargeComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">50%</item>
     </style>
 
 

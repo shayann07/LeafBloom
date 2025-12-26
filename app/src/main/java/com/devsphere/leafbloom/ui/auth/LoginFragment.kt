@@ -1,12 +1,12 @@
 package com.devsphere.leafbloom.ui.auth
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
+import android.widget.FrameLayout
+import androidx.core.view.doOnLayout
 import androidx.navigation.fragment.findNavController
 import com.devsphere.leafbloom.R
 import com.devsphere.leafbloom.databinding.FragmentLoginBinding
@@ -25,6 +25,7 @@ class LoginFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupAdaptiveHeader(binding.headerContainer, binding.ivHeader)
 
         binding.apply {
             btnLogin.setOnClickListener {

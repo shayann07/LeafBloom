@@ -11,15 +11,17 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.navigation.fragment.findNavController
 import androidx.annotation.RequiresApi
-import com.devsphere.leafbloom.databinding.FragmentHomeBinding
-import com.devsphere.leafbloom.ui.common.BaseFragment
 import androidx.core.content.ContextCompat
-import com.devsphere.leafbloom.R
 import androidx.core.view.children
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionManager
+import com.devsphere.leafbloom.R
+import com.devsphere.leafbloom.data.model.HistoryItem
+import com.devsphere.leafbloom.databinding.FragmentHomeBinding
+import com.devsphere.leafbloom.ui.adapter.HistoryAdapter
+import com.devsphere.leafbloom.ui.common.BaseFragment
 import com.devsphere.leafbloom.ui.dialog.RationaleDialog
 import com.devsphere.leafbloom.util.PermissionManager
 import com.google.android.gms.common.api.ResolvableApiException
@@ -30,8 +32,6 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
 import com.google.android.material.chip.Chip
 import java.util.Locale
-import com.devsphere.leafbloom.ui.adapter.HistoryAdapter
-import com.devsphere.leafbloom.data.model.HistoryItem
 
 class HomeFragment : BaseFragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -43,12 +43,16 @@ class HomeFragment : BaseFragment() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private val requestLocationLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            val isGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true ||
-                            permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+            val isGranted =
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true || permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
             if (isGranted) {
                 checkLocationSettings()
             } else {
-                Toast.makeText(requireContext(), getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.location_permission_denied),
+                    Toast.LENGTH_SHORT
+                ).show()
                 // Proceed to ask for notifications even if location denied
                 checkNotificationPermission()
             }
@@ -62,7 +66,9 @@ class HomeFragment : BaseFragment() {
         if (result.resultCode == android.app.Activity.RESULT_OK) {
             fetchLocation()
         } else {
-            Toast.makeText(requireContext(), getString(R.string.location_services_required), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(), getString(R.string.location_services_required), Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -84,6 +90,8 @@ class HomeFragment : BaseFragment() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setupAdaptiveHeader(binding.headerContainer, binding.ivHeader)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
@@ -110,7 +118,10 @@ class HomeFragment : BaseFragment() {
 
             // Weather Card -> Click to refresh location manually
             cardWeather.setOnClickListener {
-                if (PermissionManager.hasPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                if (PermissionManager.hasPermission(
+                        requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                ) {
                     checkLocationSettings()
                 } else {
                     checkLocationPermission()
@@ -121,14 +132,14 @@ class HomeFragment : BaseFragment() {
             featuresRow2.getChildAt(1)?.setOnClickListener {
                 checkNotificationPermission()
             }
-            
+
             // Feature: Identify -> Navigate to Scanner with mode=IDENTIFY
             // featuresRow1 child 1 is Identify Card
             featuresRow1.getChildAt(1)?.setOnClickListener {
-                 val bundle = Bundle().apply {
-                     putString("scan_mode", "IDENTIFY")
-                 }
-                 findNavController().navigate(R.id.action_homeFragment_to_scannerFragment, bundle)
+                val bundle = Bundle().apply {
+                    putString("scan_mode", "IDENTIFY")
+                }
+                findNavController().navigate(R.id.action_homeFragment_to_scannerFragment, bundle)
             }
 
             // Initialize History RecyclerView
@@ -145,32 +156,45 @@ class HomeFragment : BaseFragment() {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun checkLocationPermission() {
-        if (PermissionManager.hasPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        if (PermissionManager.hasPermission(
+                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        ) {
             checkLocationSettings()
             // Check Notification permission after location is handled (or already granted)
             checkNotificationPermission()
-        } else if (PermissionManager.shouldShowRationale(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        } else if (PermissionManager.shouldShowRationale(
+                requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        ) {
             RationaleDialog(
                 titleStr = getString(R.string.enable_location_title),
                 descriptionStr = getString(R.string.enable_location_desc),
                 iconResId = R.drawable.location_icon,
                 onPositive = {
                     requestLocationLauncher.launch(
-                        arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+                        arrayOf(
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        )
                     )
                 },
                 onNegative = { checkNotificationPermission() } // Continue flow even if denied
             ).show(childFragmentManager, RationaleDialog.TAG)
         } else {
             requestLocationLauncher.launch(
-                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+                arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
             )
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun checkLocationSettings() {
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000).build()
+        val locationRequest =
+            LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000).build()
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
         val client = LocationServices.getSettingsClient(requireContext())
         val task = client.checkLocationSettings(builder.build())
@@ -185,7 +209,8 @@ class HomeFragment : BaseFragment() {
                 // Location settings are not satisfied, but this can be fixed by showing the user a dialog.
                 try {
                     // Show the dialog by calling startResolutionForResult(), and check the result in onActivityResult().
-                    val intentSenderRequest = IntentSenderRequest.Builder(exception.resolution).build()
+                    val intentSenderRequest =
+                        IntentSenderRequest.Builder(exception.resolution).build()
                     locationSettingsLauncher.launch(intentSenderRequest)
                 } catch (sendEx: Exception) {
                     // Ignore the error.
@@ -196,7 +221,10 @@ class HomeFragment : BaseFragment() {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun fetchLocation() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             return
         }
 
@@ -210,7 +238,9 @@ class HomeFragment : BaseFragment() {
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         try {
-                            com.devsphere.leafbloom.util.LocationUtils.getFromLocationAndroid13(geocoder, location.latitude, location.longitude) { address ->
+                            com.devsphere.leafbloom.util.LocationUtils.getFromLocationAndroid13(
+                                geocoder, location.latitude, location.longitude
+                            ) { address ->
                                 if (address != null) updateLocationUI(address)
                             }
                         } catch (e: Exception) {
@@ -218,8 +248,8 @@ class HomeFragment : BaseFragment() {
                             e.printStackTrace()
                         }
                     } else {
-                        @Suppress("DEPRECATION")
-                        val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+                        @Suppress("DEPRECATION") val addresses =
+                            geocoder.getFromLocation(location.latitude, location.longitude, 1)
                         if (!addresses.isNullOrEmpty()) {
                             updateLocationUI(addresses[0])
                         }
@@ -248,15 +278,20 @@ class HomeFragment : BaseFragment() {
     private fun checkNotificationPermission() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
 
-        if (!PermissionManager.hasPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS)) {
-             if (PermissionManager.shouldShowRationale(requireActivity(), Manifest.permission.POST_NOTIFICATIONS)) {
-                 RationaleDialog(
+        if (!PermissionManager.hasPermission(
+                requireContext(), Manifest.permission.POST_NOTIFICATIONS
+            )
+        ) {
+            if (PermissionManager.shouldShowRationale(
+                    requireActivity(), Manifest.permission.POST_NOTIFICATIONS
+                )
+            ) {
+                RationaleDialog(
                     titleStr = getString(R.string.enable_notifications_title),
                     descriptionStr = getString(R.string.enable_notifications_desc),
                     iconResId = R.drawable.tree_icon,
                     onPositive = { requestNotificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) },
-                    onNegative = {}
-                ).show(childFragmentManager, RationaleDialog.TAG)
+                    onNegative = {}).show(childFragmentManager, RationaleDialog.TAG)
             } else {
                 requestNotificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }

@@ -65,8 +65,8 @@ class MainActivity : AppCompatActivity() {
             moveIndicator(destination.id)
 
             val isFullscreen =
-                destination.id == R.id.scannerFragment || destination.id == R.id.diagnoseResultFragment
-            val visibility = if (isFullscreen) View.GONE else View.VISIBLE
+                destination.id == R.id.homeFragment
+            val visibility = if (isFullscreen) View.VISIBLE else View.GONE
 
             bottomNav.visibility = visibility
             fab.visibility = visibility
