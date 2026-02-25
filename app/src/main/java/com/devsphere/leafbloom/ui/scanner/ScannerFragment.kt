@@ -1,9 +1,11 @@
 package com.devsphere.leafbloom.ui.scanner
 
+// Ensure these imports are present
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -21,29 +23,24 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.devsphere.leafbloom.databinding.FragmentScannerBinding
-import com.devsphere.leafbloom.ui.dialog.RationaleDialog
 import com.devsphere.leafbloom.R
+import com.devsphere.leafbloom.databinding.FragmentScannerBinding
+import com.devsphere.leafbloom.ui.common.BaseFragment
+import com.devsphere.leafbloom.ui.dialog.RationaleDialog
 import com.devsphere.leafbloom.util.MediaHelper
 import com.devsphere.leafbloom.util.PermissionManager
-
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import android.graphics.Bitmap
-import android.util.Log
-// Ensure these imports are present
-import com.devsphere.leafbloom.data.repository.IdentifyRepository
-import com.devsphere.leafbloom.data.model.IdentifyResponse
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import androidx.core.graphics.toColorInt
 
-class ScannerFragment : Fragment() {
+class ScannerFragment : BaseFragment() {
 
     private var _binding: FragmentScannerBinding? = null
     private val binding get() = _binding!!
@@ -101,37 +98,36 @@ class ScannerFragment : Fragment() {
                     try {
                         var bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                             val source = android.graphics.ImageDecoder.createSource(
-                                requireContext().contentResolver,
-                                uri
+                                requireContext().contentResolver, uri
                             )
                             android.graphics.ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
                                 decoder.isMutableRequired = true
                             }
                         } else {
                             MediaStore.Images.Media.getBitmap(
-                                requireContext().contentResolver,
-                                uri
+                                requireContext().contentResolver, uri
                             )
                         }
 
                         // Fix Rotation
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                            requireContext().contentResolver.openInputStream(uri)
-                                ?.use { input ->
-                                    val exif = androidx.exifinterface.media.ExifInterface(input)
-                                    val orientation = exif.getAttributeInt(
-                                        androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION,
-                                        androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
-                                    )
-                                    when (orientation) {
-                                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 -> bitmap =
-                                            rotateBitmap(bitmap, 90f)
-                                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 -> bitmap =
-                                            rotateBitmap(bitmap, 180f)
-                                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 -> bitmap =
-                                            rotateBitmap(bitmap, 270f)
-                                    }
+                            requireContext().contentResolver.openInputStream(uri)?.use { input ->
+                                val exif = androidx.exifinterface.media.ExifInterface(input)
+                                val orientation = exif.getAttributeInt(
+                                    androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION,
+                                    androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
+                                )
+                                when (orientation) {
+                                    androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 -> bitmap =
+                                        rotateBitmap(bitmap, 90f)
+
+                                    androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 -> bitmap =
+                                        rotateBitmap(bitmap, 180f)
+
+                                    androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 -> bitmap =
+                                        rotateBitmap(bitmap, 270f)
                                 }
+                            }
                         }
                         currentBitmap = bitmap
                     } catch (e: Exception) {
@@ -142,8 +138,7 @@ class ScannerFragment : Fragment() {
         }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentScannerBinding.inflate(inflater, container, false)
         return binding.root
@@ -169,6 +164,7 @@ class ScannerFragment : Fragment() {
         checkPermissions()
         observeViewModel()
         setupUI()
+        observeCropResult()
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -184,15 +180,17 @@ class ScannerFragment : Fragment() {
         }
 
         val notGranted = permissions.filter {
-            ContextCompat.checkSelfPermission(requireContext(), it) != PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                requireContext(), it
+            ) != PackageManager.PERMISSION_GRANTED
         }
 
         if (notGranted.isEmpty()) {
             startCamera()
             viewModel.loadLatestGalleryImage(requireContext().contentResolver)
         } else {
-            val showRationale = notGranted.any { 
-                PermissionManager.shouldShowRationale(requireActivity(), it) 
+            val showRationale = notGranted.any {
+                PermissionManager.shouldShowRationale(requireActivity(), it)
             }
             if (showRationale) {
                 showPermissionRationale(notGranted.toTypedArray())
@@ -207,10 +205,38 @@ class ScannerFragment : Fragment() {
         RationaleDialog(
             titleStr = getString(R.string.permissions_required),
             descriptionStr = getString(R.string.permissions_required_scanner_desc),
-            iconResId = R.drawable.scan_icon, 
+            iconResId = R.drawable.scan_icon,
             onPositive = { requestPermissionLauncher.launch(permissionsToRequest) },
-            onNegative = { findNavController().popBackStack() }
-        ).show(childFragmentManager, RationaleDialog.TAG)
+            onNegative = { findNavController().popBackStack() }).show(
+            childFragmentManager, RationaleDialog.TAG
+        )
+    }
+
+    private fun observeCropResult() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("cropped_uri")?.observe(viewLifecycleOwner) { uriString ->
+            if (uriString != null) {
+                val croppedUri = android.net.Uri.parse(uriString)
+                showPreviewUI(croppedUri)
+                
+                // Pre-load the cropped bitmap immediately
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            val source = android.graphics.ImageDecoder.createSource(requireContext().contentResolver, croppedUri)
+                            android.graphics.ImageDecoder.decodeBitmap(source) { decoder, _, _ -> decoder.isMutableRequired = true }
+                        } else {
+                            MediaStore.Images.Media.getBitmap(requireContext().contentResolver, croppedUri)
+                        }
+                        withContext(Dispatchers.Main) {
+                            currentBitmap = bitmap
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+                findNavController().currentBackStackEntry?.savedStateHandle?.remove<String>("cropped_uri")
+            }
+        }
     }
 
     private fun setupUI() {
@@ -221,6 +247,16 @@ class ScannerFragment : Fragment() {
         }
         binding.btnFlip.setOnClickListener { flipCamera() }
         binding.btnRetake.setOnClickListener { showCameraUI() }
+        
+        binding.btnCrop.setOnClickListener {
+            val uri = currentImageUri
+            if (uri != null) {
+                val bundle = Bundle().apply {
+                    putString("image_uri", uri.toString())
+                }
+                findNavController().navigate(R.id.action_scannerFragment_to_cropFragment, bundle)
+            }
+        }
 
         binding.btnDiagnose.setOnClickListener {
             val uri = currentImageUri
@@ -230,27 +266,33 @@ class ScannerFragment : Fragment() {
                     val bundle = Bundle().apply {
                         putString("image_uri", uri.toString())
                     }
-                    findNavController().navigate(R.id.action_scannerFragment_to_identifyResultFragment, bundle)
+                    findNavController().navigate(
+                        R.id.action_scannerFragment_to_identifyResultFragment, bundle
+                    )
                 } else {
                     diagnoseImage(uri)
                 }
             } else {
-                Toast.makeText(requireContext(), getString(R.string.no_image_to_diagnose), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(), getString(R.string.no_image_to_diagnose), Toast.LENGTH_SHORT
+                ).show()
             }
         }
         setupCameraGestures()
     }
 
     private fun setupCameraGestures() {
-        val scaleGestureDetector = android.view.ScaleGestureDetector(requireContext(), object : android.view.ScaleGestureDetector.SimpleOnScaleGestureListener() {
-            override fun onScale(detector: android.view.ScaleGestureDetector): Boolean {
-                val cam = camera ?: return false
-                val currentZoomRatio = cam.cameraInfo.zoomState.value?.zoomRatio ?: 1f
-                val delta = detector.scaleFactor
-                cam.cameraControl.setZoomRatio(currentZoomRatio * delta)
-                return true
-            }
-        })
+        val scaleGestureDetector = android.view.ScaleGestureDetector(
+            requireContext(),
+            object : android.view.ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                override fun onScale(detector: android.view.ScaleGestureDetector): Boolean {
+                    val cam = camera ?: return false
+                    val currentZoomRatio = cam.cameraInfo.zoomState.value?.zoomRatio ?: 1f
+                    val delta = detector.scaleFactor
+                    cam.cameraControl.setZoomRatio(currentZoomRatio * delta)
+                    return true
+                }
+            })
 
         binding.previewView.setOnTouchListener { view, event ->
             scaleGestureDetector.onTouchEvent(event)
@@ -259,9 +301,9 @@ class ScannerFragment : Fragment() {
                 if (cam != null) {
                     val factory = binding.previewView.meteringPointFactory
                     val point = factory.createPoint(event.x, event.y)
-                    val action = androidx.camera.core.FocusMeteringAction.Builder(point, androidx.camera.core.FocusMeteringAction.FLAG_AF)
-                        .setAutoCancelDuration(3, java.util.concurrent.TimeUnit.SECONDS)
-                        .build()
+                    val action = androidx.camera.core.FocusMeteringAction.Builder(
+                        point, androidx.camera.core.FocusMeteringAction.FLAG_AF
+                    ).setAutoCancelDuration(3, java.util.concurrent.TimeUnit.SECONDS).build()
                     cam.cameraControl.startFocusAndMetering(action)
                     view.performClick()
                 }
@@ -271,15 +313,20 @@ class ScannerFragment : Fragment() {
     }
 
     // --- IDENTIFY MODE LOGIC HANDLED VIA NAVIGATION ---
-    
+
     // --- DIAGNOSE MODE LOGIC (EXISTING) ---
     private fun triggerDiagnoseResult(result: com.devsphere.leafbloom.data.model.PredictionResult) {
         if (result.predictedClass.equals("Unknown", ignoreCase = true)) {
-             Toast.makeText(requireContext(), "Cannot identify leaf. Please try closer or better lighting.", Toast.LENGTH_LONG).show()
-             return
+            Toast.makeText(
+                requireContext(),
+                "Cannot identify leaf. Please try closer or better lighting.",
+                Toast.LENGTH_LONG
+            ).show()
+            return
         }
         if (result.confidence < 0.70f) {
-            val msg = "Unsure (${(result.confidence * 100).toInt()}%). Please retry with a clearer plant image."
+            val msg =
+                "Unsure (${(result.confidence * 100).toInt()}%). Please retry with a clearer plant image."
             Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
             return
         }
@@ -288,9 +335,9 @@ class ScannerFragment : Fragment() {
             val top1 = sortedScores[0]
             val top2 = sortedScores[1]
             if ((top1 - top2) < 0.10f) {
-                 val msg = "Ambiguous result. Too close to call. Please retry."
-                 Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
-                 return
+                val msg = "Ambiguous result. Too close to call. Please retry."
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+                return
             }
         }
 
@@ -314,41 +361,56 @@ class ScannerFragment : Fragment() {
                     bitmap = targetBitmap
                 } else if (uri != null) {
                     bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        val source = android.graphics.ImageDecoder.createSource(requireContext().contentResolver, uri)
-                        android.graphics.ImageDecoder.decodeBitmap(source) { decoder, _, _ -> decoder.isMutableRequired = true }
+                        val source = android.graphics.ImageDecoder.createSource(
+                            requireContext().contentResolver, uri
+                        )
+                        android.graphics.ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                            decoder.isMutableRequired = true
+                        }
                     } else {
                         MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
                     }
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                         val input = requireContext().contentResolver.openInputStream(uri)
-                         val exif = input?.let { androidx.exifinterface.media.ExifInterface(it) }
-                         val orientation = exif?.getAttributeInt(androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION, androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL)
-                         input?.close()
-                         when (orientation) {
-                             androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 -> bitmap = rotateBitmap(bitmap, 90f)
-                             androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 -> bitmap = rotateBitmap(bitmap, 180f)
-                             androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 -> bitmap = rotateBitmap(bitmap, 270f)
-                         }
+                        val input = requireContext().contentResolver.openInputStream(uri)
+                        val exif = input?.let { androidx.exifinterface.media.ExifInterface(it) }
+                        val orientation = exif?.getAttributeInt(
+                            androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION,
+                            androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
+                        )
+                        input?.close()
+                        when (orientation) {
+                            androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 -> bitmap =
+                                rotateBitmap(bitmap, 90f)
+
+                            androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 -> bitmap =
+                                rotateBitmap(bitmap, 180f)
+
+                            androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 -> bitmap =
+                                rotateBitmap(bitmap, 270f)
+                        }
                     }
                 } else {
                     return@launch
                 }
-        // ... (Diagnose logic - truncated for brevity but full code in real write)
-                
+                // ... (Diagnose logic - truncated for brevity but full code in real write)
+
                 val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, true)
                 withContext(Dispatchers.Main) {
-                   if (targetBitmap == null) {
-                        binding.imgCapturedPreview.scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
-                        binding.imgCapturedPreview.setBackgroundColor(android.graphics.Color.BLACK) 
+                    if (targetBitmap == null) {
+                        binding.imgCapturedPreview.scaleType =
+                            android.widget.ImageView.ScaleType.FIT_CENTER
+                        binding.imgCapturedPreview.setBackgroundColor(android.graphics.Color.BLACK)
                         binding.imgCapturedPreview.setImageBitmap(resizedBitmap)
-                   }
+                    }
                     val inputBitmap = resizedBitmap.copy(Bitmap.Config.ARGB_8888, true)
                     viewModel.analyzeImage(inputBitmap)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                   Toast.makeText(requireContext(), "Error process image: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(), "Error process image: ${e.message}", Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -361,12 +423,14 @@ class ScannerFragment : Fragment() {
             val containerHeight = binding.scannerFrameContainer.height.toFloat()
             val lineHeight = binding.scannerLine.height.toFloat()
             val endY = if (containerHeight > 0) containerHeight else 500f
-            scanAnimator = ObjectAnimator.ofFloat(binding.scannerLine, "translationY", -lineHeight, endY).apply {
-                duration = 2000
-                repeatCount = ValueAnimator.INFINITE
-                repeatMode = ValueAnimator.REVERSE
-                start()
-            }
+            scanAnimator =
+                ObjectAnimator.ofFloat(binding.scannerLine, "translationY", -lineHeight, endY)
+                    .apply {
+                        duration = 2000
+                        repeatCount = ValueAnimator.INFINITE
+                        repeatMode = ValueAnimator.REVERSE
+                        start()
+                    }
         }
     }
 
@@ -386,28 +450,34 @@ class ScannerFragment : Fragment() {
             try {
                 cameraProvider = cameraProviderFuture.get()
                 bindCameraUseCases()
-            } catch (e: Exception) {}
+            } catch (e: Exception) {
+            }
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
     private fun bindCameraUseCases() {
         val cameraProvider = cameraProvider ?: return
-        val preview = Preview.Builder().build().also { it.setSurfaceProvider(binding.previewView.surfaceProvider) }
-        imageCapture = ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY).build()
+        val preview = Preview.Builder().build()
+            .also { it.setSurfaceProvider(binding.previewView.surfaceProvider) }
+        imageCapture =
+            ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                .build()
         val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
         try {
             cameraProvider.unbindAll()
             camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
             showCameraUI()
-        } catch (exc: Exception) {}
+        } catch (exc: Exception) {
+        }
     }
 
     private fun flipCamera() {
-        lensFacing = if (lensFacing == CameraSelector.LENS_FACING_BACK) CameraSelector.LENS_FACING_FRONT else CameraSelector.LENS_FACING_BACK
+        lensFacing =
+            if (lensFacing == CameraSelector.LENS_FACING_BACK) CameraSelector.LENS_FACING_FRONT else CameraSelector.LENS_FACING_BACK
         bindCameraUseCases()
     }
-    
-    private var currentBitmap: Bitmap? = null 
+
+    private var currentBitmap: Bitmap? = null
 
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
@@ -416,25 +486,30 @@ class ScannerFragment : Fragment() {
             binding.previewView.animate().alpha(1.0f).setDuration(100).start()
         }
         imageCapture.takePicture(
-            cameraExecutor, 
-            object : ImageCapture.OnImageCapturedCallback() {
+            cameraExecutor, object : ImageCapture.OnImageCapturedCallback() {
                 override fun onError(exc: ImageCaptureException) {
                     activity?.runOnUiThread {
-                         Toast.makeText(requireContext(), "Capture failed: ${exc.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(), "Capture failed: ${exc.message}", Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
-                @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class) 
+
+                @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
                 override fun onCaptureSuccess(image: androidx.camera.core.ImageProxy) {
                     try {
                         val buffer = image.planes[0].buffer
                         val bytes = ByteArray(buffer.remaining())
                         buffer.get(bytes)
-                        var bitmap = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        var bitmap =
+                            android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                         val rotationDegrees = image.imageInfo.rotationDegrees
                         if (rotationDegrees != 0) {
                             val matrix = android.graphics.Matrix()
                             matrix.postRotate(rotationDegrees.toFloat())
-                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                            bitmap = Bitmap.createBitmap(
+                                bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true
+                            )
                         }
                         image.close()
                         currentBitmap = bitmap
@@ -443,15 +518,15 @@ class ScannerFragment : Fragment() {
                             binding.imgCapturedPreview.setImageBitmap(bitmap)
                         }
                         try {
-                             val savedUri = MediaHelper.saveImageToGallery(requireContext(), bitmap)
-                             activity?.runOnUiThread { currentImageUri = savedUri }
-                        } catch (e: Exception) {}
+                            val savedUri = MediaHelper.saveImageToGallery(requireContext(), bitmap)
+                            activity?.runOnUiThread { currentImageUri = savedUri }
+                        } catch (e: Exception) {
+                        }
                     } catch (e: Exception) {
-                         image.close()
+                        image.close()
                     }
                 }
-            }
-        )
+            })
     }
 
     private fun showPreviewUI(uri: Uri?) {
@@ -463,6 +538,7 @@ class ScannerFragment : Fragment() {
         binding.previewView.visibility = View.GONE
         binding.imgCapturedPreview.visibility = View.VISIBLE
         binding.layoutPreviewActions.visibility = View.VISIBLE
+        binding.btnCrop.visibility = View.VISIBLE
         if (uri != null) {
             Glide.with(this).load(uri).into(binding.imgCapturedPreview)
         }
@@ -476,6 +552,7 @@ class ScannerFragment : Fragment() {
         binding.previewView.visibility = View.VISIBLE
         binding.imgCapturedPreview.visibility = View.GONE
         binding.layoutPreviewActions.visibility = View.GONE
+        binding.btnCrop.visibility = View.GONE
         startScanningAnimation()
     }
 
@@ -488,20 +565,25 @@ class ScannerFragment : Fragment() {
                             binding.btnDiagnose.isEnabled = true
                             binding.btnDiagnose.text = "Diagnose Now"
                         }
+
                         is ScannerUiState.Loading -> {
                             binding.btnDiagnose.isEnabled = false
                             binding.btnDiagnose.text = "Diagnosing..."
                         }
+
                         is ScannerUiState.Success -> {
                             binding.btnDiagnose.isEnabled = true
                             binding.btnDiagnose.text = "Diagnose Now"
                             triggerDiagnoseResult(state.result)
-                            viewModel.resetState() 
+                            viewModel.resetState()
                         }
+
                         is ScannerUiState.Error -> {
                             binding.btnDiagnose.isEnabled = true
                             binding.btnDiagnose.text = "Diagnose Now"
-                            Toast.makeText(requireContext(), "Error: ${state.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(), "Error: ${state.message}", Toast.LENGTH_SHORT
+                            ).show()
                             viewModel.resetState()
                             stopScanningAnimation()
                         }
@@ -511,13 +593,12 @@ class ScannerFragment : Fragment() {
         }
         lifecycleScope.launch {
             viewModel.latestGalleryUri.collect { uri ->
-                 if (uri != null) {
-                      binding.imgGalleryThumbnail.scaleType = android.widget.ImageView.ScaleType.CENTER_CROP
-                      Glide.with(this@ScannerFragment)
-                          .load(uri)
-                          .placeholder(R.color.text_hint)
-                          .into(binding.imgGalleryThumbnail)
-                 }
+                if (uri != null) {
+                    binding.imgGalleryThumbnail.scaleType =
+                        android.widget.ImageView.ScaleType.CENTER_CROP
+                    Glide.with(this@ScannerFragment).load(uri).placeholder(R.color.text_hint)
+                        .into(binding.imgGalleryThumbnail)
+                }
             }
         }
     }
@@ -526,7 +607,10 @@ class ScannerFragment : Fragment() {
         super.onDestroyView()
         scanAnimator?.cancel()
         cameraExecutor.shutdown()
-        try { cameraProvider?.unbindAll() } catch (e: Exception) {}
+        try {
+            cameraProvider?.unbindAll()
+        } catch (e: Exception) {
+        }
         _binding = null
     }
 

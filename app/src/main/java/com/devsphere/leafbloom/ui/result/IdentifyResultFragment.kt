@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -36,6 +35,9 @@ class IdentifyResultFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 1. Adaptive Header
+        setupAdaptiveHeader(binding.headerContainer, binding.ivHeader)
+
         setupUI()
         observeViewModel()
 
@@ -44,10 +46,10 @@ class IdentifyResultFragment : BaseFragment() {
         if (uriString != null) {
             val uri = Uri.parse(uriString)
             
-            // Allow Glide to load image
+            // Allow Glide to load image into header
             Glide.with(this)
                 .load(uri)
-                .into(binding.ivCapturedImage)
+                .into(binding.ivHeader)
 
             // Trigger ID
             viewModel.identifyPlant(uri)
@@ -63,10 +65,39 @@ class IdentifyResultFragment : BaseFragment() {
             findNavController().popBackStack()
         }
 
-        // Setup Bottom Sheet
-        // Access via included binding 'sheetIncluded'
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.sheetIncluded.bottomSheet)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        // Setup Sticky Bottom Sheet (Rubber Band Effect)
+        val bottomSheet = binding.sheetIncluded.bottomSheet
+        val behavior = BottomSheetBehavior.from(bottomSheet)
+        
+        // 1. Allow sheet to stretch (Match Parent)
+        val params = bottomSheet.layoutParams
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT
+        bottomSheet.layoutParams = params
+
+        // 2. Configure 'Resting' State at 75%
+        behavior.isFitToContents = false
+        behavior.halfExpandedRatio = 0.75f
+        behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        
+        // 3. Configure 'Bounce' Limits
+        behavior.isHideable = false
+        behavior.peekHeight = (resources.displayMetrics.heightPixels * 0.20).toInt() // Small peek height for downward drag range
+
+        // 4. Rubber Band Logic
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                // If user drags too high (Expanded) or too low (Collapsed), 
+                // bounce back to the 75% resting point (Half Expanded)
+                if (newState == BottomSheetBehavior.STATE_EXPANDED || 
+                    newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // Optional: visual feedback
+            }
+        })
     }
 
     private fun observeViewModel() {
@@ -104,11 +135,14 @@ class IdentifyResultFragment : BaseFragment() {
             tvCommonName.text = data.bestMatch ?: "Unknown Plant"
             tvScientificName.text = bestMatch.scientificName
             
-            scoreChip.text = "${((bestMatch.score ?: 0.0) * 100).toInt()}% Confidence"
+            // Update Confidence Gauge
+            val confidence = ((bestMatch.score ?: 0.0) * 100).toInt()
+            progressConfidence.setProgress(confidence, true)
+            tvConfidenceValue.text = "$confidence%"
+            
             familyChip.text = bestMatch.family ?: "Unknown Family"
             
-            // Expand BottomSheet
-            BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+            // Sheet is already "expanded" to its fixed 75% peek height, no need to change state
         }
     }
 

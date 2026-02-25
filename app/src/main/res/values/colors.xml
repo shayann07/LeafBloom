@@ -57,6 +57,7 @@
     <color name="accent_humidity_orange">#F28B2B</color>
     <color name="accent_disease_purple">#735CC1</color>
     <color name="accent_success_green">#6CA24C</color>
+    <color name="accent_delete_container">#1AFF6F61</color>
     <color name="progress_track">#E2E2E2</color>
 
     <!-- Optional semantic status -->

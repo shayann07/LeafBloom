@@ -85,7 +85,6 @@
 
     <style name="Theme.LeafBloom" parent="Base.Theme.LeafBloom" />
 
-
     <!-- =========================================================
          TYPOGRAPHY
          ========================================================= -->
@@ -483,6 +482,15 @@
         <item name="trackThickness">@dimen/space_8</item>
         <item name="indicatorInset">@dimen/space_0</item>
         <item name="trackColor">@color/progress_track</item>
+    </style>
+
+    <!-- Bottom Sheet Shape (Top corners only) -->
+    <style name="ShapeAppearance.LeafBloom.BottomSheet" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/radius_24</item>
+        <item name="cornerSizeTopRight">@dimen/radius_24</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
     </style>
 
 </resources>

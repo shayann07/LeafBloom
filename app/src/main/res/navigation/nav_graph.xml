@@ -37,20 +37,32 @@
         <action
             android:id="@+id/action_homeFragment_to_scannerFragment"
             app:destination="@id/scannerFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_historyDetailsFragment"
+            app:destination="@id/historyDetailsFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/scannerFragment"
         android:name="com.devsphere.leafbloom.ui.scanner.ScannerFragment"
         android:label="Scanner Fragment"
-        tools:layout="@layout/fragment_scanner" >
+        tools:layout="@layout/fragment_scanner">
         <action
             android:id="@+id/action_scannerFragment_to_diagnoseResultFragment"
             app:destination="@id/diagnoseResultFragment" />
         <action
             android:id="@+id/action_scannerFragment_to_identifyResultFragment"
             app:destination="@id/identifyResultFragment" />
+        <action
+            android:id="@+id/action_scannerFragment_to_cropFragment"
+            app:destination="@id/cropFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/cropFragment"
+        android:name="com.devsphere.leafbloom.ui.scanner.CropFragment"
+        android:label="Crop Fragment"
+        tools:layout="@layout/fragment_crop" />
 
     <fragment
         android:id="@+id/diagnoseResultFragment"
@@ -63,5 +75,17 @@
         android:name="com.devsphere.leafbloom.ui.result.IdentifyResultFragment"
         android:label="Identify Result"
         tools:layout="@layout/fragment_identify_result" />
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.devsphere.leafbloom.ui.history.HistoryFragment"
+        android:label="History"
+        tools:layout="@layout/fragment_history" />
+
+    <fragment
+        android:id="@+id/historyDetailsFragment"
+        android:name="com.devsphere.leafbloom.ui.history.HistoryDetailsFragment"
+        android:label="History Details"
+        tools:layout="@layout/fragment_history_details" />
 
 </navigation>

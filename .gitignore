@@ -60,17 +60,33 @@ ml_env/
 .env
 
 # Large Model Weights (Training checkpoints)
-# We exclude these to save space, but keep the deployed .ptl file
+# We exclude these to save space, but keep the deployed .ptl file in the app assets
 *.pth
 *.pt
 *.h5
 *.ckpt
 *.onnx
+ml/**/*.ptl
 
-# Datasets (Images)
-ml/Tomato Leaf Disease*/
-ml/dataset/
-/data/
+# Allow packaged models in the Android app assets
+!app/src/main/assets/*.ptl
+
+# Datasets (Images and Annotations)
+ml/**/dataset*/
+ml/**/*dataset*/
+ml/**/*.folder*/
+ml/**/data/
+ml/**/images/
+ml/**/Tomato Dataset/
+ml/**/*.json
+ml/**/*.png
+
+# Training Outputs and Checkpoints
+ml/**/training_output*/
+ml/**/runs/
+ml/**/export/
+ml/**/checkpoints/
+ml/**/Robust_Models/
 
 # IDE specific for Python
 .vscode/

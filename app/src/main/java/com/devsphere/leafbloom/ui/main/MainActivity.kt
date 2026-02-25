@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(bottomNav, navController)
 
         // Disable selecting the spacer
-        bottomNav.menu.findItem(R.id.nav_center_spacer)?.apply {
+        bottomNav.menu.findItem(R.id.center_spacer)?.apply {
             isEnabled = false
             isCheckable = false
         }
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         bottomNav.setOnItemSelectedListener { item ->
-            if (item.itemId == R.id.nav_center_spacer) return@setOnItemSelectedListener false
+            if (item.itemId == R.id.center_spacer) return@setOnItemSelectedListener false
             val handled = NavigationUI.onNavDestinationSelected(item, navController)
             if (handled) moveIndicator(item.itemId)
             handled
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
 
         bottomNav.doOnPreDraw {
             if (bottomNav.selectedItemId == 0) {
-                bottomNav.selectedItemId = R.id.nav_home
+                bottomNav.selectedItemId = R.id.homeFragment
             }
             moveIndicator(bottomNav.selectedItemId)
         }

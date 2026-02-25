@@ -76,7 +76,6 @@
             android:layout_width="@dimen/size_fab"
             android:layout_height="@dimen/size_fab"
             android:layout_marginBottom="@dimen/bottom_nav_fab_bottom_margin"
-            android:contentDescription="@string/nav_scan"
             android:src="@drawable/fab_scan_icon"
             app:layout_constraintBottom_toBottomOf="@id/bottom_nav"
             app:layout_constraintEnd_toEndOf="parent"

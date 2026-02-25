@@ -73,6 +73,12 @@
     <string name="add_note">Add Note</string>
     <string name="export">Export</string>
     <string name="save">Save</string>
+    <string name="sep_dash"> - </string>
+
+    <string name="identifying_plant">Identifying plant…</string>
+    <string name="best_match">Best match</string>
+    <string name="care_tips_soon">Care tips (soon)</string>
+    <string name="care_tips_soon_desc">Automated care tips for identified plants will be available soon in LeafBloom Pro.</string>
 
     <!-- =========================
          Auth
@@ -126,12 +132,6 @@
 
     <string name="walk3_title">Private &amp; secure</string>
     <string name="walk3_subtitle">Scans run on your device first. When online, data syncs securely to improve accuracy and protect your results.</string>
-
-    <string name="nav_home">Home</string>
-    <string name="nav_team">Team</string>
-    <string name="nav_scan">Scan</string>
-    <string name="nav_help">Help</string>
-    <string name="nav_profile">Profile</string>
 
     <!-- Scan / Camera -->
     <string name="capture">Capture</string>

@@ -17,15 +17,17 @@ import androidx.core.graphics.scale
 
 class DiseaseClassifier(private val context: Context) {
 
-    private var module: Module? = null
+    private var leafModule: Module? = null
+    private var diseaseModule: Module? = null
 
     suspend fun loadModel() {
-        if (module != null) return
+        if (leafModule != null && diseaseModule != null) return
         withContext(Dispatchers.IO) {
             try {
-                Log.d("DiseaseClassifier", "Attempting to load model from assets...")
-                module = LiteModuleLoader.load(assetFilePath(context, "tomato_disease_mobile_final.ptl"))
-                Log.d("DiseaseClassifier", "Model loaded successfully.")
+                Log.d("DiseaseClassifier", "Attempting to load models from assets...")
+                leafModule = LiteModuleLoader.load(assetFilePath(context, "leaf_nonleaf_model.ptl"))
+                diseaseModule = LiteModuleLoader.load(assetFilePath(context, "tomato_disease_robust.ptl"))
+                Log.d("DiseaseClassifier", "Sequence Models loaded successfully.")
             } catch (e: IOException) {
                 Log.e("DiseaseClassifier", "Error loading model", e)
             }
@@ -33,8 +35,8 @@ class DiseaseClassifier(private val context: Context) {
     }
 
     fun predict(bitmap: Bitmap): FloatArray {
-        if (module == null) {
-            Log.e("DiseaseClassifier", "Model not loaded, cannot predict.")
+        if (leafModule == null || diseaseModule == null) {
+            Log.e("DiseaseClassifier", "Models not loaded, cannot predict.")
             // Return zeros or handle error upstream. 
             // In a real app we might want to throw or return a specific error state.
             return floatArrayOf(0f, 0f, 0f, 0f, 0f)
@@ -54,63 +56,28 @@ class DiseaseClassifier(private val context: Context) {
         )
         Log.d("DiseaseClassifier", "Input tensor created.")
 
-        // Run inference
-        if (!isPlantLike(resizedBitmap)) {
-            Log.w("DiseaseClassifier", "Image rejected: Not enough plant-like content.")
-            // Return high confidence for UNKNOWN (Index 0), and 0 for others.
-            return floatArrayOf(1.0f, 0f, 0f, 0f, 0f)
+        // 1. Check if Leaf or Non-Leaf
+        val leafOutputTensor = leafModule!!.forward(IValue.from(inputTensor)).toTensor()
+        val leafScores = leafOutputTensor.dataAsFloatArray
+        
+        // Index 0: Leaf, Index 1: Non-Leaf
+        Log.d("DiseaseClassifier", "Leaf Model Scores (Leaf: ${leafScores[0]}, Non-Leaf: ${leafScores[1]})")
+        
+        if (leafScores[1] > leafScores[0]) {
+            Log.w("DiseaseClassifier", "Image rejected: Detected as Non-Leaf.")
+            // Return high confidence for UNKNOWN (Index 0)
+            return floatArrayOf(leafScores[1], 0f, 0f, 0f, 0f)
         }
 
-        val outputTensor = module!!.forward(IValue.from(inputTensor)).toTensor()
-        val scores = outputTensor.dataAsFloatArray
-        Log.d("DiseaseClassifier", "Inference complete. Scores: ${scores.joinToString(", ")}")
+        // 2. Identify the Disease
+        val diseaseOutputTensor = diseaseModule!!.forward(IValue.from(inputTensor)).toTensor()
+        val dScores = diseaseOutputTensor.dataAsFloatArray
+        Log.d("DiseaseClassifier", "Disease Inference complete. Scores: ${dScores.joinToString(", ")}")
 
-        // NOT applying Softmax here as it is already baked into the model
-        return scores
-    }
-
-    /**
-     * Heuristic check: Does the image contain enough Green/Yellow/Brown pixels?
-     * This filters out random objects like fans, keyboards, walls, etc.
-     */
-    private fun isPlantLike(bitmap: Bitmap): Boolean {
-        var plantPixelCount = 0
-        val totalPixels = bitmap.width * bitmap.height
-        val pixels = IntArray(totalPixels)
-        bitmap.getPixels(pixels, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
-
-        val hsv = FloatArray(3)
-        // HSV Ranges for Plant-like colors (Green, Yellow, Brown/Orange)
-        // Hue is [0 .. 360)
-        // Green: ~60-180
-        // Yellow: ~40-60
-        // Brown/Orange: ~10-40 (often low brightness/saturation, but checking Hue covers the base)
-        
-        // We generally look for Hue between 25 and 185
-        // Saturation should be > 10% (avoid pure greys)
-        // Value/Brightness should be > 15% (avoid pitch black)
-
-        for (pixel in pixels) {
-            android.graphics.Color.colorToHSV(pixel, hsv)
-            val hue = hsv[0]
-            val sat = hsv[1]
-            val valBr = hsv[2]
-
-            // Conservative Check:
-            // Hue: 25 (Brownish/Orange) to 185 (Cyan/Dark Green)
-            // Sat: > 0.15 (Not grey)
-            // Val: > 0.20 (Not black)
-            if (hue in 25f..185f && sat > 0.15f && valBr > 0.20f) {
-                plantPixelCount++
-            }
-        }
-
-        val plantRatio = plantPixelCount.toFloat() / totalPixels
-        Log.d("DiseaseClassifier", "Plant Pixel Ratio: $plantRatio")
-        
-        // Threshold: at least 5% of the pixels must be plant-like.
-        // This is low enough to catch macro shots of dry spots but high enough to filter a white fan.
-        return plantRatio > 0.05f 
+        // Map the 4-class output to the 5-element array expected by the app.
+        // App Mapping: 0: UNKNOWN, 1: EARLY_BLIGHT, 2: HEALTHY, 3: LATE_BLIGHT, 4: SEPTORIA
+        // Model Mapping: 0: Early Blight, 1: Healthy, 2: Late Blight, 3: Septoria
+        return floatArrayOf(0f, dScores[0], dScores[1], dScores[2], dScores[3])
     }
 
     @Throws(IOException::class)

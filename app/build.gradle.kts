@@ -85,4 +85,5 @@ dependencies {
     implementation(libs.pytorch.android.lite)
     implementation(libs.pytorch.android.torchvision.lite)
     implementation(libs.androidx.exifinterface)
+    implementation(libs.imagecropper)
 }

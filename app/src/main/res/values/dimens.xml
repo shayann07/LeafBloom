@@ -7,6 +7,7 @@
     <dimen name="space_4">4dp</dimen>
     <dimen name="space_6">6dp</dimen>
     <dimen name="space_8">8dp</dimen>
+    <dimen name="space_9">9dp</dimen>
     <dimen name="space_10">10dp</dimen>
     <dimen name="space_12">12dp</dimen>
     <dimen name="space_14">14dp</dimen>
@@ -80,6 +81,8 @@
     <!-- Auth -->
     <dimen name="auth_header_max_width">520dp</dimen> <!-- ~512dp figma -->
     <dimen name="auth_header_height">280dp</dimen>   <!-- your existing -->
+    <dimen name="result_header_width">356dp</dimen>   <!-- your existing -->
+    <dimen name="result_header_max_width">520dp</dimen>
 
     <!-- Walkthrough -->
     <dimen name="walk_text_width">280dp</dimen>
@@ -116,5 +119,7 @@
 
     <!-- FAB glow -->
     <dimen name="fab_glow_size">130dp</dimen>
+
+    <dimen name="identify_sheet_peek_height">300dp</dimen>
 
 </resources>

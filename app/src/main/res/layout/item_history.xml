@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/space_10"
+    android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:background="?attr/selectableItemBackground">
+    android:padding="@dimen/space_10">
 
     <!-- Plant thumbnail -->
     <com.google.android.material.card.MaterialCardView
@@ -30,6 +30,40 @@
             android:src="@drawable/history_item" />
     </com.google.android.material.card.MaterialCardView>
 
+    <!-- Delete button (right) -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/btnDelete"
+        android:layout_width="@dimen/space_32"
+        android:layout_height="@dimen/space_32"
+        app:cardBackgroundColor="@color/accent_delete_container"
+        app:cardCornerRadius="@dimen/radius_12"
+        app:cardElevation="@dimen/space_0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:padding="@dimen/space_8"
+            android:src="@drawable/delete_icon"
+            app:tint="@color/status_error"
+            tools:tint="@color/accent_fertilizer_coral" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Date (top-right, before delete) -->
+    <TextView
+        android:id="@+id/tvHistoryDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/space_12"
+        android:textAppearance="?attr/textAppearanceLabelSmall"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        app:layout_constraintEnd_toStartOf="@id/btnDelete"
+        app:layout_constraintTop_toTopOf="@id/tvHistoryPlant"
+        tools:text="25 November 2026, 12:00 am" />
+
     <!-- Plant name -->
     <TextView
         android:id="@+id/tvHistoryPlant"
@@ -39,25 +73,52 @@
         android:layout_marginEnd="@dimen/space_8"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="?attr/colorPrimary"
         android:textAppearance="?attr/textAppearanceTitleMedium"
+        android:textColor="?attr/colorPrimary"
         app:layout_constraintEnd_toStartOf="@id/tvHistoryDate"
         app:layout_constraintStart_toEndOf="@id/historyThumb"
         app:layout_constraintTop_toTopOf="@id/historyThumb"
         tools:text="Anthurium" />
 
-    <!-- Status text -->
-    <TextView
-        android:id="@+id/tvHistoryStatus"
-        android:layout_width="wrap_content"
+    <!-- Status row: "Healthy - 98%" (split so % can be green) -->
+    <LinearLayout
+        android:id="@+id/statusRow"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_12"
         android:layout_marginTop="@dimen/space_2"
-        android:text="@string/healthy"
-        android:textAppearance="?attr/textAppearanceBodySmall"
-        android:textColor="?attr/colorOnSurfaceVariant"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@id/btnDelete"
         app:layout_constraintStart_toEndOf="@id/historyThumb"
-        app:layout_constraintTop_toBottomOf="@id/tvHistoryPlant" />
+        app:layout_constraintTop_toBottomOf="@id/tvHistoryPlant">
+
+        <TextView
+            android:id="@+id/tvHistoryStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/healthy"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="Healthy" />
+
+        <TextView
+            android:id="@+id/tvDash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sep_dash"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text=" - " />
+
+        <TextView
+            android:id="@+id/tvHistoryConfidence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorPrimary"
+            tools:text="98%" />
+    </LinearLayout>
 
     <!-- Status indicators row -->
     <LinearLayout
@@ -69,44 +130,21 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintStart_toEndOf="@id/historyThumb"
-        app:layout_constraintTop_toBottomOf="@id/tvHistoryStatus">
+        app:layout_constraintTop_toBottomOf="@id/statusRow">
 
         <ImageView
-            android:layout_width="@dimen/size_icon_18"
-            android:layout_height="@dimen/size_icon_18"
+            android:layout_width="@dimen/space_20"
+            android:layout_height="@dimen/space_20"
+            android:layout_gravity="center"
             android:contentDescription="@null"
             android:src="@drawable/drop_icon" />
 
         <ImageView
-            android:layout_width="@dimen/size_icon_18"
-            android:layout_height="@dimen/size_icon_18"
-            android:layout_marginStart="@dimen/space_4"
+            android:layout_width="@dimen/space_20"
+            android:layout_height="@dimen/space_20"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/space_6"
             android:contentDescription="@null"
-            android:src="@drawable/sun_icon" />
+            android:src="@drawable/wind_icon" />
     </LinearLayout>
-
-    <!-- Date -->
-    <TextView
-        android:id="@+id/tvHistoryDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/space_8"
-        android:textColor="?attr/colorOnSurfaceVariant"
-        android:textAppearance="?attr/textAppearanceLabelSmall"
-        app:layout_constraintEnd_toStartOf="@id/ivHistoryArrow"
-        app:layout_constraintTop_toTopOf="@id/tvHistoryPlant"
-        tools:text="25 November 2026, 12:00 am" />
-
-    <!-- Arrow icon -->
-    <ImageView
-        android:id="@+id/ivHistoryArrow"
-        android:layout_width="@dimen/size_icon_14"
-        android:layout_height="@dimen/size_icon_14"
-        android:contentDescription="@null"
-        android:src="@drawable/arrow_right"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="?attr/colorOnSurfaceVariant" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

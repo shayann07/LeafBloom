@@ -367,23 +367,12 @@
     </style>
 
     <!-- =========================================================
-     SHAPES – IMAGE CLIPPING
-     ========================================================= -->
+         SHAPES – IMAGE CLIPPING
+         ========================================================= -->
 
-    <!-- Home header: rounded ONLY at bottom -->
-    <style name="ShapeAppearance.LeafBloom.HomeHeader"
-        parent="ShapeAppearance.Material3.LargeComponent">
-
+    <style name="ShapeAppearance.LeafBloom.AuthHeader" parent="ShapeAppearance.Material3.LargeComponent">
         <item name="cornerFamily">rounded</item>
-
-        <!-- top stays sharp -->
-        <item name="cornerSizeTopLeft">0dp</item>
-        <item name="cornerSizeTopRight">0dp</item>
-
-        <!-- bottom rounded -->
-        <item name="cornerSizeBottomLeft">28dp</item>
-        <item name="cornerSizeBottomRight">28dp</item>
-
+        <item name="cornerSize">@fraction/corner_50</item>
     </style>
 
     <!-- =========================================================
@@ -448,13 +437,6 @@
     </style>
 
 
-    <!-- TRUE circular mask -->
-    <style name="ShapeAppearance.LeafBloom.AuthHeader" parent="ShapeAppearance.Material3.LargeComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">50%</item>
-    </style>
-
-
     <!-- =========================================================
          HOME SCREEN SPECIFIC STYLES
          ========================================================= -->
@@ -501,6 +483,15 @@
         <item name="trackThickness">@dimen/space_8</item>
         <item name="indicatorInset">@dimen/space_0</item>
         <item name="trackColor">@color/progress_track</item>
+    </style>
+
+    <!-- Bottom Sheet Shape (Top corners only) -->
+    <style name="ShapeAppearance.LeafBloom.BottomSheet" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/radius_24</item>
+        <item name="cornerSizeTopRight">@dimen/radius_24</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
     </style>
 
 </resources>

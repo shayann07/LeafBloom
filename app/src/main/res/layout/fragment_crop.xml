@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <com.canhub.cropper.CropImageView
+        android:id="@+id/cropImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cropAspectRatioX="1"
+        app:cropAspectRatioY="1"
+        app:cropBorderCornerColor="@color/color_primary"
+        app:cropBorderLineColor="@color/color_primary"
+        app:cropFixAspectRatio="true"
+        app:cropGuidelines="on"
+        app:cropGuidelinesColor="#223106" />
+
+    <!-- Horizontal Guidelines -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/safe_margin_v" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="@dimen/safe_margin_v" />
+
+    <!-- Vertical Guidelines -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/safe_margin_h" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/safe_margin_h" />
+
+    <!-- Overlay Container matching Scanner Margins -->
+    <LinearLayout
+        android:id="@+id/wrappedContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toTopOf="@id/guideline_top">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Back Button native MaterialCardView -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnBack"
+                android:layout_width="@dimen/space_40"
+                android:layout_height="@dimen/space_40"
+                android:layout_marginTop="@dimen/space_24"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/radius_20"
+                app:cardElevation="@dimen/space_0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/space_12"
+                    android:src="@drawable/back_icon"
+                    app:tint="@color/text_primary" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Native Crop checkmark Button -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnCrop"
+                android:layout_width="@dimen/space_40"
+                android:layout_height="@dimen/space_40"
+                android:layout_marginTop="@dimen/space_24"
+                app:cardBackgroundColor="@color/brand_green_container"
+                app:cardCornerRadius="@dimen/radius_20"
+                app:cardElevation="@dimen/space_0"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/space_9"
+                    android:src="@drawable/ic_check"
+                    app:tint="@color/brand_green_primary_dark" />
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

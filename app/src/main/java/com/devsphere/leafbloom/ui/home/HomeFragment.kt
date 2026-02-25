@@ -144,11 +144,17 @@ class HomeFragment : BaseFragment() {
 
             // Initialize History RecyclerView
             val historyItems = listOf(
-                HistoryItem("Rose", "Healthy", "25 November, 12:00 am", R.drawable.history_item),
-                HistoryItem("Lily", "Healthy", "25 November, 12:00 am", R.drawable.history_item),
-                HistoryItem("Apple", "Healthy", "25 November, 12:00 am", R.drawable.history_item)
+                HistoryItem(
+                    "Rose", "Healthy", 37, "25 November, 12:00 am", R.drawable.history_item
+                ), HistoryItem(
+                    "Lily", "Healthy", 37, "25 November, 12:00 am", R.drawable.history_item
+                ), HistoryItem(
+                    "Apple", "Healthy", 37, "25 November, 12:00 am", R.drawable.history_item
+                )
             )
-            val historyAdapter = HistoryAdapter(historyItems)
+            val historyAdapter = HistoryAdapter(historyItems) {
+                findNavController().navigate(R.id.action_homeFragment_to_historyDetailsFragment)
+            }
             rvHistory.layoutManager = LinearLayoutManager(requireContext())
             rvHistory.adapter = historyAdapter
         }

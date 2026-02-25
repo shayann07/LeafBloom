@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomSheet"
+    style="@style/LeafBloomCard.Large"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="@dimen/identify_sheet_peek_height"
+    app:cardElevation="@dimen/space_0"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="false"
+    app:contentPadding="0dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    app:shapeAppearanceOverlay="@style/ShapeAppearance.LeafBloom.BottomSheet">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="false"
+        android:scrollbars="none">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/safe_margin_v">
+
+            <!-- Vertical guidelines (your global pattern) -->
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_start"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="@dimen/safe_margin_h" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_end"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="@dimen/safe_margin_h" />
+
+            <!-- Drag Handle -->
+            <View
+                android:id="@+id/dragHandle"
+                android:layout_width="@dimen/space_40"
+                android:layout_height="@dimen/space_4"
+                android:layout_marginTop="@dimen/space_12"
+                android:background="@drawable/bottom_sheet_handle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Title (dynamic later; preview via tools) -->
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_20"
+                android:gravity="center"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/dragHandle"
+                tools:text="Solanum lycopersicum (Tomato)" />
+
+            <!-- Overview -->
+            <TextView
+                android:id="@+id/tvOverviewLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_24"
+                android:text="@string/overview"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+            <TextView
+                android:id="@+id/tvOverviewBody"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_8"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/tvOverviewLabel"
+                tools:text="Tomato is a widely cultivated plant valued for its fruit. Keep consistent moisture, bright light, and good airflow." />
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/card_stroke"
+                android:layout_marginTop="@dimen/space_24"
+                android:background="@color/divider"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/tvOverviewBody" />
+
+            <!-- Symptoms -->
+            <TextView
+                android:id="@+id/tvSymptomsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_24"
+                android:text="@string/symptoms"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/divider1" />
+
+            <!-- 2x2 grid using clean horizontal chains (no percent hacks) -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/gridContainer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_8"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/tvSymptomsLabel">
+
+                <include
+                    android:id="@+id/cardWater"
+                    layout="@layout/item_symptom_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/space_8"
+                    app:layout_constraintEnd_toStartOf="@id/cardSunlight"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <include
+                    android:id="@+id/cardSunlight"
+                    layout="@layout/item_symptom_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_8"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/cardWater"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <include
+                    android:id="@+id/cardFertilizer"
+                    layout="@layout/item_symptom_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_16"
+                    android:layout_marginEnd="@dimen/space_8"
+                    app:layout_constraintEnd_toStartOf="@id/cardHumidity"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cardWater" />
+
+                <include
+                    android:id="@+id/cardHumidity"
+                    layout="@layout/item_symptom_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_8"
+                    android:layout_marginTop="@dimen/space_16"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/cardFertilizer"
+                    app:layout_constraintTop_toBottomOf="@id/cardSunlight" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/card_stroke"
+                android:layout_marginTop="@dimen/space_24"
+                android:background="@color/divider"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/gridContainer" />
+
+            <!-- Treatment -->
+            <TextView
+                android:id="@+id/tvTreatmentLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_24"
+                android:text="@string/treatment"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/divider2" />
+
+            <TextView
+                android:id="@+id/tvTreatmentBody"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_8"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/tvTreatmentLabel"
+                tools:text="Increase airflow, remove affected leaves, and avoid wetting foliage. Consider appropriate treatment based on diagnosis." />
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/card_stroke"
+                android:layout_marginTop="@dimen/space_24"
+                android:background="@color/divider"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/tvTreatmentBody" />
+
+            <!-- Prevention -->
+            <TextView
+                android:id="@+id/tvPreventionLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_24"
+                android:text="@string/prevention"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/divider3" />
+
+            <TextView
+                android:id="@+id/tvPreventionBody"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_8"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/tvPreventionLabel"
+                tools:text="Water at the base, keep spacing between plants, and maintain consistent light and nutrition. Monitor regularly." />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</com.google.android.material.card.MaterialCardView>

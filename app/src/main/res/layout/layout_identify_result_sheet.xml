@@ -1,105 +1,222 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottomSheet"
+    style="@style/LeafBloomCard.Large"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bottom_sheet_bg"
-    android:padding="24dp"
-    app:behavior_peekHeight="300dp"
     app:behavior_hideable="false"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+    app:behavior_peekHeight="@dimen/identify_sheet_peek_height"
+    app:cardElevation="@dimen/space_0"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="false"
+    app:contentPadding="0dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    app:shapeAppearanceOverlay="@style/ShapeAppearance.LeafBloom.BottomSheet">
 
-    <LinearLayout
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:fillViewport="false"
+        android:scrollbars="none">
 
-        <!-- Handle Bar -->
-        <View
-            android:layout_width="40dp"
-            android:layout_height="4dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/bottom_sheet_handle" />
-
-        <!-- Content Container -->
-        <LinearLayout
-            android:id="@+id/contentLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="24dp">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tvMatchLimit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Best Match"
-                android:textAppearance="?attr/textAppearanceLabelMedium"
-                android:textColor="?attr/colorOnSurfaceVariant" />
+            <!-- Guidelines (consistent with rest of app) -->
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_start"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="@dimen/safe_margin_h" />
 
-            <TextView
-                android:id="@+id/tvCommonName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                tools:text="Tomato"
-                android:textAppearance="?attr/textAppearanceDisplaySmall"
-                android:textColor="?attr/colorOnSurface"
-                android:textStyle="bold" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_end"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="@dimen/safe_margin_h" />
 
-            <TextView
-                android:id="@+id/tvScientificName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Solanum lycopersicum"
-                android:textStyle="italic"
-                android:textAppearance="?attr/textAppearanceBodyLarge"
-                android:textColor="?attr/colorOnSurfaceVariant" />
-            
-            <com.google.android.material.chip.ChipGroup
-                 android:id="@+id/chipGroupTags"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_marginTop="12dp">
-                 
-                 <com.google.android.material.chip.Chip
-                     android:id="@+id/scoreChip"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     tools:text="98% Match"
-                     app:chipBackgroundColor="@color/surface_variant" />
-                     
-                 <com.google.android.material.chip.Chip
-                     android:id="@+id/familyChip"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     tools:text="Solanaceae"
-                     app:chipBackgroundColor="@color/surface_variant" />
-
-            </com.google.android.material.chip.ChipGroup>
-
+            <!-- Drag Handle -->
             <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?attr/colorOutlineVariant"
-                android:layout_marginVertical="24dp" />
+                android:id="@+id/dragHandle"
+                android:layout_width="@dimen/space_40"
+                android:layout_height="@dimen/space_4"
+                android:layout_marginTop="@dimen/space_12"
+                android:background="@drawable/bottom_sheet_handle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Result Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardResult"
+                style="@style/LeafBloomCard.Medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_20"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/dragHandle">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/card_padding">
+
+                    <!-- Confidence Gauge -->
+                    <FrameLayout
+                        android:id="@+id/gaugeHolder"
+                        android:layout_width="@dimen/space_72"
+                        android:layout_height="@dimen/space_72"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/progressConfidence"
+                            style="@style/LeafBloomGauge"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:indeterminate="false"
+                            android:max="100"
+                            android:progress="37"
+                            app:indicatorColor="@color/accent_success_green"
+                            app:indicatorSize="@dimen/space_72"
+                            app:trackThickness="@dimen/space_6" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tvConfidenceValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textStyle="bold"
+                            tools:text="98%" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tvMatchLimit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/best_match"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tvCommonName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_4"
+                        android:layout_marginEnd="@dimen/space_12"
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        app:layout_constraintEnd_toStartOf="@id/gaugeHolder"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvMatchLimit"
+                        tools:text="Tomato" />
+
+                    <TextView
+                        android:id="@+id/tvScientificName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_2"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:textStyle="italic"
+                        app:layout_constraintEnd_toEndOf="@id/tvCommonName"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvCommonName"
+                        tools:text="Solanum lycopersicum" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/familyChip"
+                        style="@style/LeafChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_12"
+                        android:checkable="false"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvScientificName"
+                        tools:text="Solanaceae" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Care Tips Title -->
             <TextView
+                android:id="@+id/tvCareTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Care Tips (Soon)"
-                android:textAppearance="?attr/textAppearanceTitleMedium" />
-            
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Automated care tips for identified plants will be available soon in LeafBloom Pro."
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="?attr/colorOnSurfaceVariant" />
+                android:layout_marginTop="@dimen/space_24"
+                android:text="@string/care_tips_soon"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/cardResult" />
 
-        </LinearLayout>
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+            <!-- Care Tips Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCare"
+                style="@style/LeafBloomCard.Medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_12"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/tvCareTitle">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_padding">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/size_icon_18"
+                            android:layout_height="@dimen/size_icon_18"
+                            android:contentDescription="@null"
+                            android:src="@drawable/sun_icon" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/space_6"
+                            android:text="@string/care_tips_soon"
+                            android:textAppearance="?attr/textAppearanceTitleSmall"
+                            android:textColor="?attr/colorOnSurface" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvCareBody"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_8"
+                        android:text="@string/care_tips_soon_desc"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</com.google.android.material.card.MaterialCardView>

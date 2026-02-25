@@ -131,6 +131,27 @@
                     app:tint="@color/text_primary" />
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Crop Button (Top Right, Hidden by default) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnCrop"
+                android:layout_width="@dimen/space_40"
+                android:layout_height="@dimen/space_40"
+                android:layout_marginTop="@dimen/space_24"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/radius_20"
+                app:cardElevation="@dimen/space_0"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="gone">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/space_10"
+                    android:src="@drawable/crop_icon"
+                    app:tint="@color/text_primary" />
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- Top Pill Instruction (Camera Mode) -->
             <TextView
                 android:id="@+id/txtInstruction"
