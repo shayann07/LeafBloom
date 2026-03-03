@@ -80,11 +80,12 @@
         <item name="chipStyle">@style/LeafChip</item>
         <item name="textInputStyle">@style/LeafTextInputLayout</item>
         <item name="editTextStyle">@style/LeafTextInputEditText</item>
+        <item name="snackbarStyle">@style/LeafBloomSnackbar</item>
+        <item name="snackbarTextViewStyle">@style/LeafBloomSnackbarText</item>
 
     </style>
 
     <style name="Theme.LeafBloom" parent="Base.Theme.LeafBloom" />
-
 
     <!-- =========================================================
          TYPOGRAPHY
@@ -492,6 +493,24 @@
         <item name="cornerSizeTopRight">@dimen/radius_24</item>
         <item name="cornerSizeBottomLeft">0dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <!-- =========================================================
+         SNACKBAR
+         ========================================================= -->
+    <style name="LeafBloomSnackbar" parent="Widget.Material3.Snackbar">
+        <item name="android:backgroundTint">@color/surface_variant</item>
+        <item name="backgroundTint">@color/surface_variant</item>
+        <item name="android:layout_margin">@dimen/safe_margin_h</item>
+        <item name="android:elevation">12dp</item>
+        <item name="elevation">12dp</item>
+    </style>
+
+    <style name="LeafBloomSnackbarText" parent="Widget.Material3.Snackbar.TextView">
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="fontFamily">@font/poppins_semibold</item>
+        <item name="android:textColor">@color/brand_green_primary_dark</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
 </resources>

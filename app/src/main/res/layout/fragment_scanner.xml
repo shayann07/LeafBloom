@@ -142,6 +142,7 @@
                 app:cardElevation="@dimen/space_0"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:visibility="gone"
                 tools:visibility="gone">
 
                 <ImageView

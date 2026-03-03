@@ -15,27 +15,26 @@ import java.io.FileOutputStream
 import java.io.IOException
 import androidx.core.graphics.scale
 
-class DiseaseClassifier(private val context: Context) {
+class DiseaseClassifier(private val context: Context, private val leafValidator: LeafValidator) {
 
-    private var leafModule: Module? = null
     private var diseaseModule: Module? = null
 
     suspend fun loadModel() {
-        if (leafModule != null && diseaseModule != null) return
+        if (diseaseModule != null) return
         withContext(Dispatchers.IO) {
             try {
-                Log.d("DiseaseClassifier", "Attempting to load models from assets...")
-                leafModule = LiteModuleLoader.load(assetFilePath(context, "leaf_nonleaf_model.ptl"))
+                Log.d("DiseaseClassifier", "Attempting to load disease model from assets...")
+                leafValidator.loadModel()
                 diseaseModule = LiteModuleLoader.load(assetFilePath(context, "tomato_disease_robust.ptl"))
-                Log.d("DiseaseClassifier", "Sequence Models loaded successfully.")
+                Log.d("DiseaseClassifier", "Disease Models loaded successfully.")
             } catch (e: IOException) {
                 Log.e("DiseaseClassifier", "Error loading model", e)
             }
         }
     }
 
-    fun predict(bitmap: Bitmap): FloatArray {
-        if (leafModule == null || diseaseModule == null) {
+    suspend fun predict(bitmap: Bitmap): FloatArray {
+        if (diseaseModule == null) {
             Log.e("DiseaseClassifier", "Models not loaded, cannot predict.")
             // Return zeros or handle error upstream. 
             // In a real app we might want to throw or return a specific error state.
@@ -43,6 +42,13 @@ class DiseaseClassifier(private val context: Context) {
         }
 
         Log.d("DiseaseClassifier", "Starting prediction. Input bitmap size: ${bitmap.width}x${bitmap.height}")
+
+        // 1. Check if Leaf or Non-Leaf via LeafValidator
+        val isValid = leafValidator.isValidLeaf(bitmap)
+        if (!isValid) {
+            // Return high confidence for UNKNOWN (Index 0)
+            return floatArrayOf(1.0f, 0f, 0f, 0f, 0f)
+        }
 
         // Resize to 224x224 as required by the model
         val resizedBitmap = bitmap.scale(224, 224)
@@ -55,19 +61,6 @@ class DiseaseClassifier(private val context: Context) {
             TensorImageUtils.TORCHVISION_NORM_STD_RGB
         )
         Log.d("DiseaseClassifier", "Input tensor created.")
-
-        // 1. Check if Leaf or Non-Leaf
-        val leafOutputTensor = leafModule!!.forward(IValue.from(inputTensor)).toTensor()
-        val leafScores = leafOutputTensor.dataAsFloatArray
-        
-        // Index 0: Leaf, Index 1: Non-Leaf
-        Log.d("DiseaseClassifier", "Leaf Model Scores (Leaf: ${leafScores[0]}, Non-Leaf: ${leafScores[1]})")
-        
-        if (leafScores[1] > leafScores[0]) {
-            Log.w("DiseaseClassifier", "Image rejected: Detected as Non-Leaf.")
-            // Return high confidence for UNKNOWN (Index 0)
-            return floatArrayOf(leafScores[1], 0f, 0f, 0f, 0f)
-        }
 
         // 2. Identify the Disease
         val diseaseOutputTensor = diseaseModule!!.forward(IValue.from(inputTensor)).toTensor()

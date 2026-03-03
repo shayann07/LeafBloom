@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+
 import com.devsphere.leafbloom.R
 import androidx.navigation.fragment.findNavController
 import com.devsphere.leafbloom.databinding.FragmentDiagnoseResultBinding
@@ -32,13 +32,13 @@ class DiagnoseResultFragment : BaseFragment() {
 
         // Bottom actions (wire later)
         binding.actionAddNote.setOnClickListener {
-            Toast.makeText(requireContext(), getString(R.string.add_note), Toast.LENGTH_SHORT).show()
+            com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(requireView(), getString(R.string.add_note), com.google.android.material.snackbar.Snackbar.LENGTH_SHORT, com.devsphere.leafbloom.util.SnackbarUtils.Type.INFO)
         }
         binding.actionExport.setOnClickListener {
-            Toast.makeText(requireContext(), getString(R.string.export), Toast.LENGTH_SHORT).show()
+            com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(requireView(), getString(R.string.export), com.google.android.material.snackbar.Snackbar.LENGTH_SHORT, com.devsphere.leafbloom.util.SnackbarUtils.Type.INFO)
         }
         binding.actionSave.setOnClickListener {
-            Toast.makeText(requireContext(), getString(R.string.save), Toast.LENGTH_SHORT).show()
+            com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(requireView(), getString(R.string.save), com.google.android.material.snackbar.Snackbar.LENGTH_SHORT, com.devsphere.leafbloom.util.SnackbarUtils.Type.INFO)
         }
 
         // Retrieve data
@@ -70,6 +70,13 @@ class DiagnoseResultFragment : BaseFragment() {
             highlightWinner(scoreHealthy, binding.tvHealthyPercent)
             highlightWinner(scoreLate, binding.tvLateBlightPercent)
             highlightWinner(scoreSeptoria, binding.tvSeptoriaPercent)
+
+            // Dynamic tips based on predicted disease
+            val diseaseInfo = com.devsphere.leafbloom.data.model.DiseaseInfo.get(predictedName)
+            binding.tvTip1Title.text = getString(diseaseInfo.tip1TitleRes)
+            binding.tvTip1Desc.text = getString(diseaseInfo.tip1DescRes)
+            binding.tvTip2Title.text = getString(diseaseInfo.tip2TitleRes)
+            binding.tvTip2Desc.text = getString(diseaseInfo.tip2DescRes)
 
         } else {
             // Fallback for preview

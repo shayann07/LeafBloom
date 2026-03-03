@@ -494,7 +494,7 @@
                                 android:layout_marginHorizontal="@dimen/card_padding"
 
                                 android:layout_marginTop="@dimen/card_padding"
-                                android:text="@string/feature_iot_watering"
+                                android:text="@string/feature_pest"
                                 android:textAppearance="?attr/textAppearanceTitleSmall"
                                 android:textColor="?attr/colorOnPrimaryContainer" />
 
@@ -503,7 +503,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/card_padding"
                                 android:layout_marginTop="@dimen/space_4"
-                                android:text="@string/feature_iot_watering_desc"
+                                android:text="@string/feature_pest_desc"
                                 android:textAppearance="?attr/textAppearanceLabelSmall"
                                 android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -543,7 +543,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginHorizontal="@dimen/card_padding"
                                 android:layout_marginTop="@dimen/card_padding"
-                                android:text="@string/feature_reminders"
+                                android:text="@string/feature_ripeness"
                                 android:textAppearance="?attr/textAppearanceTitleSmall"
                                 android:textColor="?attr/colorOnPrimaryContainer" />
 
@@ -552,7 +552,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/card_padding"
                                 android:layout_marginTop="@dimen/space_4"
-                                android:text="@string/feature_reminders_desc"
+                                android:text="@string/feature_ripeness_desc"
                                 android:textAppearance="?attr/textAppearanceLabelSmall"
                                 android:textColor="?attr/colorOnSurfaceVariant" />
 

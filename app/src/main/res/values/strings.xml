@@ -25,11 +25,11 @@
     <string name="feature_identify">Identify</string>
     <string name="feature_identify_desc">Recognize a plant</string>
 
-    <string name="feature_iot_watering">IoT Watering</string>
-    <string name="feature_iot_watering_desc">Optimize watering for your plant</string>
+    <string name="feature_pest">Pest ID</string>
+    <string name="feature_pest_desc">Identify insects and pests</string>
 
-    <string name="feature_reminders">Reminders</string>
-    <string name="feature_reminders_desc">Stay on top of your plant care</string>
+    <string name="feature_ripeness">Ripeness Check</string>
+    <string name="feature_ripeness_desc">Check tomato ripeness level</string>
 
     <string name="history">History</string>
     <string name="healthy">Healthy</string>
@@ -45,7 +45,11 @@
          Scan / Camera
          ========================= -->
     <string name="point_camera_at_plant">Point Your Camera At Plant</string>
+    <string name="point_camera_at_pest">Point Your Camera At Pest</string>
+    <string name="point_camera_at_tomato">Point Your Camera At Tomato</string>
     <string name="diagnose_now">Diagnose Now</string>
+    <string name="identify_pest">Identify Pest</string>
+    <string name="check_ripeness">Check Ripeness</string>
     <string name="retake_picture">Retake Picture</string>
 
     <!-- =========================
@@ -66,6 +70,30 @@
          Result
          ========================= -->
     <string name="diagnose_result">Diagnose Result</string>
+    <string name="pest_result_title">Identify Pest</string>
+    <string name="ripeness_result_title">Ripeness Check</string>
+    <string name="pest_advice">Pest Advice</string>
+    <string name="immediate_action">Immediate Action</string>
+    <string name="pest_isolate_desc">Isolate the affected plant to prevent the pest from spreading. Consider using organic pest control methods like neem oil or insecticidal soap based on the pest type.</string>
+    <string name="threat_level_high">Threat Level: High</string>
+    <string name="threat_level_moderate">Threat Level: Moderate</string>
+    <string name="unknown_pest">Unknown Pest</string>
+    <string name="pest_species">Pest Species</string>
+
+    <string name="storage_advice">Storage Advice</string>
+    <string name="countertop_storage">Countertop Storage</string>
+    <string name="tomato_storage_desc">Never refrigerate unripe tomatoes; keep them stem-down on the counter away from direct sunlight.</string>
+    <string name="ripe_tomato">Ripe Tomato</string>
+    <string name="unripe_tomato">Unripe Tomato</string>
+    <string name="unknown_stage">Not a Tomato</string>
+    <string name="solanum_lycopersicum">Solanum lycopersicum</string>
+    <string name="ready_to_harvest">Ready to Harvest</string>
+    <string name="keep_on_vine">Keep on Vine</string>
+    <string name="needs_inspection">Unrecognized Object</string>
+    <string name="stage_unripe">Unripe</string>
+    <string name="stage_unknown">Unknown</string>
+    <string name="stage_ripe">Ripe</string>
+
     <string name="early_blight">Early Blight</string>
     <string name="late_blight">Late Blight</string>
     <string name="septoria">Septoria</string>
@@ -167,5 +195,85 @@
 
     <string name="tip_water_at_base_title">Water at the Base</string>
     <string name="tip_water_at_base_desc">Only water at the soil level. Wet leaves make the infection worse.</string>
+
+    <!-- =========================
+         Pest Metadata
+         ========================= -->
+    <!-- Species -->
+    <string name="pest_species_ants">Formicidae</string>
+    <string name="pest_species_bees">Apidae</string>
+    <string name="pest_species_beetle">Coleoptera</string>
+    <string name="pest_species_caterpillar">Lepidoptera larvae</string>
+    <string name="pest_species_earthworms">Lumbricidae</string>
+    <string name="pest_species_earwig">Dermaptera</string>
+    <string name="pest_species_grasshopper">Acrididae</string>
+    <string name="pest_species_moth">Lepidoptera</string>
+    <string name="pest_species_slug">Gastropoda</string>
+    <string name="pest_species_snail">Helicidae</string>
+    <string name="pest_species_wasp">Vespidae</string>
+    <string name="pest_species_weevil">Curculionidae</string>
+    <string name="pest_species_unknown">Unknown species</string>
+
+    <!-- Threat levels -->
+    <string name="threat_level_low">Threat Level: Low</string>
+    <string name="threat_level_unknown">Threat Level: Unknown</string>
+
+    <!-- Pest advice -->
+    <string name="pest_advice_ants">Apply diatomaceous earth around the plant base. Use bait traps and remove plant debris. Keep the soil surface clean to discourage nesting.</string>
+    <string name="pest_advice_bees">Bees are essential pollinators — do not kill them. If a hive is too close, contact a local beekeeper in your area for safe relocation.</string>
+    <string name="pest_advice_beetle">Hand-pick beetles in early morning when they are sluggish. Apply neem oil spray weekly. Use row covers on young transplants to prevent access.</string>
+    <string name="pest_advice_caterpillar">Apply Bacillus thuringiensis (Bt) spray, which is organic and widely available in Pakistan. Hand-pick visible caterpillars. Encourage parasitic wasps by planting dill or fennel nearby.</string>
+    <string name="pest_advice_earthworms">Earthworms are highly beneficial — they aerate soil and improve fertility. No action needed. Their presence indicates healthy soil.</string>
+    <string name="pest_advice_earwig">Set traps using damp rolled newspaper placed near plants overnight. Remove garden debris and mulch piles where earwigs hide during the day.</string>
+    <string name="pest_advice_grasshopper">Use floating row covers to protect crops. Apply neem oil or Nosema locustae bait for biological control. Remove weeds around field borders where they breed.</string>
+    <string name="pest_advice_moth">Use pheromone traps to monitor and reduce moth populations. Apply Bt spray to control larvae. Inspect leaf undersides regularly and remove egg clusters.</string>
+    <string name="pest_advice_slug">Set beer traps (shallow containers filled with beer) near affected plants. Apply iron phosphate bait pellets. Create copper tape barriers around pots or raised beds.</string>
+    <string name="pest_advice_snail">Hand-pick snails during early morning or after rain. Use iron phosphate bait. Apply copper tape around stems and containers to create an electric barrier.</string>
+    <string name="pest_advice_wasp">Wasps are beneficial predators that eat caterpillars and aphids. Avoid disturbing nests unless they are dangerously close to work areas. Relocate if necessary.</string>
+    <string name="pest_advice_weevil">Apply neem oil to foliage. Use sticky traps around plant stems. Remove and destroy heavily infested plant parts. Rotate crops to break the lifecycle.</string>
+    <string name="pest_advice_unknown">Unable to determine pest type. Please retake the photo with clearer lighting and ensure the pest is fully visible in the frame.</string>
+
+    <!-- =========================
+         Ripeness Metadata
+         ========================= -->
+    <string name="ripeness_advice_ripe">Harvest immediately and store at room temperature, stem-side down, out of direct sunlight. Do not refrigerate — cold temperatures destroy flavor and cause a mealy texture. For Pakistani markets, harvest in early morning when the fruit is cool. Use within 3–5 days for best quality.</string>
+    <string name="ripeness_advice_unripe">Leave the tomato on the vine for 5–10 more days until it shows full color. If temperatures exceed 35°C, harvest at the breaker stage (first hint of pink) and ripen indoors at 20–25°C. Avoid direct sunlight during indoor ripening.</string>
+    <string name="ripeness_advice_unknown">Unable to determine ripeness stage. Ensure the photo clearly shows the tomato surface with natural lighting. Try cropping the image to focus only on the fruit, removing any background leaves or soil.</string>
+
+    <!-- =========================
+         Disease Metadata
+         ========================= -->
+    <!-- Scientific names -->
+    <string name="disease_scientific_early_blight">Alternaria solani</string>
+    <string name="disease_scientific_late_blight">Phytophthora infestans</string>
+    <string name="disease_scientific_septoria">Septoria lycopersici</string>
+    <string name="disease_scientific_healthy">—</string>
+    <string name="disease_scientific_unknown">Unknown pathogen</string>
+
+    <!-- Disease tips -->
+    <string name="disease_tip1_title_early_blight">Remove Infected Leaves</string>
+    <string name="disease_tip1_desc_early_blight">Prune and destroy lower leaves showing target-like brown spots with concentric rings. Do not compost infected debris.</string>
+    <string name="disease_tip2_title_early_blight">Apply Fungicide</string>
+    <string name="disease_tip2_desc_early_blight">Spray Mancozeb or Saaf (Carbendazim + Mancozeb), widely available in Pakistan. Apply every 7–10 days during humid weather. Rotate with copper-based fungicides.</string>
+
+    <string name="disease_tip1_title_healthy">Maintain Good Practices</string>
+    <string name="disease_tip1_desc_healthy">Continue watering at the base, not on foliage. Ensure proper spacing between plants for air circulation.</string>
+    <string name="disease_tip2_title_healthy">Preventive Care</string>
+    <string name="disease_tip2_desc_healthy">Apply a preventive copper spray during monsoon season. Rotate crops every 2–3 years and keep the garden free of weeds.</string>
+
+    <string name="disease_tip1_title_late_blight">Immediate Removal</string>
+    <string name="disease_tip1_desc_late_blight">Remove and destroy all infected leaves, stems, and fruits immediately. Late blight spreads rapidly in cool, wet conditions (18–22°C).</string>
+    <string name="disease_tip2_title_late_blight">Apply Systemic Fungicide</string>
+    <string name="disease_tip2_desc_late_blight">Spray Ridomil Gold (Metalaxyl + Mancozeb) or Curzate M. These are widely available from agricultural dealers in Pakistan. Start treatment at first symptoms.</string>
+
+    <string name="disease_tip1_title_septoria">Remove Lower Leaves</string>
+    <string name="disease_tip1_desc_septoria">Strip infected lower leaves showing small spots with gray centers and dark borders. Look for tiny black dots (pycnidia) in spot centers.</string>
+    <string name="disease_tip2_title_septoria">Prevent Soil Splash</string>
+    <string name="disease_tip2_desc_septoria">Mulch around plant base with wheat straw to prevent rain splashing spores onto leaves. Apply Chlorothalonil or Mancozeb every 7 days during wet spells.</string>
+
+    <string name="disease_tip1_title_unknown">Retake Photo</string>
+    <string name="disease_tip1_desc_unknown">Ensure the leaf is well-lit, in focus, and fills most of the frame for accurate diagnosis.</string>
+    <string name="disease_tip2_title_unknown">General Care</string>
+    <string name="disease_tip2_desc_unknown">Water at the base, maintain proper spacing, and monitor leaves daily for any changes in color or texture.</string>
 
 </resources>

@@ -4,17 +4,18 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.devsphere.leafbloom.data.model.PredictionResult
 import com.devsphere.leafbloom.data.source.local.DiseaseClassifier
+import com.devsphere.leafbloom.data.source.local.LeafValidator
 
-class DiseaseRepository(context: Context) {
+class DiseaseRepository(context: Context, leafValidator: LeafValidator) {
     
 
-    private val classifier = DiseaseClassifier(context)
+    private val classifier = DiseaseClassifier(context, leafValidator)
 
     suspend fun initialize() {
         classifier.loadModel()
     }
 
-    fun predict(bitmap: Bitmap): PredictionResult {
+    suspend fun predict(bitmap: Bitmap): PredictionResult {
         // Run inference
         val scores = classifier.predict(bitmap)
         

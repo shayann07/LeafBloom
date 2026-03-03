@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.canhub.cropper.CropImageView
@@ -34,7 +34,12 @@ class CropFragment : BaseFragment() {
 
         val imageUriString = arguments?.getString("image_uri")
         if (imageUriString == null) {
-            Toast.makeText(requireContext(), "No image provided for cropping", Toast.LENGTH_SHORT).show()
+            com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                requireView(), 
+                "No image provided for cropping", 
+                com.google.android.material.snackbar.Snackbar.LENGTH_SHORT,
+                com.devsphere.leafbloom.util.SnackbarUtils.Type.ERROR
+            )
             findNavController().popBackStack()
             return
         }
@@ -44,6 +49,12 @@ class CropFragment : BaseFragment() {
         // Setup CropImageView config programmatically
         binding.cropImageView.apply {
             setImageUriAsync(uri)
+            
+            // Fix purple progress bar by finding it internally and applying tint
+            val progressBar = findViewById<android.widget.ProgressBar>(com.canhub.cropper.R.id.CropProgressBar)
+            progressBar?.indeterminateTintList = android.content.res.ColorStateList.valueOf(
+                ContextCompat.getColor(requireContext(), R.color.brand_green_primary)
+            )
         }
 
         binding.cropImageView.setOnCropImageCompleteListener { _, result ->
@@ -67,12 +78,22 @@ class CropFragment : BaseFragment() {
                             findNavController().popBackStack()
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            Toast.makeText(requireContext(), "Failed to save cropped image", Toast.LENGTH_SHORT).show()
+                            com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                                requireView(), 
+                                "Failed to save cropped image", 
+                                com.google.android.material.snackbar.Snackbar.LENGTH_SHORT,
+                                com.devsphere.leafbloom.util.SnackbarUtils.Type.ERROR
+                            )
                         }
                     }
                 }
             } else {
-                Toast.makeText(requireContext(), "Crop failed: ${result.error?.message}", Toast.LENGTH_SHORT).show()
+                com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                    requireView(), 
+                    "Crop failed: ${result.error?.message}", 
+                    com.google.android.material.snackbar.Snackbar.LENGTH_SHORT,
+                    com.devsphere.leafbloom.util.SnackbarUtils.Type.ERROR
+                )
             }
         }
 

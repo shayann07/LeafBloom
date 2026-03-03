@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -48,11 +48,12 @@ class HomeFragment : BaseFragment() {
             if (isGranted) {
                 checkLocationSettings()
             } else {
-                Toast.makeText(
-                    requireContext(),
+                com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                    requireView(),
                     getString(R.string.location_permission_denied),
-                    Toast.LENGTH_SHORT
-                ).show()
+                    com.google.android.material.snackbar.Snackbar.LENGTH_SHORT,
+                    com.devsphere.leafbloom.util.SnackbarUtils.Type.WARNING
+                )
                 // Proceed to ask for notifications even if location denied
                 checkNotificationPermission()
             }
@@ -66,9 +67,12 @@ class HomeFragment : BaseFragment() {
         if (result.resultCode == android.app.Activity.RESULT_OK) {
             fetchLocation()
         } else {
-            Toast.makeText(
-                requireContext(), getString(R.string.location_services_required), Toast.LENGTH_SHORT
-            ).show()
+            com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                requireView(),
+                getString(R.string.location_services_required),
+                com.google.android.material.snackbar.Snackbar.LENGTH_SHORT,
+                com.devsphere.leafbloom.util.SnackbarUtils.Type.ERROR
+            )
         }
     }
 
@@ -76,7 +80,7 @@ class HomeFragment : BaseFragment() {
     private val requestNotificationLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                // Toast.makeText(requireContext(), "Notification permission granted!", Toast.LENGTH_SHORT).show()
+                // com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(requireView(), "Notification permission granted!", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT)
             }
         }
 
@@ -91,72 +95,112 @@ class HomeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Lightweight layout setup — runs immediately
         setupAdaptiveHeader(binding.headerContainer, binding.ivHeader)
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        // Defer heavy work until after the first frame draws
+        // so back-navigation transitions render smoothly
+        view.post {
+            if (!isAdded) return@post
 
-        // Auto-start permission flow
-        checkLocationPermission()
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        binding.apply {
-            // ... (Existing chip logic) ...
-            chipGroup.children.forEach { view ->
-                (view as? Chip)?.let { chip ->
-                    chip.tag = chip.text
-                    chip.text = if (chip.isChecked) chip.tag.toString() else ""
-                }
-            }
+            // Auto-start permission flow
+            checkLocationPermission()
 
-            chipGroup.setOnCheckedStateChangeListener { group, _ ->
-                TransitionManager.beginDelayedTransition(chipsScroll)
-                group.children.forEach { view ->
+            binding.apply {
+                // ... (Existing chip logic) ...
+                chipGroup.children.forEach { view ->
                     (view as? Chip)?.let { chip ->
+                        chip.tag = chip.text
                         chip.text = if (chip.isChecked) chip.tag.toString() else ""
                     }
                 }
-            }
 
-            // Weather Card -> Click to refresh location manually
-            cardWeather.setOnClickListener {
-                if (PermissionManager.hasPermission(
-                        requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+                chipGroup.setOnCheckedStateChangeListener { group, _ ->
+                    TransitionManager.beginDelayedTransition(chipsScroll)
+                    group.children.forEach { view ->
+                        (view as? Chip)?.let { chip ->
+                            chip.text = if (chip.isChecked) chip.tag.toString() else ""
+                        }
+                    }
+                }
+
+                // Weather Card -> Click to refresh location manually
+                cardWeather.setOnClickListener {
+                    if (PermissionManager.hasPermission(
+                            requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+                        )
+                    ) {
+                        checkLocationSettings()
+                    } else {
+                        checkLocationPermission()
+                    }
+                }
+
+                // Feature: Pest ID -> Navigate to Scanner with mode=PEST
+                featuresRow2.getChildAt(0)?.setOnClickListener {
+                    val bundle = Bundle().apply {
+                        putString("scan_mode", "PEST")
+                    }
+                    findNavController().navigate(R.id.action_homeFragment_to_scannerFragment, bundle)
+                }
+
+                // Feature: Ripeness Check -> Navigate to Scanner with mode=RIPENESS
+                featuresRow2.getChildAt(1)?.setOnClickListener {
+                    val bundle = Bundle().apply {
+                        putString("scan_mode", "RIPENESS")
+                    }
+                    findNavController().navigate(R.id.action_homeFragment_to_scannerFragment, bundle)
+                }
+
+                // Feature: Diagnose -> Navigate to Scanner with mode=DIAGNOSE (only for Tomato)
+                val navigateToDiagnose = View.OnClickListener {
+                    val checkedChipId = chipGroup.checkedChipId
+                    if (checkedChipId == R.id.chipTomato) {
+                        val bundle = Bundle().apply {
+                            putString("scan_mode", "DIAGNOSE")
+                        }
+                        findNavController().navigate(R.id.action_homeFragment_to_scannerFragment, bundle)
+                    } else {
+                        val selectedPlant = chipGroup.findViewById<com.google.android.material.chip.Chip>(checkedChipId)?.tag?.toString() ?: "this plant"
+                        com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                            binding.root,
+                            "$selectedPlant diagnosis is coming soon! Our AI is currently studying it.",
+                            com.google.android.material.snackbar.Snackbar.LENGTH_LONG,
+                            com.devsphere.leafbloom.util.SnackbarUtils.Type.INFO
+                        )
+                    }
+                }
+                btnDiagnose.setOnClickListener(navigateToDiagnose)
+                cardCheckPlant.setOnClickListener(navigateToDiagnose)
+                featuresRow1.getChildAt(0)?.setOnClickListener(navigateToDiagnose)
+
+                // Feature: Identify -> Navigate to Scanner with mode=IDENTIFY
+                // featuresRow1 child 1 is Identify Card
+                featuresRow1.getChildAt(1)?.setOnClickListener {
+                    val bundle = Bundle().apply {
+                        putString("scan_mode", "IDENTIFY")
+                    }
+                    findNavController().navigate(R.id.action_homeFragment_to_scannerFragment, bundle)
+                }
+
+                // Initialize History RecyclerView
+                val historyItems = listOf(
+                    HistoryItem(
+                        "Rose", "Healthy", 37, "25 November, 12:00 am", R.drawable.history_item
+                    ), HistoryItem(
+                        "Lily", "Healthy", 37, "25 November, 12:00 am", R.drawable.history_item
+                    ), HistoryItem(
+                        "Apple", "Healthy", 37, "25 November, 12:00 am", R.drawable.history_item
                     )
-                ) {
-                    checkLocationSettings()
-                } else {
-                    checkLocationPermission()
-                }
-            }
-
-            // Reminders Card
-            featuresRow2.getChildAt(1)?.setOnClickListener {
-                checkNotificationPermission()
-            }
-
-            // Feature: Identify -> Navigate to Scanner with mode=IDENTIFY
-            // featuresRow1 child 1 is Identify Card
-            featuresRow1.getChildAt(1)?.setOnClickListener {
-                val bundle = Bundle().apply {
-                    putString("scan_mode", "IDENTIFY")
-                }
-                findNavController().navigate(R.id.action_homeFragment_to_scannerFragment, bundle)
-            }
-
-            // Initialize History RecyclerView
-            val historyItems = listOf(
-                HistoryItem(
-                    "Rose", "Healthy", 37, "25 November, 12:00 am", R.drawable.history_item
-                ), HistoryItem(
-                    "Lily", "Healthy", 37, "25 November, 12:00 am", R.drawable.history_item
-                ), HistoryItem(
-                    "Apple", "Healthy", 37, "25 November, 12:00 am", R.drawable.history_item
                 )
-            )
-            val historyAdapter = HistoryAdapter(historyItems) {
-                findNavController().navigate(R.id.action_homeFragment_to_historyDetailsFragment)
+                val historyAdapter = HistoryAdapter(historyItems) {
+                    findNavController().navigate(R.id.action_homeFragment_to_historyDetailsFragment)
+                }
+                rvHistory.layoutManager = LinearLayoutManager(requireContext())
+                rvHistory.adapter = historyAdapter
             }
-            rvHistory.layoutManager = LinearLayoutManager(requireContext())
-            rvHistory.adapter = historyAdapter
         }
     }
 

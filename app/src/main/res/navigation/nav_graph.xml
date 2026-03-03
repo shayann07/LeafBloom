@@ -54,6 +54,12 @@
             android:id="@+id/action_scannerFragment_to_identifyResultFragment"
             app:destination="@id/identifyResultFragment" />
         <action
+            android:id="@+id/action_scannerFragment_to_pestResultFragment"
+            app:destination="@id/pestResultFragment" />
+        <action
+            android:id="@+id/action_scannerFragment_to_ripenessResultFragment"
+            app:destination="@id/ripenessResultFragment" />
+        <action
             android:id="@+id/action_scannerFragment_to_cropFragment"
             app:destination="@id/cropFragment" />
     </fragment>
@@ -75,6 +81,18 @@
         android:name="com.devsphere.leafbloom.ui.result.IdentifyResultFragment"
         android:label="Identify Result"
         tools:layout="@layout/fragment_identify_result" />
+
+    <fragment
+        android:id="@+id/pestResultFragment"
+        android:name="com.devsphere.leafbloom.ui.result.PestResultFragment"
+        android:label="Pest Result"
+        tools:layout="@layout/fragment_pest_result" />
+
+    <fragment
+        android:id="@+id/ripenessResultFragment"
+        android:name="com.devsphere.leafbloom.ui.result.RipenessResultFragment"
+        android:label="Ripeness Result"
+        tools:layout="@layout/fragment_ripeness_result" />
 
     <fragment
         android:id="@+id/historyFragment"

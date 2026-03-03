@@ -13,7 +13,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -39,6 +39,7 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import androidx.core.graphics.toColorInt
+import androidx.core.net.toUri
 
 class ScannerFragment : BaseFragment() {
 
@@ -70,11 +71,14 @@ class ScannerFragment : BaseFragment() {
             if (cameraGranted) {
                 startCamera()
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.camera_permission_required_to_scan),
-                    Toast.LENGTH_SHORT
-                ).show()
+                view?.let {
+                    com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                        it,
+                        getString(R.string.camera_permission_required_to_scan),
+                        com.google.android.material.snackbar.Snackbar.LENGTH_SHORT,
+                        com.devsphere.leafbloom.util.SnackbarUtils.Type.ERROR
+                    )
+                }
                 findNavController().popBackStack()
             }
 
@@ -151,20 +155,39 @@ class ScannerFragment : BaseFragment() {
         // 1. Get arguments
         scanMode = arguments?.getString("scan_mode") ?: "DIAGNOSE"
 
-        // 2. Adjust UI Text based on Mode
-        if (scanMode == "IDENTIFY") {
-            binding.txtInstruction.text = "Snap a photo to Identify"
-            binding.btnDiagnose.text = "Identify Plant"
-        } else {
-            binding.txtInstruction.text = getString(R.string.point_camera_at_plant)
-            binding.btnDiagnose.text = "Diagnose Now"
+        // 2. Adjust UI Text based on Mode (lightweight, runs immediately)
+        when (scanMode) {
+            "IDENTIFY" -> {
+                binding.txtInstruction.text = "Snap a photo to Identify"
+                binding.btnDiagnose.text = "Identify Plant"
+            }
+            "PEST" -> {
+                binding.txtInstruction.text = getString(R.string.point_camera_at_pest)
+                binding.btnDiagnose.text = getString(R.string.identify_pest)
+            }
+            "RIPENESS" -> {
+                binding.txtInstruction.text = getString(R.string.point_camera_at_tomato)
+                binding.btnDiagnose.text = getString(R.string.check_ripeness)
+            }
+            else -> {
+                binding.txtInstruction.text = getString(R.string.point_camera_at_plant)
+                binding.btnDiagnose.text = "Diagnose Now"
+            }
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
-        checkPermissions()
-        observeViewModel()
+
+        // Lightweight: click listeners, observers — run immediately so buttons respond instantly
         setupUI()
+        observeViewModel()
         observeCropResult()
+
+        // Defer ONLY the heavy work (permissions check → camera init) until after first frame
+        // so the navigation transition renders smoothly
+        view.post {
+            if (!isAdded) return@post
+            checkPermissions()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -205,7 +228,7 @@ class ScannerFragment : BaseFragment() {
         RationaleDialog(
             titleStr = getString(R.string.permissions_required),
             descriptionStr = getString(R.string.permissions_required_scanner_desc),
-            iconResId = R.drawable.scan_icon,
+            iconResId = R.drawable.privacy_policy_icon,
             onPositive = { requestPermissionLauncher.launch(permissionsToRequest) },
             onNegative = { findNavController().popBackStack() }).show(
             childFragmentManager, RationaleDialog.TAG
@@ -215,7 +238,7 @@ class ScannerFragment : BaseFragment() {
     private fun observeCropResult() {
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("cropped_uri")?.observe(viewLifecycleOwner) { uriString ->
             if (uriString != null) {
-                val croppedUri = android.net.Uri.parse(uriString)
+                val croppedUri = uriString.toUri()
                 showPreviewUI(croppedUri)
                 
                 // Pre-load the cropped bitmap immediately
@@ -261,21 +284,19 @@ class ScannerFragment : BaseFragment() {
         binding.btnDiagnose.setOnClickListener {
             val uri = currentImageUri
             if (uri != null) {
-                if (scanMode == "IDENTIFY") {
-                    // Navigate to Result screen with URI
-                    val bundle = Bundle().apply {
-                        putString("image_uri", uri.toString())
-                    }
-                    findNavController().navigate(
-                        R.id.action_scannerFragment_to_identifyResultFragment, bundle
-                    )
-                } else {
-                    diagnoseImage(uri)
+                when (scanMode) {
+                    "IDENTIFY" -> viewModel.identifyPlant(uri)
+                    else -> processAndAnalyzeImage(uri, scanMode)
                 }
             } else {
-                Toast.makeText(
-                    requireContext(), getString(R.string.no_image_to_diagnose), Toast.LENGTH_SHORT
-                ).show()
+                view?.let {
+                    com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                        it, 
+                        getString(R.string.no_image_to_diagnose), 
+                        com.google.android.material.snackbar.Snackbar.LENGTH_SHORT,
+                        com.devsphere.leafbloom.util.SnackbarUtils.Type.WARNING
+                    )
+                }
             }
         }
         setupCameraGestures()
@@ -317,17 +338,27 @@ class ScannerFragment : BaseFragment() {
     // --- DIAGNOSE MODE LOGIC (EXISTING) ---
     private fun triggerDiagnoseResult(result: com.devsphere.leafbloom.data.model.PredictionResult) {
         if (result.predictedClass.equals("Unknown", ignoreCase = true)) {
-            Toast.makeText(
-                requireContext(),
-                "Cannot identify leaf. Please try closer or better lighting.",
-                Toast.LENGTH_LONG
-            ).show()
+            view?.let {
+                com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                    it, 
+                    "Cannot identify leaf. Please try closer or better lighting.", 
+                    com.google.android.material.snackbar.Snackbar.LENGTH_LONG,
+                    com.devsphere.leafbloom.util.SnackbarUtils.Type.WARNING
+                )
+            }
             return
         }
         if (result.confidence < 0.70f) {
             val msg =
                 "Unsure (${(result.confidence * 100).toInt()}%). Please retry with a clearer plant image."
-            Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+            view?.let {
+                com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                    it, 
+                    msg, 
+                    com.google.android.material.snackbar.Snackbar.LENGTH_LONG,
+                    com.devsphere.leafbloom.util.SnackbarUtils.Type.WARNING
+                )
+            }
             return
         }
         val sortedScores = result.scores.values.sortedDescending()
@@ -336,7 +367,14 @@ class ScannerFragment : BaseFragment() {
             val top2 = sortedScores[1]
             if ((top1 - top2) < 0.10f) {
                 val msg = "Ambiguous result. Too close to call. Please retry."
-                Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+                view?.let {
+                    com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                        it, 
+                        msg, 
+                        com.google.android.material.snackbar.Snackbar.LENGTH_LONG,
+                        com.devsphere.leafbloom.util.SnackbarUtils.Type.WARNING
+                    )
+                }
                 return
             }
         }
@@ -352,7 +390,26 @@ class ScannerFragment : BaseFragment() {
         findNavController().navigate(R.id.action_scannerFragment_to_diagnoseResultFragment, bundle)
     }
 
-    private fun diagnoseImage(uri: Uri?) {
+    private fun triggerPestResult(result: com.devsphere.leafbloom.data.model.PredictionResult) {
+        val bundle = Bundle().apply {
+            putString("image_uri", currentImageUri?.toString())
+            putString("predicted_class_name", result.predictedClass)
+            putFloat("confidence", result.confidence)
+        }
+        findNavController().navigate(R.id.action_scannerFragment_to_pestResultFragment, bundle)
+    }
+
+    private fun triggerRipenessResult(result: com.devsphere.leafbloom.data.model.PredictionResult) {
+        val bundle = Bundle().apply {
+            putString("image_uri", currentImageUri?.toString())
+            putFloat("score_ripe", result.scores["Ripe"] ?: 0f)
+            putFloat("score_unknown", result.scores["Unknown"] ?: 0f)
+            putFloat("score_unripe", result.scores["Unripe"] ?: 0f)
+        }
+        findNavController().navigate(R.id.action_scannerFragment_to_ripenessResultFragment, bundle)
+    }
+
+    private fun processAndAnalyzeImage(uri: Uri?, mode: String) {
         val targetBitmap = currentBitmap
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -403,14 +460,23 @@ class ScannerFragment : BaseFragment() {
                         binding.imgCapturedPreview.setImageBitmap(resizedBitmap)
                     }
                     val inputBitmap = resizedBitmap.copy(Bitmap.Config.ARGB_8888, true)
-                    viewModel.analyzeImage(inputBitmap)
+                    when (mode) {
+                        "PEST" -> viewModel.analyzePest(inputBitmap)
+                        "RIPENESS" -> viewModel.analyzeRipeness(inputBitmap)
+                        else -> viewModel.analyzeImage(inputBitmap) // DIAGNOSE
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        requireContext(), "Error process image: ${e.message}", Toast.LENGTH_SHORT
-                    ).show()
+                    view?.let {
+                        com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                            it, 
+                            "Error process image: ${e.message}", 
+                            com.google.android.material.snackbar.Snackbar.LENGTH_SHORT,
+                            com.devsphere.leafbloom.util.SnackbarUtils.Type.ERROR
+                        )
+                    }
                 }
             }
         }
@@ -419,6 +485,8 @@ class ScannerFragment : BaseFragment() {
     private fun startScanningAnimation() {
         if (scanAnimator?.isRunning == true) return
         binding.scannerLine.visibility = View.VISIBLE
+        // Enable hardware layer for smoother animation on low-end GPUs
+        binding.scannerLine.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         binding.scannerLine.post {
             val containerHeight = binding.scannerFrameContainer.height.toFloat()
             val lineHeight = binding.scannerLine.height.toFloat()
@@ -437,6 +505,8 @@ class ScannerFragment : BaseFragment() {
     private fun stopScanningAnimation() {
         scanAnimator?.cancel()
         binding.scannerLine.visibility = View.INVISIBLE
+        // Revert to software layer when not animating to free GPU memory
+        binding.scannerLine.setLayerType(View.LAYER_TYPE_NONE, null)
     }
 
     private fun startCamera() {
@@ -466,21 +536,33 @@ class ScannerFragment : BaseFragment() {
         try {
             cameraProvider.unbindAll()
             camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
-            showCameraUI()
+            if (currentImageUri == null) {
+                showCameraUI()
+            }
         } catch (exc: Exception) {
         }
     }
 
     private fun flipCamera() {
+        // Disable button immediately for visual feedback during camera rebind
+        binding.btnFlip.isEnabled = false
+        binding.btnFlip.alpha = 0.4f
         lensFacing =
             if (lensFacing == CameraSelector.LENS_FACING_BACK) CameraSelector.LENS_FACING_FRONT else CameraSelector.LENS_FACING_BACK
         bindCameraUseCases()
+        // Re-enable after rebind completes
+        binding.btnFlip.post {
+            binding.btnFlip.isEnabled = true
+            binding.btnFlip.alpha = 1.0f
+        }
     }
 
     private var currentBitmap: Bitmap? = null
 
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
+        // Disable capture button to prevent double-taps
+        binding.btnCapture.isEnabled = false
         binding.previewView.post {
             binding.previewView.alpha = 0.5f
             binding.previewView.animate().alpha(1.0f).setDuration(100).start()
@@ -489,9 +571,15 @@ class ScannerFragment : BaseFragment() {
             cameraExecutor, object : ImageCapture.OnImageCapturedCallback() {
                 override fun onError(exc: ImageCaptureException) {
                     activity?.runOnUiThread {
-                        Toast.makeText(
-                            requireContext(), "Capture failed: ${exc.message}", Toast.LENGTH_SHORT
-                        ).show()
+                        binding.btnCapture.isEnabled = true
+                        view?.let {
+                            com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                                it, 
+                                "Capture failed: ${exc.message}", 
+                                com.google.android.material.snackbar.Snackbar.LENGTH_SHORT,
+                                com.devsphere.leafbloom.util.SnackbarUtils.Type.ERROR
+                            )
+                        }
                     }
                 }
 
@@ -501,8 +589,25 @@ class ScannerFragment : BaseFragment() {
                         val buffer = image.planes[0].buffer
                         val bytes = ByteArray(buffer.remaining())
                         buffer.get(bytes)
-                        var bitmap =
-                            android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+
+                        // Fast decode: get dimensions first, then decode at reduced resolution
+                        val maxDim = 1024
+                        val opts = android.graphics.BitmapFactory.Options()
+                        opts.inJustDecodeBounds = true
+                        android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size, opts)
+
+                        // Calculate inSampleSize to decode directly at ~1024px
+                        val rawW = opts.outWidth
+                        val rawH = opts.outHeight
+                        var sampleSize = 1
+                        while (rawW / (sampleSize * 2) >= maxDim && rawH / (sampleSize * 2) >= maxDim) {
+                            sampleSize *= 2
+                        }
+
+                        opts.inJustDecodeBounds = false
+                        opts.inSampleSize = sampleSize
+                        var bitmap = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size, opts)!!
+
                         val rotationDegrees = image.imageInfo.rotationDegrees
                         if (rotationDegrees != 0) {
                             val matrix = android.graphics.Matrix()
@@ -512,18 +617,33 @@ class ScannerFragment : BaseFragment() {
                             )
                         }
                         image.close()
+
                         currentBitmap = bitmap
+
+                        // Show preview immediately
                         activity?.runOnUiThread {
+                            binding.btnCapture.isEnabled = true
                             showPreviewUI(null)
                             binding.imgCapturedPreview.setImageBitmap(bitmap)
                         }
-                        try {
-                            val savedUri = MediaHelper.saveImageToGallery(requireContext(), bitmap)
-                            activity?.runOnUiThread { currentImageUri = savedUri }
-                        } catch (e: Exception) {
+
+                        // Offload gallery save: re-decode full-res in background for quality save
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            try {
+                                var fullBitmap = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size)!!
+                                if (rotationDegrees != 0) {
+                                    val m = android.graphics.Matrix()
+                                    m.postRotate(rotationDegrees.toFloat())
+                                    fullBitmap = Bitmap.createBitmap(fullBitmap, 0, 0, fullBitmap.width, fullBitmap.height, m, true)
+                                }
+                                val savedUri = MediaHelper.saveImageToGallery(requireContext(), fullBitmap)
+                                fullBitmap.recycle()
+                                withContext(Dispatchers.Main) { currentImageUri = savedUri }
+                            } catch (_: Exception) { }
                         }
                     } catch (e: Exception) {
                         image.close()
+                        activity?.runOnUiThread { binding.btnCapture.isEnabled = true }
                     }
                 }
             })
@@ -559,38 +679,90 @@ class ScannerFragment : BaseFragment() {
     private fun observeViewModel() {
         lifecycleScope.launch {
             viewModel.uiState.collect { state ->
-                if (scanMode == "DIAGNOSE") {
-                    when (state) {
-                        is ScannerUiState.Idle -> {
-                            binding.btnDiagnose.isEnabled = true
-                            binding.btnDiagnose.text = "Diagnose Now"
-                        }
+                when (state) {
+                    is ScannerUiState.Idle -> {
+                        binding.btnDiagnose.isEnabled = true
+                        binding.btnDiagnose.text = if (scanMode == "IDENTIFY") "Identify Plant" else "Diagnose Now"
+                    }
 
-                        is ScannerUiState.Loading -> {
-                            binding.btnDiagnose.isEnabled = false
-                            binding.btnDiagnose.text = "Diagnosing..."
-                        }
+                    is ScannerUiState.Loading -> {
+                        binding.btnDiagnose.isEnabled = false
+                        binding.btnDiagnose.text = if (scanMode == "IDENTIFY") "Validating..." else "Diagnosing..."
+                    }
 
-                        is ScannerUiState.Success -> {
+                    is ScannerUiState.SuccessDiagnosis -> {
+                        if (scanMode == "DIAGNOSE") {
                             binding.btnDiagnose.isEnabled = true
                             binding.btnDiagnose.text = "Diagnose Now"
                             triggerDiagnoseResult(state.result)
                             viewModel.resetState()
                         }
+                    }
 
-                        is ScannerUiState.Error -> {
+                    is ScannerUiState.SuccessPest -> {
+                        if (scanMode == "PEST") {
                             binding.btnDiagnose.isEnabled = true
-                            binding.btnDiagnose.text = "Diagnose Now"
-                            Toast.makeText(
-                                requireContext(), "Error: ${state.message}", Toast.LENGTH_SHORT
-                            ).show()
+                            binding.btnDiagnose.text = getString(R.string.identify_pest)
+                            triggerPestResult(state.result)
                             viewModel.resetState()
-                            stopScanningAnimation()
                         }
+                    }
+
+                    is ScannerUiState.SuccessRipeness -> {
+                        if (scanMode == "RIPENESS") {
+                            binding.btnDiagnose.isEnabled = true
+                            binding.btnDiagnose.text = getString(R.string.check_ripeness)
+                            triggerRipenessResult(state.result)
+                            viewModel.resetState()
+                        }
+                    }
+
+                    is ScannerUiState.SuccessIdentify -> {
+                        if (scanMode == "IDENTIFY") {
+                            binding.btnDiagnose.isEnabled = true
+                            binding.btnDiagnose.text = "Identify Plant"
+                            val bundle = Bundle().apply {
+                                putString("image_uri", state.imageUri.toString())
+                                putParcelable("identify_response", state.response)
+                            }
+                            findNavController().navigate(
+                                R.id.action_scannerFragment_to_identifyResultFragment, bundle
+                            )
+                            viewModel.resetState()
+                        }
+                    }
+
+                    is ScannerUiState.Error -> {
+                        binding.btnDiagnose.isEnabled = true
+                        binding.btnDiagnose.text = if (scanMode == "IDENTIFY") "Identify Plant" else "Diagnose Now"
+                        
+                        if (state.message == "NOT_A_PLANT") {
+                            view?.let {
+                                com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                                    it, 
+                                    "Cannot identify leaf. Please try closer or better lighting.", 
+                                    com.google.android.material.snackbar.Snackbar.LENGTH_LONG,
+                                    com.devsphere.leafbloom.util.SnackbarUtils.Type.WARNING
+                                )
+                            }
+                        } else {
+                            view?.let {
+                                com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                                    it, 
+                                    "Error: ${state.message}", 
+                                    com.google.android.material.snackbar.Snackbar.LENGTH_SHORT,
+                                    com.devsphere.leafbloom.util.SnackbarUtils.Type.ERROR
+                                )
+                            }
+                        }
+                        
+                        viewModel.resetState()
+                        stopScanningAnimation()
                     }
                 }
             }
         }
+        
         lifecycleScope.launch {
             viewModel.latestGalleryUri.collect { uri ->
                 if (uri != null) {

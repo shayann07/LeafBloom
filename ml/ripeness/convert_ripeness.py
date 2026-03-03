@@ -22,7 +22,7 @@ class SoftmaxWrapper(nn.Module):
 
 def main():
     if not os.path.exists(MODEL_PATH):
-        print(f"❌ Error: Model file not found: {MODEL_PATH}")
+        print("Error: Model file not found")
         return
 
     print(f"Loading {MODEL_PATH}...")
@@ -61,9 +61,9 @@ def main():
         
     # Check for deviation
     if not torch.allclose(out_orig, out_traced, atol=1e-5):
-        print("❌ CRITICAL: Traced model output mismatches original!")
+        print("CRITICAL: Traced model output mismatches original!")
     else:
-        print("✅ Traced model matches original.")
+        print("Traced model matches original.")
 
     # Optimize
     print("Optimizing for mobile...")
@@ -74,12 +74,12 @@ def main():
         print(f"Optimized Model Output:{out_opt[0].tolist()}")
 
     if not torch.allclose(out_orig, out_opt, atol=1e-5):
-        print("⚠️ Warning: Optimized model deviates from original. Saving TRACED model instead.")
-        traced_model.save(SAVE_PATH)
-        print(f"Saved TRACED model to {SAVE_PATH}")
+        print("Warning: Optimized model deviates from original. Saving TRACED model instead.")
+        traced_model._save_for_lite_interpreter(SAVE_PATH)
+        print(f"Saved TRACED Lite model to {SAVE_PATH}")
     else:
         optimized_model._save_for_lite_interpreter(SAVE_PATH)
-        print(f"✅ Success! Saved OPTIMIZED mobile model to {SAVE_PATH}")
+        print(f"Success! Saved OPTIMIZED mobile model to {SAVE_PATH}")
 
 if __name__ == "__main__":
     main()

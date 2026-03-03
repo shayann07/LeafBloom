@@ -5,25 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import com.devsphere.leafbloom.data.model.IdentifyResponse
+import android.os.Build
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.devsphere.leafbloom.databinding.FragmentIdentifyResultBinding
 import com.devsphere.leafbloom.ui.common.BaseFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.coroutines.launch
 import com.devsphere.leafbloom.R
 
 class IdentifyResultFragment : BaseFragment() {
     private var _binding: FragmentIdentifyResultBinding? = null
     private val binding get() = _binding!!
-
-    private val viewModel: IdentifyViewModel by viewModels {
-        IdentifyViewModel.Factory(requireActivity().application)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -39,11 +34,20 @@ class IdentifyResultFragment : BaseFragment() {
         setupAdaptiveHeader(binding.headerContainer, binding.ivHeader)
 
         setupUI()
-        observeViewModel()
 
-        // Get URI and trigger identification
+        // Hide overlay safely since there is no background work happening
+        binding.loadingOverlay.isVisible = false
+
+        // Get URI and Identity Response
         val uriString = arguments?.getString("image_uri")
-        if (uriString != null) {
+        val identifyResponse = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable("identify_response", IdentifyResponse::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            arguments?.getParcelable("identify_response") as? IdentifyResponse
+        }
+
+        if (uriString != null && identifyResponse != null) {
             val uri = Uri.parse(uriString)
             
             // Allow Glide to load image into header
@@ -51,11 +55,16 @@ class IdentifyResultFragment : BaseFragment() {
                 .load(uri)
                 .into(binding.ivHeader)
 
-            // Trigger ID
-            viewModel.identifyPlant(uri)
+            // Instantly display data
+            displayResult(identifyResponse)
 
         } else {
-             Toast.makeText(requireContext(), "No image received", Toast.LENGTH_SHORT).show()
+             com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+                 requireView(), 
+                 "Missing image or response data!", 
+                 com.google.android.material.snackbar.Snackbar.LENGTH_SHORT,
+                 com.devsphere.leafbloom.util.SnackbarUtils.Type.ERROR
+             )
              findNavController().popBackStack()
         }
     }
@@ -100,31 +109,7 @@ class IdentifyResultFragment : BaseFragment() {
         })
     }
 
-    private fun observeViewModel() {
-        lifecycleScope.launch {
-            viewModel.uiState.collect { state ->
-                when (state) {
-                    is IdentifyUiState.Idle -> {
-                        binding.loadingOverlay.isVisible = false
-                    }
-                    is IdentifyUiState.Loading -> {
-                        binding.loadingOverlay.isVisible = true
-                        binding.loadingOverlay.animate().alpha(1f).duration = 300
-                    }
-                    is IdentifyUiState.Success -> {
-                        binding.loadingOverlay.animate().alpha(0f).withEndAction {
-                            binding.loadingOverlay.isVisible = false
-                        }
-                        displayResult(state.response)
-                    }
-                    is IdentifyUiState.Error -> {
-                        binding.loadingOverlay.isVisible = false
-                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-        }
-    }
+
 
     private fun displayResult(response: com.devsphere.leafbloom.data.model.IdentifyResponse) {
         val data = response.data ?: return

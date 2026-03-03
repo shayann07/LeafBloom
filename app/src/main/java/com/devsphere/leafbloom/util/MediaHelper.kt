@@ -37,7 +37,7 @@ object MediaHelper {
             try {
                 val outputStream: OutputStream? = resolver.openOutputStream(it)
                 outputStream?.use { stream ->
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
                 }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

@@ -31,6 +31,10 @@
     <color name="text_tertiary">#6B7280</color>
     <color name="text_hint">#A7B39F</color>
     <color name="text_on_dark">#FFFFFFFF</color>
+    
+    <!-- Semantic text colors for light snackbars -->
+    <color name="text_error_dark">#991B1B</color>
+    <color name="text_warning_dark">#9A3412</color>
 
     <!-- =========================
          Surfaces / outlines (from PNGs)
@@ -38,6 +42,10 @@
     <color name="surface_card">#FFFFFFFF</color>
     <color name="surface_card_alt">#F6FFF4</color>
     <color name="surface_variant">#F1F6F1</color>
+    
+    <!-- Semantic light surfaces for snackbars -->
+    <color name="surface_error_light">#FAD2D2</color>
+    <color name="surface_warning_light">#FFF1D7</color>
 
     <color name="outline_soft">#D7DEDA</color>
     <color name="outline_soft_2">#DDDFDC</color>

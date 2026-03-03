@@ -64,16 +64,14 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             moveIndicator(destination.id)
 
-            val isFullscreen =
-                destination.id == R.id.homeFragment
+            val isFullscreen = destination.id == R.id.homeFragment
             val visibility = if (isFullscreen) View.VISIBLE else View.GONE
+            val container = findViewById<View>(R.id.bottom_nav_container)
 
-            bottomNav.visibility = visibility
-            fab.visibility = visibility
-            indicator.visibility = visibility
-            findViewById<View>(R.id.fab_glow)?.visibility = visibility
-            // Also hide the bottom container background if needed, but it's transparent anyway without children visible
-            findViewById<View>(R.id.bottom_nav_container)?.visibility = visibility
+            // Post to next frame so the nav bar and fragment content appear together
+            container.post {
+                container.visibility = visibility
+            }
         }
 
         bottomNav.doOnPreDraw {
