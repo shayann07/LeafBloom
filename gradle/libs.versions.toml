@@ -1,5 +1,5 @@
 [versions]
-agp = "9.0.1"
+agp = "9.1.0"
 exifinterface = "1.4.2"
 glide = "5.0.5"
 cameraCore = "1.5.3"

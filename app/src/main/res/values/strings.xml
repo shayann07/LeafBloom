@@ -276,4 +276,21 @@
     <string name="disease_tip2_title_unknown">General Care</string>
     <string name="disease_tip2_desc_unknown">Water at the base, maintain proper spacing, and monitor leaves daily for any changes in color or texture.</string>
 
+    <!-- =========================
+         Profile
+         ========================= -->
+    <string name="profile_placeholder_name">LeafBloom User</string>
+    <string name="profile_placeholder_email">user@leafbloom.app</string>
+    <string name="account">Account</string>
+    <string name="change_password">Change Password</string>
+    <string name="app_settings">App Settings</string>
+    <string name="storage_used">Storage Used</string>
+    <string name="check_for_updates">Check for Updates</string>
+    <string name="clear_model_cache">Clear Model Cache</string>
+    <string name="notifications">Notifications</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="clear_scan_history">Clear Scan History</string>
+    <string name="coming_soon">Coming Soon</string>
+    <string name="profile">Profile</string>
+
 </resources>

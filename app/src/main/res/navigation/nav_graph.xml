@@ -106,4 +106,10 @@
         android:label="History Details"
         tools:layout="@layout/fragment_history_details" />
 
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.devsphere.leafbloom.ui.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" />
+
 </navigation>
