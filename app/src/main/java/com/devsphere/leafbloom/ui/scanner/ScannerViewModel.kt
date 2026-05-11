@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devsphere.leafbloom.data.model.PredictionResult
 import com.devsphere.leafbloom.data.repository.DiseaseRepository
+import com.devsphere.leafbloom.data.repository.ScanHistoryRepository
+import com.devsphere.leafbloom.util.ImageStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +35,7 @@ class ScannerViewModel(
     private val pestRepository: com.devsphere.leafbloom.data.repository.PestRepository,
     private val ripenessRepository: com.devsphere.leafbloom.data.repository.RipenessRepository,
     private val leafValidator: LeafValidator,
+    private val historyRepository: ScanHistoryRepository,
     private val applicationContext: android.content.Context
 ) : ViewModel() {
 
@@ -85,15 +88,20 @@ class ScannerViewModel(
         
         viewModelScope.launch {
             try {
-                // Determine if we need to squash inside Repo? 
-                // Currently Repo is raw. Let's assume Repo handles prediction, 
-                // but pre-processing (Squashing) was in Fragment.
-                // Ideally Repo should handle data transformation, but we can move it later.
-                // For now, let's keep logic simple: Input is Bitmap, Output is Result.
-                
                 // Switch to IO for heavy inference
                 val result = withContext(Dispatchers.IO) {
                     repository.predict(bitmap)
+                }
+
+                // Auto-save to history (full-res bitmap + prediction result)
+                try {
+                    withContext(Dispatchers.IO) {
+                        val imagePath = ImageStorage.saveFromBitmap(applicationContext, bitmap)
+                        historyRepository.saveDiagnosis(imagePath, result)
+                    }
+                } catch (e: Exception) {
+                    // Non-fatal: history save failure should not block the result
+                    android.util.Log.w("ScannerViewModel", "Failed to save history", e)
                 }
                 
                 _uiState.value = ScannerUiState.SuccessDiagnosis(result)
@@ -112,6 +120,16 @@ class ScannerViewModel(
             try {
                 val result = withContext(Dispatchers.IO) {
                     pestRepository.predict(bitmap)
+                }
+
+                // Auto-save to history
+                try {
+                    withContext(Dispatchers.IO) {
+                        val imagePath = ImageStorage.saveFromBitmap(applicationContext, bitmap)
+                        historyRepository.savePest(imagePath, result)
+                    }
+                } catch (e: Exception) {
+                    android.util.Log.w("ScannerViewModel", "Failed to save pest history", e)
                 }
                 
                 _uiState.value = ScannerUiState.SuccessPest(result)
@@ -177,8 +195,15 @@ class ScannerViewModel(
                 // 4. Call Repository API
                 val result = IdentifyRepository.identifyPlant(tempFile)
 
-                result.onSuccess {
-                    _uiState.value = ScannerUiState.SuccessIdentify(it, uri)
+                result.onSuccess { response ->
+                    // Auto-save to history
+                    try {
+                        val imagePath = ImageStorage.saveFromBitmap(applicationContext, bitmap)
+                        historyRepository.saveIdentify(imagePath, response)
+                    } catch (e: Exception) {
+                        android.util.Log.w("ScannerViewModel", "Failed to save identify history", e)
+                    }
+                    _uiState.value = ScannerUiState.SuccessIdentify(response, uri)
                 }.onFailure {
                     _uiState.value = ScannerUiState.Error(it.message ?: "Unknown identification error")
                 }
@@ -201,7 +226,9 @@ class ScannerViewModel(
                 val repository = com.devsphere.leafbloom.data.repository.DiseaseRepository(application, sharedValidator)
                 val pestRepo = com.devsphere.leafbloom.data.repository.PestRepository(application)
                 val ripenessRepo = com.devsphere.leafbloom.data.repository.RipenessRepository(application)
-                return ScannerViewModel(repository, pestRepo, ripenessRepo, sharedValidator, application.applicationContext) as T
+                val db = com.devsphere.leafbloom.data.source.local.db.LeafBloomDatabase.getInstance(application)
+                val historyRepo = ScanHistoryRepository(db.scanHistoryDao())
+                return ScannerViewModel(repository, pestRepo, ripenessRepo, sharedValidator, historyRepo, application.applicationContext) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

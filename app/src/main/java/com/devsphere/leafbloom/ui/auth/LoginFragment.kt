@@ -1,3 +1,10 @@
+/*
+ * AUTH DISABLED — This screen is not in the current nav graph.
+ * Kept for future Firebase Auth integration.
+ * To re-enable: add loginFragment destination back to nav_graph.xml
+ * and wire the navigation from the appropriate entry point.
+ */
+
 package com.devsphere.leafbloom.ui.auth
 
 import android.os.Bundle
@@ -29,18 +36,18 @@ class LoginFragment : BaseFragment() {
 
         binding.apply {
             btnLogin.setOnClickListener {
-                // Handle login button click
-                findNavController().navigate(R.id.homeFragment)
+                // TODO: Wire Firebase Auth login, then navigate
+                // findNavController().navigate(R.id.homeFragment)
             }
 
             btnContinueWithGoogle.setOnClickListener {
-                // Handle continue with Google button click
-                findNavController().navigate(R.id.homeFragment)
+                // TODO: Wire Google Sign-In, then navigate
+                // findNavController().navigate(R.id.homeFragment)
             }
 
             tvSignUp.setOnClickListener {
-                // Handle continue with Google button click
-                findNavController().navigate(R.id.signupFragment)
+                // TODO: Re-add signupFragment to nav_graph.xml first
+                // findNavController().navigate(R.id.signupFragment)
             }
         }
     }

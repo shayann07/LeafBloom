@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Back cloud (storm dark) -->
+    <path
+        android:fillColor="#FF263238"
+        android:pathData="M22,26c-4.4,0 -8,-3.4 -8,-7.7s3.6,-7.7 8,-7.7c0.6,0 1.2,0.1 1.7,0.2c1,-3.6 4.4,-6.3 8.5,-6.3c4.1,0 7.5,2.7 8.5,6.3c0.6,-0.1 1.1,-0.2 1.7,-0.2c4.4,0 8,3.4 8,7.7s-3.6,7.7 -8,7.7L22,26z" />
+    <!-- Front cloud -->
+    <path
+        android:fillColor="#FF546E7A"
+        android:pathData="M19,38c-3.9,0 -7,-2.9 -7,-6.5s3.1,-6.5 7,-6.5c0.5,0 1,0.1 1.4,0.1c0.9,-3 3.9,-5.3 7.5,-5.3c3.6,0 6.6,2.3 7.5,5.3c0.5,-0.1 1,-0.1 1.4,-0.1c3.9,0 7,2.9 7,6.5s-3.1,6.5 -7,6.5L19,38z" />
+    <!-- Lightning bolt shadow -->
+    <path
+        android:fillColor="#FFE65100"
+        android:pathData="M32,40L21,55L29,55L26,64L42,46L33,46L36,40Z" />
+    <!-- Lightning bolt -->
+    <path
+        android:fillColor="#FFFFB300"
+        android:pathData="M33,40L22,55L30,55L27,64L43,46L34,46L37,40Z" />
+    <!-- Bolt highlight -->
+    <path
+        android:fillColor="#FFFFE082"
+        android:pathData="M33,40L22,55L26,55L33,46L37,46L37,40Z" />
+</vector>

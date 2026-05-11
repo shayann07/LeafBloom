@@ -5,9 +5,13 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="model_download_illustration_cd">Leaf animation while model is preparing</string>
-    <string name="model_download_title">Preparing Leaf Bloom model…</string>
-    <string name="model_download_subtitle">This happens only once. After this, scans work offline.</string>
-    <string name="model_download_done_subtitle">All set! Getting things ready…</string>
+    <string name="model_download_title">Unpacking AI Models…</string>
+    <string name="model_download_subtitle">Extracting the core intelligence modules</string>
+    <string name="model_download_done_subtitle">Your LeafBloom is ready</string>
+    <string name="model_prep_phase2_title">Optimizing for Your Device…</string>
+    <string name="model_prep_phase2_subtitle">Calibrating models for on-device performance</string>
+    <string name="model_prep_done_title">All Set! 🌿</string>
+    <string name="model_prep_step_format">Step %1$d of %2$d</string>
 
     <!-- =========================
          Dashboard
@@ -17,6 +21,8 @@
     <string name="check_your_plant">Check your plant</string>
     <string name="check_your_plant_desc">Scan plants, diagnose disease &amp; get care tips</string>
     <string name="diagnose">Diagnose</string>
+    <string name="identify">Identify</string>
+    <string name="pest">Pest</string>
 
     <string name="all_features">All Features</string>
     <string name="feature_diagnose">Diagnose</string>
@@ -64,6 +70,7 @@
     <string name="sunlight">Sunlight</string>
     <string name="fertilizer">Fertilizer</string>
     <string name="humidity">Humidity</string>
+    <string name="tomato">Tomato</string>
     <string name="sunlight_normal">Normal</string>
 
     <!-- =========================
@@ -293,4 +300,64 @@
     <string name="coming_soon">Coming Soon</string>
     <string name="profile">Profile</string>
 
+    <!-- =========================
+         Weather
+         ========================= -->
+    <string name="weather_temp_placeholder">--°C</string>
+    <string name="weather_temp_format">%1$d°C</string>
+    <string name="weather_offline_cached">Showing cached weather — you appear to be offline</string>
+    <string name="weather_error_rate_limited">Weather service is busy. Please try again later.</string>
+    <string name="weather_error_generic">Couldn\'t update weather. Tap to retry.</string>
+    <string name="weather_attribution">Weather data by Open-Meteo.com</string>
+    <string name="weather_icon_cd">Weather condition icon</string>
+
+    <!-- WMO weather condition labels -->
+    <string name="weather_clear">Clear</string>
+    <string name="weather_partly_cloudy">Partly Cloudy</string>
+    <string name="weather_cloudy">Cloudy</string>
+    <string name="weather_fog">Fog</string>
+    <string name="weather_drizzle">Drizzle</string>
+    <string name="weather_freezing_rain">Freezing Rain</string>
+    <string name="weather_rain">Rain</string>
+    <string name="weather_snow">Snow</string>
+    <string name="weather_showers">Showers</string>
+    <string name="weather_snow_showers">Snow Showers</string>
+    <string name="weather_storm">Thunderstorm</string>
+    <string name="weather_storm_hail">Thunderstorm with Hail</string>
+    <string name="weather_unknown">Weather Unavailable</string>
+
+    <!-- History -->
+    <string name="no_scans_yet">No scans yet. Use the scanner to diagnose your first plant!</string>
+    <string name="history_image_missing">Image no longer available</string>
+    <string name="delete_history_item">Delete scan</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+
+    <!-- Care: Early Blight -->
+    <string name="care_overview_early_blight">Your plant has Early Blight. You will see brown spots with ring patterns on the lower leaves. It happens more in hot and humid weather.</string>
+    <string name="care_treatment_early_blight">Pick off the spotted leaves right away and throw them in the trash. Spray the healthy leaves with copper fungicide and spray again after it rains. Water the soil only — do not wet the leaves.</string>
+    <string name="care_prevention_early_blight">Always water at the base, never from above. Put mulch around the plant to stop soil from splashing up. Do not grow tomatoes in the same spot every year. Cut off any low branches touching the ground.</string>
+
+    <!-- Care: Healthy -->
+    <string name="care_overview_healthy">Great news! Your plant looks healthy. No disease found. Keep doing what you are doing and check your plants often.</string>
+    <string name="care_treatment_healthy">No treatment needed right now. Keep checking leaves every week, especially after rainy days.</string>
+    <string name="care_prevention_healthy">Water at the base regularly and keep plants spaced apart for good air flow. Add fertilizer once a month. Cut lower branches that touch the soil and check under the leaves every week.</string>
+
+    <!-- Care: Late Blight -->
+    <string name="care_overview_late_blight">Your plant has Late Blight. This is a serious disease that spreads fast. You will see dark watery spots on leaves, sometimes with white mold underneath.</string>
+    <string name="care_treatment_late_blight">Act fast! Remove all sick leaves and branches now. Spray copper fungicide on the healthy parts. If most of the plant is sick, pull out the whole plant, put it in a bag and throw it away. Do not compost.</string>
+    <string name="care_prevention_late_blight">Do not plant in areas that stay wet and cool. Keep plants spaced apart and use stakes. Clean up all dead plant parts at end of season. Water early in the morning so leaves dry fast. Check plants every day when weather is cool and rainy.</string>
+
+    <!-- Care: Septoria -->
+    <string name="care_overview_septoria">Your plant has Septoria Leaf Spot. You will see small round spots with light centers and dark edges on the lower leaves. Leaves may turn yellow and fall off.</string>
+    <string name="care_treatment_septoria">Cut off all spotted leaves and throw them away. Spray copper fungicide on the remaining healthy leaves and spray again after rain. Do not touch plants when leaves are wet.</string>
+    <string name="care_prevention_septoria">Always water at the base, never spray from above. Clean up all dead plants at end of season. Do not grow tomatoes in the same spot for 2–3 years. Use stakes to keep leaves off the ground.</string>
+
+    <!-- Care: Unknown -->
+    <string name="care_overview_unknown">We could not identify the problem clearly. Try scanning again with better light, or ask a local farming expert for help.</string>
+    <string name="care_treatment_unknown">Look closely at the plant for any spots or color changes. If you see something wrong, remove those leaves. Watch the plant for a few days to see if it gets worse.</string>
+    <string name="care_prevention_unknown">Water at the base and keep plants spaced apart. Add fertilizer and remove weeds regularly. Do not grow the same crop in the same spot every year. Check your plants often for any changes.</string>
+
+
 </resources>
+

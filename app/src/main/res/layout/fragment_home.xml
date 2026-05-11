@@ -183,6 +183,7 @@
                             android:id="@+id/tvTemp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="@string/weather_temp_placeholder"
                             android:textAppearance="@style/TextAppearance.LeafBloom.Temperature"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -202,11 +203,22 @@
                             android:id="@+id/ivWeatherIcon"
                             android:layout_width="@dimen/space_72"
                             android:layout_height="@dimen/space_56"
-                            android:contentDescription="@null"
+                            android:contentDescription="@string/weather_icon_cd"
                             android:src="@drawable/cloud_icon"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
+
+                        <ProgressBar
+                            android:id="@+id/pbWeather"
+                            android:layout_width="@dimen/space_16"
+                            android:layout_height="@dimen/space_16"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@id/tvTemp"
+                            app:layout_constraintStart_toEndOf="@id/tvTemp"
+                            app:layout_constraintTop_toTopOf="@id/tvTemp"
+                            android:layout_marginStart="@dimen/space_8"
+                            tools:visibility="visible" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>

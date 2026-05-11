@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Moon outer (deep amber) -->
+    <path
+        android:fillColor="#FFE65100"
+        android:pathData="M48,32c0,11 -8.9,20 -19.9,20c-4,0 -7.7,-1.2 -10.9,-3.2c5.5,1.1 11.4,-0.5 15.6,-4.7c7.1,-7.1 7.1,-18.7 0,-25.8c-1.9,-1.9 -4,-3.3 -6.4,-4.1c1.3,-0.2 2.6,-0.4 3.9,-0.4C39.1,13.8 48,22 48,32z" />
+    <!-- Moon mid -->
+    <path
+        android:fillColor="#FFFFA000"
+        android:pathData="M46,30.5c0,11 -8.9,20 -19.9,20c-3.4,0 -6.5,-0.9 -9.3,-2.4c5.1,0.8 10.5,-0.9 14.4,-4.7c7.1,-7.1 7.1,-18.7 0,-25.8c-1.5,-1.5 -3.3,-2.7 -5.1,-3.6c0.9,-0.1 1.7,-0.2 2.6,-0.2C39,13.8 46,21.2 46,30.5z" />
+    <!-- Moon highlight -->
+    <path
+        android:fillColor="#FFFFCA28"
+        android:pathData="M44,29c0,11 -8.9,20 -19.9,20c-2.8,0 -5.5,-0.7 -7.8,-1.9c4.7,0.5 9.6,-1.2 13.2,-4.7c7.1,-7.1 7.1,-18.7 0,-25.8c-1.1,-1.1 -2.4,-2.1 -3.8,-2.8c0.5,-0.1 1.1,-0.1 1.6,-0.1C38.4,13.7 44,20.9 44,29z" />
+    <!-- Star 1 (deeper for white bg) -->
+    <path
+        android:fillColor="#FFFFB300"
+        android:pathData="M14,16l1.2,3l3,1.2l-3,1.2l-1.2,3l-1.2,-3l-3,-1.2l3,-1.2z" />
+    <!-- Star 2 -->
+    <path
+        android:fillColor="#FFFFB300"
+        android:pathData="M52,46l0.8,2l2,0.8l-2,0.8l-0.8,2l-0.8,-2l-2,-0.8l2,-0.8z" />
+    <!-- Star 3 -->
+    <path
+        android:fillColor="#FFFFCA28"
+        android:pathData="M10,40l0.7,1.7l1.7,0.7l-1.7,0.7l-0.7,1.7l-0.7,-1.7l-1.7,-0.7l1.7,-0.7z" />
+</vector>

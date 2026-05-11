@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Back cloud (deep slate) -->
+    <path
+        android:fillColor="#FF607D8B"
+        android:pathData="M20,38c-4.4,0 -8,-3.4 -8,-7.7s3.6,-7.7 8,-7.7c0.6,0 1.2,0.1 1.7,0.2c1,-3.6 4.4,-6.3 8.5,-6.3c4.1,0 7.5,2.7 8.5,6.3c0.6,-0.1 1.1,-0.2 1.7,-0.2c4.4,0 8,3.4 8,7.7s-3.6,7.7 -8,7.7L20,38z" />
+    <!-- Front cloud (light highlight) -->
+    <path
+        android:fillColor="#FFCFD8DC"
+        android:pathData="M26,52c-5.5,0 -10,-4.1 -10,-9.2c0,-5.1 4.5,-9.2 10,-9.2c0.7,0 1.4,0.1 2.1,0.2c1.3,-4.3 5.5,-7.5 10.6,-7.5c5.1,0 9.3,3.2 10.6,7.5c0.7,-0.1 1.4,-0.2 2.1,-0.2c5.5,0 10,4.1 10,9.2s-4.5,9.2 -10,9.2L26,52z" />
+    <!-- Front cloud subtle highlight -->
+    <path
+        android:fillColor="#33FFFFFF"
+        android:pathData="M28,36c-0.5,1 -0.8,2.1 -0.8,3.3c0,0.9 0.2,1.7 0.5,2.5c1.7,-2.4 4.5,-4 7.6,-4c0.7,0 1.4,0.1 2.1,0.2c-0.8,-2.4 -3.1,-4.2 -5.8,-4.2c-1.4,0 -2.7,0.5 -3.6,1.2z" />
+</vector>

@@ -35,8 +35,12 @@ class PestResultFragment : BaseFragment() {
         val confidenceVal = arguments?.getFloat("confidence", 0f) ?: 0f
 
         if (uriString != null) {
-            val uri = Uri.parse(uriString)
-            Glide.with(this).load(uri).into(binding.ivHeader)
+            val imageSource: Any = if (uriString.startsWith("/")) {
+                java.io.File(uriString)
+            } else {
+                Uri.parse(uriString)
+            }
+            Glide.with(this).load(imageSource).into(binding.ivHeader)
         }
         
         displayResult(predictedName!!, confidenceVal)

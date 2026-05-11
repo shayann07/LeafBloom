@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.core.view.WindowCompat
-import com.devsphere.leafbloom.R
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.devsphere.leafbloom.R
 import com.devsphere.leafbloom.databinding.FragmentModelDownloadBinding
+import com.devsphere.leafbloom.prefs.UserPrefs
 import com.devsphere.leafbloom.ui.common.BaseFragment
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -19,11 +20,10 @@ class ModelDownloadFragment : BaseFragment() {
     private var _binding: FragmentModelDownloadBinding? = null
     private val binding get() = _binding!!
 
-    private var isDownloadCompleted = false
+    private var isCompleted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Enable edge-to-edge for this screen
         requireActivity().window?.let { window ->
             WindowCompat.setDecorFitsSystemWindows(window, false)
         }
@@ -39,23 +39,83 @@ class ModelDownloadFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupTexts()
+        setupPhase1()
         startEnterAnimation()
-
-        // *** Temporary testing flow ***
-        startModelDownloadFlowForTesting()
+        startPreparationFlow()
     }
 
-    private fun setupTexts() {
+    // -------------------------------------------------------
+    // Phase Setup — each phase updates title, subtitle, step
+    // -------------------------------------------------------
+
+    private fun setupPhase1() {
         binding.progressBar.visibility = View.VISIBLE
         binding.tvTitle.text = getString(R.string.model_download_title)
         binding.tvSubtitle.text = getString(R.string.model_download_subtitle)
+        binding.tvStep.text = getString(R.string.model_prep_step_format, 1, 3)
+        binding.tvStep.visibility = View.VISIBLE
     }
 
-    /**
-     * Intro fade-in + slight overshoot scale-in animation.
-     * When done → starts the LeafBloomLoadingView animation loop.
-     */
+    private fun transitionToPhase2() {
+        crossfadeText(
+            newTitle = getString(R.string.model_prep_phase2_title),
+            newSubtitle = getString(R.string.model_prep_phase2_subtitle),
+            newStep = getString(R.string.model_prep_step_format, 2, 3)
+        )
+    }
+
+    private fun transitionToPhase3() {
+        crossfadeText(
+            newTitle = getString(R.string.model_prep_done_title),
+            newSubtitle = getString(R.string.model_download_done_subtitle),
+            newStep = null // hide step indicator
+        )
+        binding.progressBar.animate()
+            .alpha(0f)
+            .setDuration(300L)
+            .withEndAction { binding.progressBar.visibility = View.GONE }
+            .start()
+    }
+
+    // -------------------------------------------------------
+    // Crossfade Text Transition
+    // -------------------------------------------------------
+
+    private fun crossfadeText(newTitle: String, newSubtitle: String, newStep: String?) {
+        val fadeDuration = 250L
+
+        // Fade out
+        binding.tvTitle.animate().alpha(0f).setDuration(fadeDuration).start()
+        binding.tvSubtitle.animate().alpha(0f).setDuration(fadeDuration).start()
+        binding.tvStep.animate().alpha(0f).setDuration(fadeDuration)
+            .withEndAction {
+                if (!isAdded) return@withEndAction
+
+                // Swap text
+                binding.tvTitle.text = newTitle
+                binding.tvSubtitle.text = newSubtitle
+
+                if (newStep != null) {
+                    binding.tvStep.text = newStep
+                    binding.tvStep.visibility = View.VISIBLE
+                } else {
+                    binding.tvStep.visibility = View.GONE
+                }
+
+                // Fade in
+                binding.tvTitle.animate().alpha(1f).setDuration(fadeDuration).start()
+                binding.tvSubtitle.animate().alpha(1f).setDuration(fadeDuration).start()
+                if (newStep != null) {
+                    binding.tvStep.animate().alpha(0.7f).setDuration(fadeDuration).start()
+                }
+            }
+            .start()
+    }
+
+    // -------------------------------------------------------
+    // Enter Animation (existing LeafBloomLoadingView)
+    // -------------------------------------------------------
+
     private fun startEnterAnimation() {
         val v = binding.leafBloom
 
@@ -72,38 +132,48 @@ class ModelDownloadFragment : BaseFragment() {
             }.start()
     }
 
-    /**
-     * TEMP: Fake 20s download to demo animation.
-     * Replace this with real model download logic.
-     */
-    private fun startModelDownloadFlowForTesting() {
+    // -------------------------------------------------------
+    // 3-Phase Preparation Flow
+    // -------------------------------------------------------
+
+    private fun startPreparationFlow() {
         viewLifecycleOwner.lifecycleScope.launch {
-            delay(20_000L)
-            onModelDownloadCompleted()
+            // Phase 1: Unpacking — already visible from setupPhase1()
+            delay(3000L)
+            if (!isAdded) return@launch
+
+            // Phase 2: Optimizing
+            transitionToPhase2()
+            delay(3000L)
+            if (!isAdded) return@launch
+
+            // Phase 3: Done
+            transitionToPhase3()
+            delay(1500L)
+            if (!isAdded) return@launch
+
+            onPreparationCompleted()
         }
     }
 
-    private fun onModelDownloadCompleted() {
-        if (!isAdded || isDownloadCompleted) return
-        isDownloadCompleted = true
+    // -------------------------------------------------------
+    // Completion → auto-navigate to Home
+    // -------------------------------------------------------
 
-        binding.progressBar.visibility = View.GONE
-        binding.tvSubtitle.text = getString(R.string.model_download_done_subtitle)
+    private fun onPreparationCompleted() {
+        if (!isAdded || isCompleted) return
+        isCompleted = true
 
-        // Let the custom view play its own premium exit animation,
-        // then navigate once it's fully faded out.
+        // Play the premium exit animation on the LeafBloomLoadingView,
+        // then auto-navigate to Home
         binding.leafBloom.playCompletionAndStop {
-//            navigateToNextScreen()
-        }
+            if (!isAdded) return@playCompletionAndStop
 
-        binding.leafBloom.setOnClickListener {
-            navigateToNextScreen()
-        }
-    }
+            // Mark first run as done so we skip this screen on next launch
+            UserPrefs.getInstance(requireContext()).isFirstRun = false
 
-    private fun navigateToNextScreen() {
-        // TODO: replace with your real nav target
-        findNavController().navigate(R.id.loginFragment)
+            findNavController().navigate(R.id.action_modelDownload_to_home)
+        }
     }
 
     override fun onDestroyView() {

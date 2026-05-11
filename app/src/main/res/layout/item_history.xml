@@ -1,150 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/LeafBloomCard.Medium"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
+    android:layout_marginBottom="@dimen/space_10"
     android:clickable="true"
     android:focusable="true"
-    android:padding="@dimen/space_10">
+    app:cardElevation="@dimen/space_0">
 
-    <!-- Plant thumbnail -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/historyThumb"
-        android:layout_width="@dimen/space_56"
-        android:layout_height="@dimen/space_56"
-        app:cardBackgroundColor="@color/surface_variant"
-        app:cardCornerRadius="@dimen/radius_12"
-        app:cardElevation="@dimen/space_0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/ivHistoryThumb"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@null"
-            android:padding="@dimen/space_6"
-            android:src="@drawable/history_item" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- Delete button (right) -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/btnDelete"
-        android:layout_width="@dimen/space_32"
-        android:layout_height="@dimen/space_32"
-        app:cardBackgroundColor="@color/accent_delete_container"
-        app:cardCornerRadius="@dimen/radius_12"
-        app:cardElevation="@dimen/space_0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@null"
-            android:padding="@dimen/space_8"
-            android:src="@drawable/delete_icon"
-            app:tint="@color/status_error"
-            tools:tint="@color/accent_fertilizer_coral" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- Date (top-right, before delete) -->
-    <TextView
-        android:id="@+id/tvHistoryDate"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/space_12"
-        android:textAppearance="?attr/textAppearanceLabelSmall"
-        android:textColor="?attr/colorOnSurfaceVariant"
-        app:layout_constraintEnd_toStartOf="@id/btnDelete"
-        app:layout_constraintTop_toTopOf="@id/tvHistoryPlant"
-        tools:text="25 November 2026, 12:00 am" />
+        android:padding="@dimen/space_12">
 
-    <!-- Plant name -->
-    <TextView
-        android:id="@+id/tvHistoryPlant"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_12"
-        android:layout_marginEnd="@dimen/space_8"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textAppearance="?attr/textAppearanceTitleMedium"
-        android:textColor="?attr/colorPrimary"
-        app:layout_constraintEnd_toStartOf="@id/tvHistoryDate"
-        app:layout_constraintStart_toEndOf="@id/historyThumb"
-        app:layout_constraintTop_toTopOf="@id/historyThumb"
-        tools:text="Anthurium" />
+        <!-- Plant thumbnail — full bleed inside rounded card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/historyThumb"
+            android:layout_width="@dimen/space_56"
+            android:layout_height="@dimen/space_56"
+            app:cardBackgroundColor="@color/surface_variant"
+            app:cardCornerRadius="@dimen/radius_12"
+            app:cardElevation="@dimen/space_0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <!-- Status row: "Healthy - 98%" (split so % can be green) -->
-    <LinearLayout
-        android:id="@+id/statusRow"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_12"
-        android:layout_marginTop="@dimen/space_2"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toStartOf="@id/btnDelete"
-        app:layout_constraintStart_toEndOf="@id/historyThumb"
-        app:layout_constraintTop_toBottomOf="@id/tvHistoryPlant">
+            <ImageView
+                android:id="@+id/ivHistoryThumb"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/history_item" />
+        </com.google.android.material.card.MaterialCardView>
 
+        <!-- Delete button (right) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btnDelete"
+            android:layout_width="@dimen/space_32"
+            android:layout_height="@dimen/space_32"
+            app:cardBackgroundColor="@color/accent_delete_container"
+            app:cardCornerRadius="@dimen/radius_12"
+            app:cardElevation="@dimen/space_0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:padding="@dimen/space_8"
+                android:src="@drawable/delete_icon"
+                app:tint="@color/status_error"
+                tools:tint="@color/accent_fertilizer_coral" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Date (top-right, before delete) -->
         <TextView
-            android:id="@+id/tvHistoryStatus"
+            android:id="@+id/tvHistoryDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/healthy"
-            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:layout_marginEnd="@dimen/space_12"
+            android:textAppearance="?attr/textAppearanceLabelSmall"
             android:textColor="?attr/colorOnSurfaceVariant"
-            tools:text="Healthy" />
+            app:layout_constraintEnd_toStartOf="@id/btnDelete"
+            app:layout_constraintTop_toTopOf="@id/tvHistoryPlant"
+            tools:text="01:44 AM" />
 
+        <!-- Plant name -->
         <TextView
-            android:id="@+id/tvDash"
-            android:layout_width="wrap_content"
+            android:id="@+id/tvHistoryPlant"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/sep_dash"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            tools:text=" - " />
-
-        <TextView
-            android:id="@+id/tvHistoryConfidence"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginEnd="@dimen/space_8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="?attr/textAppearanceTitleSmall"
             android:textColor="?attr/colorPrimary"
-            tools:text="98%" />
-    </LinearLayout>
+            app:layout_constraintEnd_toStartOf="@id/tvHistoryDate"
+            app:layout_constraintStart_toEndOf="@id/historyThumb"
+            app:layout_constraintTop_toTopOf="@id/historyThumb"
+            tools:text="Early Blight" />
 
-    <!-- Status indicators row -->
-    <LinearLayout
-        android:id="@+id/statusIndicators"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_12"
-        android:layout_marginTop="@dimen/space_4"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toEndOf="@id/historyThumb"
-        app:layout_constraintTop_toBottomOf="@id/statusRow">
+        <!-- Status row: "Healthy - 98%" (split so % can be green) -->
+        <LinearLayout
+            android:id="@+id/statusRow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginTop="@dimen/space_2"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toStartOf="@id/btnDelete"
+            app:layout_constraintStart_toEndOf="@id/historyThumb"
+            app:layout_constraintTop_toBottomOf="@id/tvHistoryPlant">
 
-        <ImageView
-            android:layout_width="@dimen/space_20"
-            android:layout_height="@dimen/space_20"
-            android:layout_gravity="center"
-            android:contentDescription="@null"
-            android:src="@drawable/drop_icon" />
+            <TextView
+                android:id="@+id/tvHistoryStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/healthy"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                tools:text="Healthy" />
 
-        <ImageView
-            android:layout_width="@dimen/space_20"
-            android:layout_height="@dimen/space_20"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/space_6"
-            android:contentDescription="@null"
-            android:src="@drawable/wind_icon" />
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tvDash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sep_dash"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                tools:text=" - " />
+
+            <TextView
+                android:id="@+id/tvHistoryConfidence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorPrimary"
+                tools:text="98%" />
+        </LinearLayout>
+
+        <!-- Status indicators row -->
+        <LinearLayout
+            android:id="@+id/statusIndicators"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginTop="@dimen/space_4"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toEndOf="@id/historyThumb"
+            app:layout_constraintTop_toBottomOf="@id/statusRow">
+
+            <ImageView
+                android:layout_width="@dimen/space_20"
+                android:layout_height="@dimen/space_20"
+                android:layout_gravity="center"
+                android:contentDescription="@null"
+                android:src="@drawable/drop_icon" />
+
+            <ImageView
+                android:layout_width="@dimen/space_20"
+                android:layout_height="@dimen/space_20"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/space_6"
+                android:contentDescription="@null"
+                android:src="@drawable/wind_icon" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

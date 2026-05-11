@@ -48,11 +48,15 @@ class IdentifyResultFragment : BaseFragment() {
         }
 
         if (uriString != null && identifyResponse != null) {
-            val uri = Uri.parse(uriString)
+            val imageSource: Any = if (uriString.startsWith("/")) {
+                java.io.File(uriString)
+            } else {
+                Uri.parse(uriString)
+            }
             
             // Allow Glide to load image into header
             Glide.with(this)
-                .load(uri)
+                .load(imageSource)
                 .into(binding.ivHeader)
 
             // Instantly display data
@@ -117,15 +121,27 @@ class IdentifyResultFragment : BaseFragment() {
 
         // Access via included binding
         with(binding.sheetIncluded) {
-            tvCommonName.text = data.bestMatch ?: "Unknown Plant"
-            tvScientificName.text = bestMatch.scientificName
+            val commonName = bestMatch.commonNames?.firstOrNull()
+            
+            if (!commonName.isNullOrBlank()) {
+                // Capitalize first letter of common name for better UI
+                tvCommonName.text = commonName.replaceFirstChar { 
+                    if (it.isLowerCase()) it.titlecase(java.util.Locale.ROOT) else it.toString() 
+                }
+                tvScientificName.text = bestMatch.scientificName ?: data.bestMatch
+                tvScientificName.isVisible = true
+            } else {
+                // Fallback to scientific name as title, hide subtitle
+                tvCommonName.text = data.bestMatch ?: "Unknown Plant"
+                tvScientificName.isVisible = false
+            }
             
             // Update Confidence Gauge
             val confidence = ((bestMatch.score ?: 0.0) * 100).toInt()
             progressConfidence.setProgress(confidence, true)
             tvConfidenceValue.text = "$confidence%"
             
-            familyChip.text = bestMatch.family ?: "Unknown Family"
+            familyChip.isVisible = false
             
             // Sheet is already "expanded" to its fixed 75% peek height, no need to change state
         }

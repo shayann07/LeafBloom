@@ -52,6 +52,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:contentDescription="@null"
             android:padding="@dimen/space_12"
             android:src="@drawable/back_icon"
             app:tint="@color/text_primary" />
@@ -107,30 +108,79 @@
             android:textColor="?attr/colorOnSurfaceVariant" />
     </LinearLayout>
 
-    <!-- History card -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardHistory"
-        style="@style/LeafBloomCard.Large"
+    <!-- Filter chips -->
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupFilter"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:cardElevation="@dimen/space_0"
-        app:cardPreventCornerOverlap="false"
-        app:cardUseCompatPadding="false"
-        app:contentPadding="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_12"
+        app:selectionRequired="true"
+        app:singleLine="true"
+        app:singleSelection="true"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/searchContainer">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipDiagnose"
+            style="@style/LeafChip.Compact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/diagnose" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipIdentify"
+            style="@style/LeafChip.Compact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/identify" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipPest"
+            style="@style/LeafChip.Compact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pest" />
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <!-- Empty state placeholder -->
+    <TextView
+        android:id="@+id/tvEmptyState"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/no_scans_yet"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/chipGroupFilter" />
+
+    <!-- History list container -->
+    <FrameLayout
+        android:id="@+id/cardHistory"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/space_4"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/chipGroupFilter">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvHistory"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
+            android:paddingTop="@dimen/space_4"
             android:paddingBottom="@dimen/bottom_nav_height"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_history" />
-    </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -415,6 +415,15 @@
         <item name="android:textColor">@color/chip_text_color</item>
     </style>
 
+    <style name="LeafChip.Compact" parent="LeafChip">
+        <item name="chipMinHeight">@dimen/space_32</item>
+        <item name="chipIconVisible">false</item>
+        <item name="chipStartPadding">@dimen/space_12</item>
+        <item name="chipEndPadding">@dimen/space_12</item>
+        <item name="textStartPadding">0dp</item>
+        <item name="textEndPadding">0dp</item>
+    </style>
+
 
     <!-- =========================================================
          INPUTS

@@ -11,6 +11,7 @@ import com.devsphere.leafbloom.R
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.devsphere.leafbloom.prefs.UserPrefs
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -21,10 +22,22 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        // ✅ CORRECT way to get NavController
+        // ✅ Get NavController
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
+
+        // -------------------------------------------------------
+        // Programmatically inflate nav graph (no app:navGraph in XML)
+        // so we can set the correct start destination BEFORE any
+        // fragment is created.
+        // -------------------------------------------------------
+        val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
+        val isFirstRun = UserPrefs.getInstance(this).isFirstRun
+        navGraph.setStartDestination(
+            if (isFirstRun) R.id.walkthroughFragment else R.id.homeFragment
+        )
+        navController.graph = navGraph
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav)
         val indicator = findViewById<View>(R.id.bottom_nav_indicator)
@@ -87,3 +100,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+

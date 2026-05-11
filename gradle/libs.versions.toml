@@ -1,21 +1,21 @@
 [versions]
-agp = "9.1.0"
+agp = "9.2.1"
 exifinterface = "1.4.2"
-glide = "5.0.5"
-cameraCore = "1.5.3"
+glide = "5.0.7"
+cameraCore = "1.6.1"
 coreSplashscreen = "1.2.0"
-guava = "33.5.0-android"
-kotlin = "2.3.10"
-coreKtx = "1.17.0"
+guava = "33.6.0-android"
+kotlin = "2.3.21"
+coreKtx = "1.18.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 appcompat = "1.7.1"
 material = "1.13.0"
-activity = "1.12.4"
+activity = "1.13.0"
 constraintlayout = "2.2.1"
-navigationFragmentKtx = "2.9.7"
-navigationUiKtx = "2.9.7"
+navigationFragmentKtx = "2.9.8"
+navigationUiKtx = "2.9.8"
 dotsindicator = "5.1.0"
 playServicesLocation = "21.3.0"
 pytorch_android_lite = "2.1.0"
@@ -24,6 +24,9 @@ gridlayout = "1.1.0"
 retrofit = "3.0.0"
 okhttp = "5.3.2"
 imagecropper = "4.7.0"
+room = "2.8.4"
+ksp = "2.3.7"
+lifecycle = "2.10.0"
 
 [libraries]
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCore" }
@@ -56,8 +59,14 @@ retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", ve
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
 imagecropper = { module = "com.vanniktech:android-image-cropper", version.ref = "imagecropper" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 

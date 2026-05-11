@@ -15,19 +15,13 @@
         android:id="@+id/modelDownloadFragment"
         android:name="com.devsphere.leafbloom.ui.modelDownload.ModelDownloadFragment"
         android:label="Model Download"
-        tools:layout="@layout/fragment_model_download" />
-
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.devsphere.leafbloom.ui.auth.LoginFragment"
-        android:label="Login Fragment"
-        tools:layout="@layout/fragment_login" />
-
-    <fragment
-        android:id="@+id/signupFragment"
-        android:name="com.devsphere.leafbloom.ui.auth.SignupFragment"
-        android:label="Signup Fragment"
-        tools:layout="@layout/fragment_signup" />
+        tools:layout="@layout/fragment_model_download">
+        <action
+            android:id="@+id/action_modelDownload_to_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/homeFragment"
@@ -40,6 +34,12 @@
         <action
             android:id="@+id/action_homeFragment_to_historyDetailsFragment"
             app:destination="@id/historyDetailsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_pestResultFragment"
+            app:destination="@id/pestResultFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_identifyResultFragment"
+            app:destination="@id/identifyResultFragment" />
     </fragment>
 
     <fragment
@@ -49,13 +49,19 @@
         tools:layout="@layout/fragment_scanner">
         <action
             android:id="@+id/action_scannerFragment_to_diagnoseResultFragment"
-            app:destination="@id/diagnoseResultFragment" />
+            app:destination="@id/diagnoseResultFragment"
+            app:popUpTo="@id/scannerFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_scannerFragment_to_identifyResultFragment"
-            app:destination="@id/identifyResultFragment" />
+            app:destination="@id/identifyResultFragment"
+            app:popUpTo="@id/scannerFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_scannerFragment_to_pestResultFragment"
-            app:destination="@id/pestResultFragment" />
+            app:destination="@id/pestResultFragment"
+            app:popUpTo="@id/scannerFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_scannerFragment_to_ripenessResultFragment"
             app:destination="@id/ripenessResultFragment" />
@@ -98,7 +104,17 @@
         android:id="@+id/historyFragment"
         android:name="com.devsphere.leafbloom.ui.history.HistoryFragment"
         android:label="History"
-        tools:layout="@layout/fragment_history" />
+        tools:layout="@layout/fragment_history">
+        <action
+            android:id="@+id/action_historyFragment_to_historyDetailsFragment"
+            app:destination="@id/historyDetailsFragment" />
+        <action
+            android:id="@+id/action_historyFragment_to_pestResultFragment"
+            app:destination="@id/pestResultFragment" />
+        <action
+            android:id="@+id/action_historyFragment_to_identifyResultFragment"
+            app:destination="@id/identifyResultFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/historyDetailsFragment"

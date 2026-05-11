@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.devsphere.leafbloom.R
 import com.devsphere.leafbloom.databinding.FragmentProfileBinding
+import com.devsphere.leafbloom.prefs.UserPrefs
 import com.devsphere.leafbloom.ui.common.BaseFragment
 import com.devsphere.leafbloom.util.SnackbarUtils
 import com.google.android.material.snackbar.Snackbar
@@ -44,6 +45,20 @@ class ProfileFragment : BaseFragment() {
             val versionName = requireContext().packageManager
                 .getPackageInfo(requireContext().packageName, 0).versionName
             tvVersion.text = getString(R.string.version, versionName)
+
+            // Developer mode: long-press version text to enable
+            tvVersion.setOnLongClickListener {
+                val prefs = UserPrefs.getInstance(requireContext())
+                prefs.isDevMode = true
+                prefs.resetOnboarding()
+                SnackbarUtils.showSnackbar(
+                    binding.root,
+                    "\uD83D\uDEE0\uFE0F Dev Mode ON — Onboarding reset. Restart the app to replay.",
+                    Snackbar.LENGTH_LONG,
+                    SnackbarUtils.Type.WARNING
+                )
+                true
+            }
         }
     }
 

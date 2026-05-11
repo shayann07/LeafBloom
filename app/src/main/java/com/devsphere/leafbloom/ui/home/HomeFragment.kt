@@ -14,16 +14,28 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionManager
 import com.devsphere.leafbloom.R
 import com.devsphere.leafbloom.data.model.HistoryItem
+import com.devsphere.leafbloom.data.model.IdentifyResponse
+import com.devsphere.leafbloom.data.model.PestInfo
+import com.devsphere.leafbloom.data.repository.ScanHistoryRepository
+import com.devsphere.leafbloom.data.repository.WeatherError
+import com.devsphere.leafbloom.data.source.local.db.LeafBloomDatabase
+import com.devsphere.leafbloom.data.source.local.db.ScanHistoryEntity
 import com.devsphere.leafbloom.databinding.FragmentHomeBinding
-import com.devsphere.leafbloom.ui.adapter.HistoryAdapter
+import com.devsphere.leafbloom.ui.adapter.HomeHistoryAdapter
 import com.devsphere.leafbloom.ui.common.BaseFragment
 import com.devsphere.leafbloom.ui.dialog.RationaleDialog
+import com.devsphere.leafbloom.util.DateUtils
 import com.devsphere.leafbloom.util.PermissionManager
+import com.devsphere.leafbloom.util.WeatherCodeMapper
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -31,13 +43,24 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
 import com.google.android.material.chip.Chip
+import com.google.gson.Gson
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlin.math.roundToInt
 
 class HomeFragment : BaseFragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private val homeViewModel: HomeViewModel by viewModels {
+        HomeViewModel.Factory(requireActivity().application)
+    }
+
+    private var lastKnownLat: Double? = null
+    private var lastKnownLon: Double? = null
 
     // Location Permission Launcher
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -98,6 +121,12 @@ class HomeFragment : BaseFragment() {
         // Lightweight layout setup — runs immediately
         setupAdaptiveHeader(binding.headerContainer, binding.ivHeader)
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.weather.collect { renderWeather(it) }
+            }
+        }
+
         // Defer heavy work until after the first frame draws
         // so back-navigation transitions render smoothly
         view.post {
@@ -128,7 +157,11 @@ class HomeFragment : BaseFragment() {
 
                 // Weather Card -> Click to refresh location manually
                 cardWeather.setOnClickListener {
-                    if (PermissionManager.hasPermission(
+                    val lat = lastKnownLat
+                    val lon = lastKnownLon
+                    if (lat != null && lon != null) {
+                        homeViewModel.onLocation(lat, lon, force = true)
+                    } else if (PermissionManager.hasPermission(
                             requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
                         )
                     ) {
@@ -185,21 +218,105 @@ class HomeFragment : BaseFragment() {
                     findNavController().navigate(R.id.action_homeFragment_to_scannerFragment, bundle)
                 }
 
-                // Initialize History RecyclerView
-                val historyItems = listOf(
-                    HistoryItem(
-                        "Rose", "Healthy", 37, "25 November, 12:00 am", R.drawable.history_item
-                    ), HistoryItem(
-                        "Lily", "Healthy", 37, "25 November, 12:00 am", R.drawable.history_item
-                    ), HistoryItem(
-                        "Apple", "Healthy", 37, "25 November, 12:00 am", R.drawable.history_item
-                    )
+                // Initialize History RecyclerView with live Room data
+                val db = LeafBloomDatabase.getInstance(requireContext())
+                val historyRepo = ScanHistoryRepository(db.scanHistoryDao())
+                val historyAdapter = HomeHistoryAdapter(
+                    onItemClick = { item ->
+                        when (item.scanType) {
+                            "PEST" -> {
+                                val bundle = Bundle().apply {
+                                    putString("image_uri", item.imagePath)
+                                    putString("predicted_class_name", item.plantName)
+                                    putFloat("confidence", item.confidence / 100f)
+                                }
+                                findNavController().navigate(R.id.action_homeFragment_to_pestResultFragment, bundle)
+                            }
+                            "IDENTIFY" -> {
+                                val bundle = Bundle().apply {
+                                    putString("image_uri", item.imagePath)
+                                    putLong("scanId", item.id)
+                                }
+                                viewLifecycleOwner.lifecycleScope.launch {
+                                    val entity = historyRepo.getById(item.id)
+                                    val response = entity?.identifyResponseJson?.let {
+                                        Gson().fromJson(it, IdentifyResponse::class.java)
+                                    }
+                                    if (response != null) {
+                                        val navBundle = Bundle().apply {
+                                            putString("image_uri", item.imagePath)
+                                            putParcelable("identify_response", response)
+                                        }
+                                        findNavController().navigate(R.id.action_homeFragment_to_identifyResultFragment, navBundle)
+                                    }
+                                }
+                            }
+                            else -> {
+                                val bundle = Bundle().apply {
+                                    putLong("scanId", item.id)
+                                }
+                                findNavController().navigate(R.id.action_homeFragment_to_historyDetailsFragment, bundle)
+                            }
+                        }
+                    }
                 )
-                val historyAdapter = HistoryAdapter(historyItems) {
-                    findNavController().navigate(R.id.action_homeFragment_to_historyDetailsFragment)
-                }
                 rvHistory.layoutManager = LinearLayoutManager(requireContext())
                 rvHistory.adapter = historyAdapter
+
+                // Observe recent 3 history items
+                viewLifecycleOwner.lifecycleScope.launch {
+                    historyRepo.observeRecent(3).collectLatest { entities ->
+                        val items = entities.map { entity ->
+                            val isHealthy = entity.predictedClass.equals("Healthy", ignoreCase = true)
+                            var displayPlantName = entity.predictedClass
+
+                            val status = when (entity.scanType) {
+                                "PEST" -> {
+                                    val pestInfo = PestInfo.get(entity.predictedClass)
+                                    try { getString(pestInfo.threatLevelRes) } catch (_: Exception) { "Unknown" }
+                                }
+                                "IDENTIFY" -> {
+                                    entity.identifyResponseJson?.let {
+                                        try {
+                                            val response = Gson().fromJson(it, IdentifyResponse::class.java)
+                                            val bestMatch = response.data?.results?.firstOrNull()
+                                            
+                                            val commonName = bestMatch?.commonNames?.firstOrNull()
+                                            if (!commonName.isNullOrBlank()) {
+                                                displayPlantName = commonName.replaceFirstChar { char ->
+                                                    if (char.isLowerCase()) char.titlecase(java.util.Locale.ROOT) else char.toString()
+                                                }
+                                            }
+                                            "Identified"
+                                        } catch (_: Exception) { "Unknown" }
+                                    } ?: "Unknown"
+                                }
+                                else -> if (isHealthy) "Healthy" else "Infected"
+                            }
+
+                            HistoryItem(
+                                id = entity.id,
+                                plantName = displayPlantName,
+                                status = status,
+                                confidence = (entity.confidence * 100).toInt(),
+                                date = DateUtils.getSmartDate(entity.timestampMs),
+                                imagePath = entity.imagePath,
+                                isHealthy = isHealthy,
+                                scanType = entity.scanType
+                            )
+                        }
+                        historyAdapter.submitList(items)
+
+                        // Hide entire history section when empty
+                        if (items.isEmpty()) {
+                            tvHistory.visibility = View.GONE
+                            cardHistory.visibility = View.GONE
+                        } else {
+                            tvHistory.visibility = View.VISIBLE
+                            cardHistory.visibility = View.VISIBLE
+                        }
+                    }
+                }
             }
         }
     }
@@ -279,7 +396,11 @@ class HomeFragment : BaseFragment() {
         }
 
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (_binding == null) return@addOnSuccessListener
             if (location != null) {
+                lastKnownLat = location.latitude
+                lastKnownLon = location.longitude
+                homeViewModel.onLocation(location.latitude, location.longitude)
                 try {
                     val geocoder = Geocoder(requireContext(), Locale.getDefault())
                     // Geocoder might be blocking, usually better on background thread, 
@@ -306,10 +427,10 @@ class HomeFragment : BaseFragment() {
                     }
                 } catch (e: Exception) {
                     // e.printStackTrace()
-                    binding.tvLocationValue.text = "Unknown Location"
+                    _binding?.tvLocationValue?.text = "Unknown Location"
                 }
             } else {
-                binding.tvLocationValue.text = "Location unavailable"
+                _binding?.tvLocationValue?.text = "Location unavailable"
             }
         }
     }
@@ -320,8 +441,8 @@ class HomeFragment : BaseFragment() {
         val text = "$city, $country"
 
         requireActivity().runOnUiThread {
-            binding.tvLocationValue.text = text
-            binding.tvWeatherLocation.text = text
+            _binding?.tvLocationValue?.text = text
+            _binding?.tvWeatherLocation?.text = text
         }
     }
 
@@ -346,6 +467,46 @@ class HomeFragment : BaseFragment() {
                 requestNotificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
+    }
+
+    private fun renderWeather(state: WeatherUiState) {
+        val b = _binding ?: return
+        when (state) {
+            is WeatherUiState.Empty -> {
+                b.tvTemp.text = getString(R.string.weather_temp_placeholder)
+                b.ivWeatherIcon.setImageResource(R.drawable.weather_cloud)
+                b.pbWeather.visibility = View.GONE
+            }
+            is WeatherUiState.Data -> {
+                val current = state.weather.current
+                val isDay = current.isDay == 1
+                val visual = WeatherCodeMapper.visualFor(current.weatherCode, isDay)
+                b.tvTemp.text = getString(
+                    R.string.weather_temp_format,
+                    current.temperature2m.roundToInt()
+                )
+                b.ivWeatherIcon.setImageResource(visual.iconRes)
+                b.pbWeather.visibility = if (state.isRefreshing) View.VISIBLE else View.GONE
+
+                state.lastError?.let { showWeatherError(it, hasCachedData = true) }
+            }
+        }
+    }
+
+    private fun showWeatherError(error: WeatherError, hasCachedData: Boolean) {
+        val msg = when (error) {
+            is WeatherError.NoNetwork ->
+                if (hasCachedData) getString(R.string.weather_offline_cached)
+                else getString(R.string.weather_error_generic)
+            is WeatherError.RateLimited -> getString(R.string.weather_error_rate_limited)
+            else -> getString(R.string.weather_error_generic)
+        }
+        com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
+            requireView(),
+            msg,
+            com.google.android.material.snackbar.Snackbar.LENGTH_SHORT,
+            com.devsphere.leafbloom.util.SnackbarUtils.Type.WARNING
+        )
     }
 
     override fun onDestroyView() {

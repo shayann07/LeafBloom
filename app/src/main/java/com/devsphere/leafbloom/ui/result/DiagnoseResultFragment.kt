@@ -28,7 +28,9 @@ class DiagnoseResultFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         applySystemBarInsets(binding.root)
-        binding.btnBack.setOnClickListener { findNavController().popBackStack() }
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack(R.id.homeFragment, false)
+        }
 
         // Bottom actions (wire later)
         binding.actionAddNote.setOnClickListener {
