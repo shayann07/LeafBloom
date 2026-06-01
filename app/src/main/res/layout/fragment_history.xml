@@ -37,42 +37,19 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="@dimen/safe_margin_h" />
 
-    <!-- Back button (same style language as your other screens) -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/btnBack"
-        android:layout_width="@dimen/space_40"
-        android:layout_height="@dimen/space_40"
-        android:layout_marginTop="@dimen/space_24"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="@dimen/radius_20"
-        app:cardElevation="@dimen/space_0"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toTopOf="@id/guideline_top">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@null"
-            android:padding="@dimen/space_12"
-            android:src="@drawable/back_icon"
-            app:tint="@color/text_primary" />
-    </com.google.android.material.card.MaterialCardView>
-
     <!-- Title centered -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_24"
         android:gravity="center"
-        android:paddingStart="@dimen/space_56"
-        android:paddingEnd="@dimen/space_56"
         android:text="@string/history"
         android:textAppearance="?attr/textAppearanceTitleMedium"
         android:textColor="@color/brand_green_text"
-        app:layout_constraintBottom_toBottomOf="@id/btnBack"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toTopOf="@id/btnBack" />
+        app:layout_constraintTop_toTopOf="@id/guideline_top" />
 
 
     <!-- Search pill (same pattern as Home) -->
@@ -88,7 +65,7 @@
         android:paddingEnd="@dimen/space_14"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/btnBack">
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
         <ImageView
             android:id="@+id/ivSearch"
@@ -98,14 +75,25 @@
             android:src="@drawable/search_icon"
             app:tint="@color/text_hint" />
 
-        <TextView
-            android:id="@+id/tvSearchHint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_16"
-            android:text="@string/search_plants_hint"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorOnSurfaceVariant" />
+        <EditText
+            android:id="@+id/etSearch"
+            style="@style/LeafSearchEditText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:hint="@string/search_plants_hint"
+            android:importantForAutofill="no" />
+
+        <ImageView
+            android:id="@+id/ivClearSearch"
+            android:layout_width="@dimen/size_icon_18"
+            android:layout_height="@dimen/size_icon_18"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_close_search"
+            android:visibility="gone"
+            app:tint="@color/text_hint" />
     </LinearLayout>
 
     <!-- Filter chips -->

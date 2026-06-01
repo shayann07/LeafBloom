@@ -35,7 +35,7 @@ object SnackbarUtils {
         val backgroundColorRes = when (type) {
             Type.ERROR -> R.color.surface_error_light
             Type.WARNING -> R.color.surface_warning_light
-            Type.SUCCESS -> R.color.status_success
+            Type.SUCCESS -> R.color.surface_success_light
             Type.INFO -> R.color.surface_variant
         }
 

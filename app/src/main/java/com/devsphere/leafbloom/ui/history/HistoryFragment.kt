@@ -4,24 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.devsphere.leafbloom.R
 import com.devsphere.leafbloom.data.model.HistoryItem
-import com.devsphere.leafbloom.data.model.IdentifyResponse
-import com.devsphere.leafbloom.data.model.PestInfo
-import com.devsphere.leafbloom.data.repository.ScanHistoryRepository
-import com.devsphere.leafbloom.data.source.local.db.LeafBloomDatabase
-import com.devsphere.leafbloom.data.source.local.db.ScanHistoryEntity
 import com.devsphere.leafbloom.databinding.FragmentHistoryBinding
 import com.devsphere.leafbloom.ui.adapter.HistoryAdapter
 import com.devsphere.leafbloom.ui.common.BaseFragment
-import com.devsphere.leafbloom.util.DateUtils
-import com.devsphere.leafbloom.util.ImageStorage
-import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collectLatest
+import com.devsphere.leafbloom.ui.motion.Motion
+import com.devsphere.leafbloom.ui.motion.beginFadeToggle
+import com.devsphere.leafbloom.ui.motion.bounceOnPress
+import com.devsphere.leafbloom.ui.motion.entranceFadeUp
+import com.devsphere.leafbloom.ui.motion.primeFadeUp
+import com.devsphere.leafbloom.ui.motion.snapVisible
 import kotlinx.coroutines.launch
 
 class HistoryFragment : BaseFragment() {
@@ -29,9 +28,19 @@ class HistoryFragment : BaseFragment() {
     private var _binding: FragmentHistoryBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var historyRepository: ScanHistoryRepository
     private lateinit var historyAdapter: HistoryAdapter
-    private var observeJob: Job? = null
+    private var lastFilterType: String? = null
+    private var hasPlayedEntrance: Boolean = false
+    private var latestData: HistoryUiState.Data? = null
+    private var searchQuery: String = ""
+
+    // Edge-triggered debouncing for the search focus crossfade.
+    private var lastFocusActive: Boolean? = null
+    private var lastEmptyState: Boolean? = null
+
+    private val vm: HistoryViewModel by viewModels {
+        HistoryViewModel.Factory(requireActivity().application, this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,31 +52,68 @@ class HistoryFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
         applySystemBarInsets(binding.root)
-
-        val db = LeafBloomDatabase.getInstance(requireContext())
-        historyRepository = ScanHistoryRepository(db.scanHistoryDao())
-
-        binding.btnBack.setOnClickListener { findNavController().popBackStack() }
 
         setupRecyclerView()
         setupChipFilter()
+        setupSearch()
+        syncChipSelection(vm.currentScanType())
 
-        // Default: Diagnose chip is checked, load diagnose history
-        observeHistory("DIAGNOSE")
+        // Tactile press feedback on the filter chips + search affordance.
+        listOf(
+            binding.searchContainer,
+            binding.chipDiagnose, binding.chipIdentify, binding.chipPest,
+        ).forEach { it.bounceOnPress() }
+
+        playHeaderEntrance()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch { vm.state.collect(::render) }
+                launch {
+                    vm.navigateIdentify.collect { nav ->
+                        nav ?: return@collect
+                        navigateToIdentifyResult(nav)
+                        vm.onIdentifyNavigationHandled()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun playHeaderEntrance() {
+        if (hasPlayedEntrance || Motion.reduced(requireContext())) {
+            listOf(
+                binding.tvTitle, binding.searchContainer,
+                binding.chipGroupFilter, binding.cardHistory,
+            ).forEach { it.snapVisible() }
+            startPostponedEnterTransition()
+            return
+        }
+        binding.tvTitle.primeFadeUp()
+        binding.searchContainer.primeFadeUp(20f)
+        binding.chipGroupFilter.primeFadeUp(20f)
+        androidx.core.view.OneShotPreDrawListener.add(binding.root) {
+            if (_binding == null) return@add
+            startPostponedEnterTransition()
+            binding.tvTitle.entranceFadeUp(delay = 0L, duration = Motion.LONG_2)
+            binding.searchContainer.entranceFadeUp(delay = 80L, duration = Motion.LONG_2)
+            binding.chipGroupFilter.entranceFadeUp(delay = 160L, duration = Motion.LONG_2)
+            hasPlayedEntrance = true
+        }
     }
 
     private fun setupRecyclerView() {
         historyAdapter = HistoryAdapter(
-            onItemClick = { item -> navigateToResult(item) },
-            onDeleteClick = { item ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    historyRepository.deleteById(item.id)
-                    item.imagePath?.let { ImageStorage.delete(it) }
-                }
-            }
+            onItemClick = ::navigateToResult,
+            onDeleteClick = { item -> vm.delete(item.id, item.imagePath) }
         )
         binding.rvHistory.adapter = historyAdapter
+        binding.rvHistory.layoutAnimation =
+            android.view.animation.AnimationUtils.loadLayoutAnimation(
+                requireContext(), R.anim.layout_animation_list
+            )
     }
 
     private fun setupChipFilter() {
@@ -77,29 +123,114 @@ class HistoryFragment : BaseFragment() {
                 R.id.chipPest -> "PEST"
                 else -> "DIAGNOSE"
             }
-            observeHistory(type)
+            if (type != vm.currentScanType()) vm.setScanType(type)
         }
     }
 
-    private fun observeHistory(scanType: String) {
-        observeJob?.cancel()
-        observeJob = viewLifecycleOwner.lifecycleScope.launch {
-            historyRepository.observeByType(scanType).collectLatest { entities ->
-                val items = entities.map { it.toHistoryItem() }
-                val sectionLabels = entities.associate { entity ->
-                    entity.id to DateUtils.getSectionLabel(requireContext(), entity.timestampMs)
-                }
-                historyAdapter.submitGroupedList(items, sectionLabels)
+    private fun syncChipSelection(type: String) {
+        val targetId = when (type) {
+            "IDENTIFY" -> R.id.chipIdentify
+            "PEST" -> R.id.chipPest
+            else -> R.id.chipDiagnose
+        }
+        if (binding.chipGroupFilter.checkedChipId != targetId) {
+            binding.chipGroupFilter.check(targetId)
+        }
+    }
 
-                if (items.isEmpty()) {
-                    binding.cardHistory.visibility = View.GONE
-                    binding.tvEmptyState.visibility = View.VISIBLE
-                } else {
-                    binding.cardHistory.visibility = View.VISIBLE
-                    binding.tvEmptyState.visibility = View.GONE
+    private fun setupSearch() {
+        binding.etSearch.addTextChangedListener { editable ->
+            val q = editable?.toString().orEmpty()
+            searchQuery = q
+            binding.ivClearSearch.visibility = if (q.isEmpty()) View.GONE else View.VISIBLE
+            vm.setSearchQuery(q)
+            latestData?.let { applyData(it, filterChanged = false) }
+        }
+        binding.ivClearSearch.setOnClickListener {
+            binding.etSearch.setText("")
+        }
+    }
+
+    private fun applySearchFocus(active: Boolean) {
+        val vis = if (active) View.GONE else View.VISIBLE
+        binding.tvTitle.visibility = vis
+        binding.chipGroupFilter.visibility = vis
+    }
+
+    private fun render(state: HistoryUiState) {
+        when (state) {
+            HistoryUiState.Loading -> Unit
+            is HistoryUiState.Data -> {
+                val filterChanged = lastFilterType != state.scanType
+                lastFilterType = state.scanType
+                latestData = state
+                applyData(state, filterChanged = filterChanged)
+            }
+        }
+    }
+
+    /** Applies the active search query on top of [data] and updates the UI. */
+    private fun applyData(data: HistoryUiState.Data, filterChanged: Boolean) {
+        val entries = filterEntries(data.entries, searchQuery)
+        historyAdapter.submitEntries(entries)
+        val isEmpty = entries.isEmpty()
+        val isSearching = searchQuery.isNotBlank()
+
+        val focusTarget = isSearching && !isEmpty
+        val focusChanged = lastFocusActive != focusTarget
+        val emptyChanged = lastEmptyState != isEmpty
+        if (focusChanged || emptyChanged) {
+            (binding.root as ViewGroup).beginFadeToggle(excludeRecycler = binding.rvHistory)
+        }
+        lastFocusActive = focusTarget
+        lastEmptyState = isEmpty
+
+        applySearchFocus(focusTarget)
+        if (isEmpty) {
+            binding.cardHistory.visibility = View.GONE
+            binding.tvEmptyState.visibility = View.VISIBLE
+            binding.tvEmptyState.text = if (isSearching) {
+                getString(R.string.no_results_for, searchQuery.trim())
+            } else {
+                getString(R.string.no_scans_yet)
+            }
+        } else {
+            binding.cardHistory.visibility = View.VISIBLE
+            binding.tvEmptyState.visibility = View.GONE
+            if (filterChanged && !Motion.reduced(requireContext())) {
+                binding.rvHistory.scheduleLayoutAnimation()
+            }
+        }
+    }
+
+    /**
+     * Filters the entry list by [query] (matched against plant name and status).
+     * Section headers are rebuilt so empty date groups don't show a lonely header.
+     * Empty query returns the original list untouched.
+     */
+    private fun filterEntries(
+        entries: List<HistoryAdapter.ListEntry>,
+        query: String
+    ): List<HistoryAdapter.ListEntry> {
+        if (query.isBlank()) return entries
+        val q = query.trim()
+        val out = mutableListOf<HistoryAdapter.ListEntry>()
+        var pendingHeader: HistoryAdapter.ListEntry.Header? = null
+        for (entry in entries) {
+            when (entry) {
+                is HistoryAdapter.ListEntry.Header -> pendingHeader = entry
+                is HistoryAdapter.ListEntry.Item -> {
+                    val item = entry.historyItem
+                    val matches = item.plantName.contains(q, ignoreCase = true) ||
+                        item.status.contains(q, ignoreCase = true)
+                    if (matches) {
+                        pendingHeader?.let { out.add(it); pendingHeader = null }
+                        out.add(entry)
+                    }
                 }
             }
         }
+        return out
     }
 
     private fun navigateToResult(item: HistoryItem) {
@@ -114,34 +245,9 @@ class HistoryFragment : BaseFragment() {
                     R.id.action_historyFragment_to_pestResultFragment, bundle
                 )
             }
-            "IDENTIFY" -> {
-                val bundle = Bundle().apply {
-                    putString("image_uri", item.imagePath)
-                    // Retrieve full entity to get JSON — scanId lookup
-                    // We pass the scanId so the fragment can load it
-                    putLong("scanId", item.id)
-                }
-                // Load identify response from DB and navigate
-                lifecycleScope.launch {
-                    val entity = historyRepository.getById(item.id)
-                    val response = entity?.identifyResponseJson?.let {
-                        Gson().fromJson(it, IdentifyResponse::class.java)
-                    }
-                    if (response != null) {
-                        val navBundle = Bundle().apply {
-                            putString("image_uri", item.imagePath)
-                            putParcelable("identify_response", response)
-                        }
-                        findNavController().navigate(
-                            R.id.action_historyFragment_to_identifyResultFragment, navBundle
-                        )
-                    }
-                }
-            }
+            "IDENTIFY" -> vm.requestIdentifyNavigation(item.id, item.imagePath)
             else -> {
-                val bundle = Bundle().apply {
-                    putLong("scanId", item.id)
-                }
+                val bundle = Bundle().apply { putLong("scanId", item.id) }
                 findNavController().navigate(
                     R.id.action_historyFragment_to_historyDetailsFragment, bundle
                 )
@@ -149,50 +255,20 @@ class HistoryFragment : BaseFragment() {
         }
     }
 
-    private fun ScanHistoryEntity.toHistoryItem(): HistoryItem {
-        val isHealthy = predictedClass.equals("Healthy", ignoreCase = true)
-        var displayPlantName = predictedClass
-
-        val status = when (scanType) {
-            "PEST" -> {
-                val pestInfo = PestInfo.get(predictedClass)
-                try { getString(pestInfo.threatLevelRes) } catch (_: Exception) { "Unknown" }
-            }
-            "IDENTIFY" -> {
-                identifyResponseJson?.let {
-                    try {
-                        val response = Gson().fromJson(it, IdentifyResponse::class.java)
-                        val bestMatch = response.data?.results?.firstOrNull()
-                        
-                        // Extract common name
-                        val commonName = bestMatch?.commonNames?.firstOrNull()
-                        if (!commonName.isNullOrBlank()) {
-                            displayPlantName = commonName.replaceFirstChar { char ->
-                                if (char.isLowerCase()) char.titlecase(java.util.Locale.ROOT) else char.toString()
-                            }
-                        }
-                        "Identified"
-                    } catch (_: Exception) { "Unknown" }
-                } ?: "Unknown"
-            }
-            else -> if (isHealthy) "Healthy" else "Infected"
+    private fun navigateToIdentifyResult(nav: HistoryViewModel.IdentifyNav) {
+        val bundle = Bundle().apply {
+            putString("image_uri", nav.imagePath)
+            putParcelable("identify_response", nav.response)
         }
-
-        return HistoryItem(
-            id = id,
-            plantName = displayPlantName,
-            status = status,
-            confidence = (confidence * 100).toInt(),
-            date = DateUtils.getTimeOnly(timestampMs),
-            imagePath = imagePath,
-            isHealthy = isHealthy,
-            scanType = scanType
+        findNavController().navigate(
+            R.id.action_historyFragment_to_identifyResultFragment, bundle
         )
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        observeJob?.cancel()
         _binding = null
+        lastFocusActive = null
+        lastEmptyState = null
     }
 }

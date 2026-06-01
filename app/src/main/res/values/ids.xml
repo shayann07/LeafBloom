@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="tag_walk_entrance_played" type="id" />
+    <item name="tag_walk_float_animator" type="id" />
+    <item name="tag_walk_illustration" type="id" />
+    <item name="tag_walk_text_container" type="id" />
+    <item name="tag_walk_title" type="id" />
+    <item name="tag_walk_body" type="id" />
+    <item name="tag_profile_image_key" type="id" />
+</resources>

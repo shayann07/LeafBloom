@@ -362,7 +362,7 @@ class LeafBloomLoadingView @JvmOverloads constructor(
     private fun startStageAnimator() {
         loopAnimator?.cancel()
 
-        val duration = 2500L
+        val duration = 1200L
         val interpolator = DecelerateInterpolator()
 
         // Prepare group data for this stage
@@ -467,7 +467,7 @@ class LeafBloomLoadingView @JvmOverloads constructor(
         if (breezeAnimator != null) return
 
         breezeAnimator = ValueAnimator.ofFloat(0f, (Math.PI * 2).toFloat()).apply {
-            duration = 4000L
+            duration = 2200L
             repeatCount = ValueAnimator.INFINITE
             addUpdateListener {
                 val t = it.animatedValue as Float
@@ -488,7 +488,7 @@ class LeafBloomLoadingView @JvmOverloads constructor(
         val interpolator = DecelerateInterpolator()
 
         breatheAnimator = ValueAnimator.ofFloat(0f, (Math.PI * 2).toFloat()).apply {
-            duration = 2600L
+            duration = 1500L
             repeatCount = ValueAnimator.INFINITE
             this.interpolator = interpolator
             addUpdateListener {

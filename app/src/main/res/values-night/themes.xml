@@ -367,6 +367,20 @@
         <item name="cornerSize">@dimen/radius_20</item>
     </style>
 
+    <style name="ShapeAppearance.LeafBloom.ChatBubbleUser" parent="ShapeAppearance.LeafCard">
+        <item name="cornerSizeTopLeft">@dimen/radius_16</item>
+        <item name="cornerSizeTopRight">@dimen/radius_16</item>
+        <item name="cornerSizeBottomLeft">@dimen/radius_16</item>
+        <item name="cornerSizeBottomRight">@dimen/space_4</item>
+    </style>
+
+    <style name="ShapeAppearance.LeafBloom.ChatBubbleAi" parent="ShapeAppearance.LeafCard">
+        <item name="cornerSizeTopLeft">@dimen/radius_16</item>
+        <item name="cornerSizeTopRight">@dimen/radius_16</item>
+        <item name="cornerSizeBottomLeft">@dimen/space_4</item>
+        <item name="cornerSizeBottomRight">@dimen/radius_16</item>
+    </style>
+
     <!-- =========================================================
          SHAPES – IMAGE CLIPPING
          ========================================================= -->

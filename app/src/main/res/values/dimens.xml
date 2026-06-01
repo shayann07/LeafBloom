@@ -33,6 +33,7 @@
     <dimen name="feature_card_min_height">180dp</dimen>
     <dimen name="tip_card_width">175dp</dimen>
     <dimen name="tip_card_min_height">135dp</dimen>
+    <dimen name="tip_pager_height">140dp</dimen>
     <dimen name="history_thumb_size">72dp</dimen>
     <dimen name="check_plant_image_size">120dp</dimen>
 

@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -33,6 +34,14 @@ import com.devsphere.leafbloom.databinding.FragmentHomeBinding
 import com.devsphere.leafbloom.ui.adapter.HomeHistoryAdapter
 import com.devsphere.leafbloom.ui.common.BaseFragment
 import com.devsphere.leafbloom.ui.dialog.RationaleDialog
+import com.devsphere.leafbloom.ui.motion.Motion
+import com.devsphere.leafbloom.ui.motion.beginFadeToggle
+import com.devsphere.leafbloom.ui.motion.bounceOnPress
+import com.devsphere.leafbloom.ui.motion.entranceFadeUp
+import com.devsphere.leafbloom.ui.motion.entranceScaleFadeUp
+import com.devsphere.leafbloom.ui.motion.primeFadeUp
+import com.devsphere.leafbloom.ui.motion.primeScaleFadeUp
+import com.devsphere.leafbloom.ui.motion.snapVisible
 import com.devsphere.leafbloom.util.DateUtils
 import com.devsphere.leafbloom.util.PermissionManager
 import com.devsphere.leafbloom.util.WeatherCodeMapper
@@ -61,6 +70,21 @@ class HomeFragment : BaseFragment() {
 
     private var lastKnownLat: Double? = null
     private var lastKnownLon: Double? = null
+
+    // Survives view recreation (fragment instance is retained across nav forward/back).
+    // Used to restore scroll position and skip the entrance choreography on return.
+    private var savedScrollY: Int = 0
+    private var hasPlayedEntrance: Boolean = false
+
+    // Recent-scans search state. We keep the full list so the search can be re-applied
+    // when either the data refreshes or the query changes.
+    private var recentItems: List<HistoryItem> = emptyList()
+    private var searchQuery: String = ""
+    private var historyAdapter: HomeHistoryAdapter? = null
+
+    // Edge-triggered debouncing for the search focus crossfade.
+    private var lastFocusActive: Boolean? = null
+    private var lastEmptyState: Boolean? = null
 
     // Location Permission Launcher
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -117,9 +141,11 @@ class HomeFragment : BaseFragment() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
 
         // Lightweight layout setup — runs immediately
         setupAdaptiveHeader(binding.headerContainer, binding.ivHeader)
+        playEntrance()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -221,7 +247,7 @@ class HomeFragment : BaseFragment() {
                 // Initialize History RecyclerView with live Room data
                 val db = LeafBloomDatabase.getInstance(requireContext())
                 val historyRepo = ScanHistoryRepository(db.scanHistoryDao())
-                val historyAdapter = HomeHistoryAdapter(
+                val adapter = HomeHistoryAdapter(
                     onItemClick = { item ->
                         when (item.scanType) {
                             "PEST" -> {
@@ -260,8 +286,15 @@ class HomeFragment : BaseFragment() {
                         }
                     }
                 )
+                historyAdapter = adapter
                 rvHistory.layoutManager = LinearLayoutManager(requireContext())
-                rvHistory.adapter = historyAdapter
+                rvHistory.adapter = adapter
+                rvHistory.layoutAnimation =
+                    android.view.animation.AnimationUtils.loadLayoutAnimation(
+                        requireContext(), R.anim.layout_animation_list
+                    )
+
+                setupSearch()
 
                 // Observe recent 3 history items
                 viewLifecycleOwner.lifecycleScope.launch {
@@ -305,19 +338,10 @@ class HomeFragment : BaseFragment() {
                                 scanType = entity.scanType
                             )
                         }
-                        historyAdapter.submitList(items)
-
-                        // Hide entire history section when empty
-                        if (items.isEmpty()) {
-                            tvHistory.visibility = View.GONE
-                            cardHistory.visibility = View.GONE
-                        } else {
-                            tvHistory.visibility = View.VISIBLE
-                            cardHistory.visibility = View.VISIBLE
-                        }
+                        recentItems = items
+                        renderRecent()
                     }
-                }
-            }
+                }            }
         }
     }
 
@@ -510,7 +534,165 @@ class HomeFragment : BaseFragment() {
     }
 
     override fun onDestroyView() {
+        savedScrollY = _binding?.root?.scrollY ?: savedScrollY
         super.onDestroyView()
         _binding = null
+        lastFocusActive = null
+        lastEmptyState = null
+    }
+
+    // The recent-history RecyclerView populates async on return, so the page is shorter than
+    // it was when the user left, and the NestedScrollView clamps any scrollTo() to the smaller
+    // maxScrollY — landing the user "in the middle". Watch layout changes and re-apply scroll
+    // once the content is tall enough to hold the saved position.
+    private fun restoreScrollWhenReady() {
+        val target = savedScrollY
+        if (target <= 0 || _binding == null) return
+        val sv = binding.root
+        val tryRestore: () -> Boolean = {
+            val child = sv.getChildAt(0)
+            if (child != null) {
+                val maxScroll = (child.height - sv.height).coerceAtLeast(0)
+                if (maxScroll >= target) {
+                    sv.scrollTo(0, target)
+                    true
+                } else false
+            } else false
+        }
+        val listener = object : View.OnLayoutChangeListener {
+            override fun onLayoutChange(
+                v: View, l: Int, t: Int, r: Int, b: Int,
+                oL: Int, oT: Int, oR: Int, oB: Int,
+            ) {
+                if (_binding == null || tryRestore()) sv.removeOnLayoutChangeListener(this)
+            }
+        }
+        sv.addOnLayoutChangeListener(listener)
+        // Attempt once immediately in case content is already tall enough.
+        sv.post { if (_binding != null && tryRestore()) sv.removeOnLayoutChangeListener(listener) }
+        // Safety: stop retrying after ~1.5s so the listener can't leak.
+        sv.postDelayed({ sv.removeOnLayoutChangeListener(listener) }, 1500L)
+    }
+
+    private fun setupSearch() {
+        val b = _binding ?: return
+        b.etSearch.addTextChangedListener { editable ->
+            val q = editable?.toString().orEmpty()
+            searchQuery = q
+            b.ivClearSearch.visibility = if (q.isEmpty()) View.GONE else View.VISIBLE
+            renderRecent()
+        }
+        b.ivClearSearch.setOnClickListener {
+            b.etSearch.setText("")
+        }
+    }
+
+    private fun applySearchFocus(active: Boolean) {
+        val b = _binding ?: return
+        val vis = if (active) View.GONE else View.VISIBLE
+        listOf(
+            b.chipsScroll,
+            b.cardCheckPlant,
+            b.tvAllFeatures,
+            b.featuresRow1,
+            b.featuresRow2,
+            b.tvTips,
+            b.tipsScroll,
+        ).forEach { it.visibility = vis }
+    }
+
+    /** Applies the search query on top of [recentItems] and refreshes the section visibility. */
+    private fun renderRecent() {
+        val b = _binding ?: return
+        val q = searchQuery.trim()
+        val isSearching = q.isNotEmpty()
+        val filtered = if (!isSearching) recentItems else recentItems.filter {
+            it.plantName.contains(q, ignoreCase = true) ||
+                it.status.contains(q, ignoreCase = true)
+        }
+        val hasResults = filtered.isNotEmpty()
+
+        val focusTarget = isSearching && hasResults
+        val emptyTarget = isSearching && !hasResults
+        val focusChanged = lastFocusActive != focusTarget
+        val emptyChanged = lastEmptyState != emptyTarget
+        if (focusChanged || emptyChanged) {
+            (b.root as ViewGroup).beginFadeToggle(excludeRecycler = b.rvHistory)
+        }
+
+        // Skip the recycler's layoutAnimation while a Fade is in flight — otherwise
+        // the row items animate in concurrently and finish before the chrome fade-out
+        // does, so the search results appear before the chrome is gone.
+        historyAdapter?.submitList(filtered) {
+            if (_binding != null && filtered.isNotEmpty() && !isSearching) {
+                b.rvHistory.scheduleLayoutAnimation()
+            }
+        }
+
+        lastFocusActive = focusTarget
+        lastEmptyState = emptyTarget
+
+        applySearchFocus(focusTarget || emptyTarget)
+
+        if (emptyTarget) {
+            b.tvNoResults.text = getString(R.string.no_results_for, q)
+            b.tvNoResults.visibility = View.VISIBLE
+            b.tvHistory.visibility = View.GONE
+            b.cardHistory.visibility = View.GONE
+        } else {
+            b.tvNoResults.visibility = View.GONE
+            val sectionVisible = recentItems.isNotEmpty()
+            b.tvHistory.visibility = if (sectionVisible) View.VISIBLE else View.GONE
+            b.cardHistory.visibility = if (sectionVisible) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun playEntrance() {
+        val sections = listOf(
+            binding.searchContainer,
+            binding.cardWeather,
+            binding.chipsScroll,
+            binding.cardCheckPlant,
+            binding.tvAllFeatures,
+            binding.featuresRow1,
+            binding.featuresRow2,
+            binding.tvHistory,
+            binding.cardHistory,
+            binding.tvTips,
+        )
+
+        // Tactile press feedback on the main interactive cards.
+        listOf(binding.cardWeather, binding.cardCheckPlant, binding.searchContainer)
+            .forEach { it.bounceOnPress() }
+
+        // Return path (back-nav into home): skip choreography, snap content visible,
+        // and restore scroll once layout settles. Otherwise the user is at the bottom,
+        // leaves, returns, and sees the page snap to the middle as primeFadeUp +
+        // scroll-restore race each other.
+        if (hasPlayedEntrance || Motion.reduced(requireContext())) {
+            sections.forEach { it.snapVisible() }
+            restoreScrollWhenReady()
+            startPostponedEnterTransition()
+            return
+        }
+
+        // Prime immediately so the first frame is invisible. Re-prime inside the
+        // pre-draw listener to defend against anything (insets, adapter setup,
+        // chip relayout) resetting alpha/scale between now and the entrance.
+        // Home cards are larger than Profile/DiseaseLibrary, so subtle motion
+        // (16-24dp) doesn't read — use a bigger drop + more aggressive scale.
+        sections.forEach { it.primeScaleFadeUp(translationDp = 64f, startScale = 0.88f) }
+
+        androidx.core.view.OneShotPreDrawListener.add(binding.root) {
+            if (_binding == null) return@add
+            startPostponedEnterTransition()
+            var delay = 0L
+            sections.forEach { v ->
+                v.primeScaleFadeUp(translationDp = 64f, startScale = 0.88f)
+                v.entranceScaleFadeUp(delay = delay, duration = 700L)
+                delay += 100L
+            }
+            hasPlayedEntrance = true
+        }
     }
 }

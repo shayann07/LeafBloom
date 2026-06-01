@@ -47,6 +47,7 @@
     <color name="surface_error_light">#FAD2D2</color>
     <color name="surface_error_extra_light">#4DFAD2D2</color>
     <color name="surface_warning_light">#FFF1D7</color>
+    <color name="surface_success_light">#D6F0CC</color>
 
     <color name="outline_soft">#D7DEDA</color>
     <color name="outline_soft_2">#DDDFDC</color>
@@ -109,5 +110,31 @@
     <color name="auth_input_background_focused">#EEF8EE</color>
     <color name="leaf_ripple">#1F408A10</color> <!-- ~12% alpha green -->
     <color name="leaf_logout_ripple">#33DC2626</color>
+
+    <!-- Category container tints (Disease Library) -->
+    <color name="cat_fungal_container">#E2F5D8</color>
+    <color name="cat_fungal_icon_bg">#CDE9BE</color>
+    <color name="cat_bacterial_container">#FFE9CC</color>
+    <color name="cat_bacterial_icon_bg">#FBD9A8</color>
+    <color name="cat_viral_container">#E8DEF8</color>
+    <color name="cat_viral_icon_bg">#D5C6F0</color>
+    <color name="cat_pest_container">#EFE7DD</color>
+    <color name="cat_pest_icon_bg">#DCCFC0</color>
+
+    <!-- Symptom chip container tints -->
+    <color name="symptom_yellow_container">#FFF4C2</color>
+    <color name="symptom_brown_container">#EFE2DA</color>
+    <color name="symptom_blue_container">#D8EAFB</color>
+    <color name="symptom_neutral_container">#EEF2EB</color>
+    <color name="symptom_brown_swatch">#8E6A57</color>
+    <color name="symptom_blue_swatch">#2196F3</color>
+
+    <!-- Tip carousel per-tip palettes -->
+    <color name="tip_water_container">#D8EAFB</color>
+    <color name="tip_water_accent">#1E88E5</color>
+    <color name="tip_sun_container">#FCE4B8</color>
+    <color name="tip_sun_accent">#E08900</color>
+    <color name="tip_prune_container">@color/brand_green_container</color>
+    <color name="tip_prune_accent">@color/brand_green_primary</color>
 
 </resources>

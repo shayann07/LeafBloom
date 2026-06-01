@@ -100,3 +100,32 @@ functions/firebase-debug.*.log
 functions/.env
 functions/.env.*
 functions/coverage/
+
+# --------------------------
+# LOCAL SCRATCH / DOCS / MOCKUPS (not needed to build the app)
+# --------------------------
+.claude/
+_scratch/
+_fmt_styles.txt
+fyp_documentation_blueprint/
+
+# Root-level scratch images
+/.tmp_*.png
+/_dev.png
+/_full.png
+/full.png
+/mid.png
+/bot*.png
+/ss*.png
+/phones_v*.png
+/phone_section.png
+/standee*.png
+/linkedin_banner*.png
+
+# Documentation drafts and standee/banner mockups
+/*.docx
+/*.html
+
+# One-off doc generation scripts
+/integrate_docs.py
+/render_and_inject.py

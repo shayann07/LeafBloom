@@ -1,12 +1,30 @@
 package com.devsphere.leafbloom.ui.common
 
+import android.os.Bundle
 import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
+import com.devsphere.leafbloom.ui.motion.Motion
+import com.google.android.material.transition.MaterialSharedAxis
 
 abstract class BaseFragment : Fragment() {
+
+    /**
+     * Outgoing-only shared-axis X transitions. Incoming fragments own their
+     * entrance via the postponeEnterTransition + OneShotPreDrawListener pattern,
+     * so setting enterTransition here would race with that choreography.
+     *
+     * - exitTransition fires on this fragment when a destination is pushed on top.
+     * - returnTransition fires on this fragment when it's popped off the stack.
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (Motion.reduced(requireContext())) return
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, /* forward = */ true)
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.X, /* forward = */ false)
+    }
 
     /**
      * Applies system bar insets to a specific container view.
@@ -28,6 +46,9 @@ abstract class BaseFragment : Fragment() {
      * even when the container is wide (landscape) or when the image is zoomed.
      */
     protected fun setupAdaptiveHeader(container: View, headerImage: View, scale: Float = 1.18f) {
+        // Hide while we recompute geometry so the user never sees the unadapted frame
+        // (otherwise the layoutParams swap below causes a one-frame jump/stutter).
+        headerImage.alpha = 0f
         container.doOnLayout {
             val w = it.width
             val h = it.height
@@ -54,6 +75,10 @@ abstract class BaseFragment : Fragment() {
 
             headerImage.scaleX = scale
             headerImage.scaleY = scale
+
+            // Reveal only after the relayout has actually been committed.
+            // Slower than section entrances so the header settles in last and feels grounding.
+            headerImage.doOnLayout { headerImage.animate().alpha(1f).setDuration(700L).start() }
         }
     }
 }

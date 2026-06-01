@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardTip"
+    style="@style/LeafBloomCard.Large"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardBackgroundColor="@color/tip_prune_container">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/space_16">
+
+        <FrameLayout
+            android:layout_width="@dimen/space_56"
+            android:layout_height="@dimen/space_56"
+            android:layout_marginEnd="@dimen/space_16"
+            android:background="@drawable/bg_circle_surface_variant">
+
+            <ImageView
+                android:id="@+id/ivTipIcon"
+                android:layout_width="@dimen/size_icon_28"
+                android:layout_height="@dimen/size_icon_28"
+                android:layout_gravity="center"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_bulb_24" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvTipTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_tip_tag_pill"
+                android:paddingHorizontal="@dimen/space_8"
+                android:paddingVertical="@dimen/space_4"
+                android:textAppearance="?attr/textAppearanceLabelSmall"
+                android:textColor="@color/brand_green_primary"
+                android:textStyle="bold"
+                tools:text="WATERING" />
+
+            <TextView
+                android:id="@+id/tvTipTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_6"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="@color/text_primary"
+                tools:text="Water at the base" />
+
+            <TextView
+                android:id="@+id/tvTipBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/text_secondary"
+                tools:text="Late Blight thrives on wet leaves. Aim the can at the soil, not the foliage." />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

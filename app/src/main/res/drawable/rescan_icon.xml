@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!--
+        Circular arrows / autorenew shape.
+        Top arc sweeps right with an arrowhead, bottom arc sweeps left with an arrowhead.
+        This communicates "scan again" cleanly.
+    -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M12,5 L12,1 L7,6 L12,11 L12,7
+                          C15.31,7 18,9.69 18,13
+                          C18,14.01 17.75,14.97 17.3,15.8
+                          L18.76,17.26
+                          C19.54,16.03 20,14.57 20,13
+                          C20,8.58 16.42,5 12,5 Z"
+        android:strokeColor="@color/text_primary"
+        android:strokeWidth="0" />
+    <path
+        android:fillColor="@color/text_primary"
+        android:pathData="M12,5 L12,1 L7,6 L12,11 L12,7
+                          C15.31,7 18,9.69 18,13
+                          C18,14.01 17.75,14.97 17.3,15.8
+                          L18.76,17.26
+                          C19.54,16.03 20,14.57 20,13
+                          C20,8.58 16.42,5 12,5 Z" />
+    <path
+        android:fillColor="@color/text_primary"
+        android:pathData="M12,19
+                          C8.69,19 6,16.31 6,13
+                          C6,11.99 6.25,11.03 6.7,10.2
+                          L5.24,8.74
+                          C4.46,9.97 4,11.43 4,13
+                          C4,17.42 7.58,21 12,21 L12,24
+                          L17,19 L12,14 L12,19 Z" />
+</vector>

@@ -13,12 +13,24 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.devsphere.leafbloom.databinding.FragmentIdentifyResultBinding
 import com.devsphere.leafbloom.ui.common.BaseFragment
+import com.devsphere.leafbloom.ui.motion.Motion
+import com.devsphere.leafbloom.ui.motion.animateGaugeInt
+import com.devsphere.leafbloom.ui.motion.bounceOnPress
+import com.devsphere.leafbloom.ui.motion.entranceFadeUp
+import com.devsphere.leafbloom.ui.motion.entranceScaleFadeUp
+import com.devsphere.leafbloom.ui.motion.primeFadeUp
+import com.devsphere.leafbloom.ui.motion.primeScaleFadeUp
+import com.devsphere.leafbloom.ui.motion.pulseOnce
+import com.devsphere.leafbloom.ui.motion.setGaugeIntInstant
+import com.devsphere.leafbloom.ui.motion.snapVisible
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.devsphere.leafbloom.R
 
 class IdentifyResultFragment : BaseFragment() {
     private var _binding: FragmentIdentifyResultBinding? = null
     private val binding get() = _binding!!
+
+    private var hasPlayedEntrance: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -29,6 +41,7 @@ class IdentifyResultFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
 
         // 1. Adaptive Header
         setupAdaptiveHeader(binding.headerContainer, binding.ivHeader)
@@ -61,8 +74,12 @@ class IdentifyResultFragment : BaseFragment() {
 
             // Instantly display data
             displayResult(identifyResponse)
+            val confidence = (identifyResponse.data?.results?.firstOrNull()?.score ?: 0.0).toFloat()
+            binding.btnBack.bounceOnPress()
+            playEntrance(confidence)
 
         } else {
+             startPostponedEnterTransition()
              com.devsphere.leafbloom.util.SnackbarUtils.showSnackbar(
                  requireView(), 
                  "Missing image or response data!", 
@@ -136,10 +153,9 @@ class IdentifyResultFragment : BaseFragment() {
                 tvScientificName.isVisible = false
             }
             
-            // Update Confidence Gauge
-            val confidence = ((bestMatch.score ?: 0.0) * 100).toInt()
-            progressConfidence.setProgress(confidence, true)
-            tvConfidenceValue.text = "$confidence%"
+            // Update Confidence Gauge — start at 0; animateGaugeInt in playEntrance owns the sweep.
+            progressConfidence.progress = 0
+            tvConfidenceValue.text = "0%"
             
             familyChip.isVisible = false
             
@@ -150,5 +166,39 @@ class IdentifyResultFragment : BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun playEntrance(confidence: Float) {
+        val sheet = binding.sheetIncluded
+        if (hasPlayedEntrance || Motion.reduced(requireContext())) {
+            setGaugeIntInstant(sheet.progressConfidence, sheet.tvConfidenceValue, confidence)
+            listOf(
+                binding.btnBack, sheet.cardResult, sheet.tvCareTitle, sheet.cardCare,
+            ).forEach { it.snapVisible() }
+            startPostponedEnterTransition()
+            return
+        }
+
+        binding.btnBack.primeFadeUp()
+        sheet.cardResult.primeScaleFadeUp(translationDp = 28f)
+        sheet.tvCareTitle.primeFadeUp(20f)
+        sheet.cardCare.primeFadeUp(28f)
+
+        androidx.core.view.OneShotPreDrawListener.add(binding.root) {
+            if (_binding == null) return@add
+            startPostponedEnterTransition()
+            binding.btnBack.entranceFadeUp(delay = 0L, duration = Motion.LONG_2)
+            sheet.cardResult.entranceScaleFadeUp(delay = 200L, duration = 650L)
+            animateGaugeInt(
+                sheet.progressConfidence, sheet.tvConfidenceValue, confidence,
+                delay = 500L, duration = 1400L,
+            )
+            sheet.tvCareTitle.entranceFadeUp(delay = 700L, duration = Motion.LONG_2)
+            sheet.cardCare.entranceFadeUp(delay = 820L, duration = 650L)
+            if (confidence >= 0.5f) {
+                sheet.cardResult.pulseOnce(peakScale = 1.06f, duration = 900L, delay = 2100L)
+            }
+            hasPlayedEntrance = true
+        }
     }
 }

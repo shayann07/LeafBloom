@@ -80,7 +80,16 @@
         android:id="@+id/diagnoseResultFragment"
         android:name="com.devsphere.leafbloom.ui.result.DiagnoseResultFragment"
         android:label="@string/diagnose_result"
-        tools:layout="@layout/fragment_diagnose_result" />
+        tools:layout="@layout/fragment_diagnose_result">
+        <action
+            android:id="@+id/action_diagnoseResult_to_chat"
+            app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_diagnoseResult_to_scanner"
+            app:destination="@id/scannerFragment"
+            app:popUpTo="@id/diagnoseResultFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/identifyResultFragment"
@@ -92,7 +101,11 @@
         android:id="@+id/pestResultFragment"
         android:name="com.devsphere.leafbloom.ui.result.PestResultFragment"
         android:label="Pest Result"
-        tools:layout="@layout/fragment_pest_result" />
+        tools:layout="@layout/fragment_pest_result">
+        <action
+            android:id="@+id/action_pestResult_to_chat"
+            app:destination="@id/chatFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/ripenessResultFragment"
@@ -120,12 +133,42 @@
         android:id="@+id/historyDetailsFragment"
         android:name="com.devsphere.leafbloom.ui.history.HistoryDetailsFragment"
         android:label="History Details"
-        tools:layout="@layout/fragment_history_details" />
+        tools:layout="@layout/fragment_history_details">
+        <action
+            android:id="@+id/action_historyDetails_to_chat"
+            app:destination="@id/chatFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/diseaseLibraryFragment"
+        android:name="com.devsphere.leafbloom.ui.disease.DiseaseLibraryFragment"
+        android:label="Disease Library"
+        tools:layout="@layout/fragment_disease_library">
+        <action
+            android:id="@+id/action_diseaseLibrary_to_historyDetails"
+            app:destination="@id/historyDetailsFragment" />
+        <action
+            android:id="@+id/action_diseaseLibrary_to_chat"
+            app:destination="@id/chatFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.devsphere.leafbloom.ui.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.devsphere.leafbloom.ui.chat.ChatFragment"
+        android:label="Chat with AI"
+        tools:layout="@layout/fragment_chat">
+        <argument
+            android:name="system_prompt"
+            app:argType="string" />
+        <argument
+            android:name="context_title"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

@@ -132,14 +132,25 @@
                         android:src="@drawable/search_icon"
                         app:tint="@color/text_hint" />
 
-                    <TextView
-                        android:id="@+id/tvSearchHint"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/space_16"
-                        android:text="@string/search_plants_hint"
-                        android:textAppearance="?attr/textAppearanceBodyMedium"
-                        android:textColor="?attr/colorOnSurfaceVariant" />
+                    <EditText
+                        android:id="@+id/etSearch"
+                        style="@style/LeafSearchEditText"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:hint="@string/search_plants_hint"
+                        android:importantForAutofill="no" />
+
+                    <ImageView
+                        android:id="@+id/ivClearSearch"
+                        android:layout_width="@dimen/size_icon_18"
+                        android:layout_height="@dimen/size_icon_18"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_close_search"
+                        android:visibility="gone"
+                        app:tint="@color/text_hint" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -613,6 +624,18 @@
                         tools:listitem="@layout/item_history" />
                 </com.google.android.material.card.MaterialCardView>
 
+                <TextView
+                    android:id="@+id/tvNoResults"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_24"
+                    android:gravity="center"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:visibility="gone"
+                    tools:text="No results for &quot;blight&quot;"
+                    tools:visibility="visible" />
+
                 <!-- Tips & Tricks section title -->
                 <TextView
                     android:id="@+id/tvTips"
@@ -625,6 +648,7 @@
 
                 <!-- Tips horizontal scroll (equal height cards) -->
                 <HorizontalScrollView
+                    android:id="@+id/tipsScroll"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/space_12"

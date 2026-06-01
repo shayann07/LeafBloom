@@ -9,12 +9,23 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.devsphere.leafbloom.databinding.FragmentRipenessResultBinding
 import com.devsphere.leafbloom.ui.common.BaseFragment
+import com.devsphere.leafbloom.ui.motion.Motion
+import com.devsphere.leafbloom.ui.motion.animateGaugeInt
+import com.devsphere.leafbloom.ui.motion.bounceOnPress
+import com.devsphere.leafbloom.ui.motion.entranceFadeUp
+import com.devsphere.leafbloom.ui.motion.entranceScaleFadeUp
+import com.devsphere.leafbloom.ui.motion.primeFadeUp
+import com.devsphere.leafbloom.ui.motion.primeScaleFadeUp
+import com.devsphere.leafbloom.ui.motion.pulseOnce
+import com.devsphere.leafbloom.ui.motion.setGaugeIntInstant
+import com.devsphere.leafbloom.ui.motion.snapVisible
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlin.math.roundToInt
 
 class RipenessResultFragment : BaseFragment() {
     private var _binding: FragmentRipenessResultBinding? = null
     private val binding get() = _binding!!
+
+    private var hasPlayedEntrance: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -25,6 +36,7 @@ class RipenessResultFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
 
         // 1. Adaptive Header
         setupAdaptiveHeader(binding.headerContainer, binding.ivHeader)
@@ -38,14 +50,46 @@ class RipenessResultFragment : BaseFragment() {
         }
 
         val args = arguments
-        if (args != null) {
-            val scoreRipe = args.getFloat("score_ripe", 0f)
-            val scoreUnripe = args.getFloat("score_unripe", 0f)
-            val scoreUnknown = args.getFloat("score_unknown", 0f)
-            
-            displayResult(scoreRipe, scoreUnripe, scoreUnknown)
-        } else {
-            displayResult(0f, 0f, 0f)
+        val scoreRipe = args?.getFloat("score_ripe", 0f) ?: 0f
+        val scoreUnripe = args?.getFloat("score_unripe", 0f) ?: 0f
+        val scoreUnknown = args?.getFloat("score_unknown", 0f) ?: 0f
+        displayResult(scoreRipe, scoreUnripe, scoreUnknown)
+
+        binding.btnBack.bounceOnPress()
+        playEntrance(maxOf(scoreRipe, scoreUnripe, scoreUnknown))
+    }
+
+    private fun playEntrance(bestScore: Float) {
+        val sheet = binding.sheetIncluded
+        if (hasPlayedEntrance || Motion.reduced(requireContext())) {
+            setGaugeIntInstant(sheet.progressConfidence, sheet.tvConfidenceValue, bestScore)
+            listOf(
+                binding.btnBack, sheet.cardResult, sheet.tvCareTitle, sheet.cardCare,
+            ).forEach { it.snapVisible() }
+            startPostponedEnterTransition()
+            return
+        }
+
+        binding.btnBack.primeFadeUp()
+        sheet.cardResult.primeScaleFadeUp(translationDp = 28f)
+        sheet.tvCareTitle.primeFadeUp(20f)
+        sheet.cardCare.primeFadeUp(28f)
+
+        androidx.core.view.OneShotPreDrawListener.add(binding.root) {
+            if (_binding == null) return@add
+            startPostponedEnterTransition()
+            binding.btnBack.entranceFadeUp(delay = 0L, duration = Motion.LONG_2)
+            sheet.cardResult.entranceScaleFadeUp(delay = 200L, duration = 650L)
+            animateGaugeInt(
+                sheet.progressConfidence, sheet.tvConfidenceValue, bestScore,
+                delay = 500L, duration = 1400L,
+            )
+            sheet.tvCareTitle.entranceFadeUp(delay = 700L, duration = Motion.LONG_2)
+            sheet.cardCare.entranceFadeUp(delay = 820L, duration = 650L)
+            if (bestScore >= 0.5f) {
+                sheet.cardResult.pulseOnce(peakScale = 1.06f, duration = 900L, delay = 2100L)
+            }
+            hasPlayedEntrance = true
         }
     }
 
@@ -109,10 +153,9 @@ class RipenessResultFragment : BaseFragment() {
             // Update Status Chip
             statusChip.text = getString(ripenessInfo.statusLabelRes)
 
-            // Update Single Gauge
-            val percent = (bestScore.coerceIn(0f, 1f) * 100).roundToInt()
-            progressConfidence.setProgress(percent, true)
-            tvConfidenceValue.text = "$percent%"
+            // Update Single Gauge — start at 0; animateGaugeInt in playEntrance owns the sweep.
+            progressConfidence.progress = 0
+            tvConfidenceValue.text = "0%"
 
             // Update Advice
             tvCareBody.text = getString(ripenessInfo.adviceRes)

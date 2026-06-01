@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="bottom"
+    android:orientation="horizontal"
+    android:paddingVertical="@dimen/space_6">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="@dimen/space_32"
+        android:layout_height="@dimen/space_32"
+        android:layout_marginEnd="@dimen/space_8"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/space_16"
+        app:cardElevation="@dimen/space_2"
+        app:strokeColor="@color/outline_soft"
+        app:strokeWidth="@dimen/card_stroke">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:padding="@dimen/space_6"
+            android:src="@drawable/ic_gemini" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/bubbleCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/space_40"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardBackgroundColor="@color/surface_card"
+        app:cardElevation="@dimen/space_2"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.LeafBloom.ChatBubbleAi"
+        app:strokeColor="@color/outline_soft"
+        app:strokeWidth="@dimen/card_stroke">
+
+        <TextView
+            android:id="@+id/tvMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="2dp"
+            android:paddingHorizontal="@dimen/space_16"
+            android:paddingVertical="@dimen/space_12"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/text_primary" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

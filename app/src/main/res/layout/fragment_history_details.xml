@@ -46,6 +46,22 @@
         <include
             android:id="@+id/sheetIncluded"
             layout="@layout/layout_history_details_sheet" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="@dimen/safe_margin_h"
+            android:layout_marginBottom="@dimen/space_24"
+            android:contentDescription="@string/chat_with_ai"
+            android:src="@drawable/ic_gemini"
+            app:backgroundTint="@color/white"
+            app:elevation="@dimen/space_8"
+            app:fabSize="normal"
+            app:maxImageSize="30dp"
+            app:tint="@null"
+            app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <!-- Top overlay (safe guidelines + back button) -->

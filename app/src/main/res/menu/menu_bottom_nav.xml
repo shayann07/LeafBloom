@@ -7,9 +7,9 @@
         android:title="Home" />
 
     <item
-        android:id="@+id/placeholder"
-        android:icon="@drawable/team_icon"
-        android:title="Placeholder" />
+        android:id="@+id/diseaseLibraryFragment"
+        android:icon="@drawable/ic_nav_catalog"
+        android:title="@string/disease_library_title" />
 
     <!-- Spacer slot (center gap for the FAB) -->
     <item

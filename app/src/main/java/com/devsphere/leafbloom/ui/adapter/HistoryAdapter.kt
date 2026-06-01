@@ -14,24 +14,22 @@ import java.io.File
 
 /**
  * History adapter with date-grouped section headers ("Today", "Yesterday", "12 May 2026").
- * Uses a sealed class to represent either a header or an item row.
+ * Sealed [ListEntry] represents either a header row or an item row. Uses [ListAdapter] +
+ * [DiffUtil] so chip switches and Room emissions only rebind the rows that actually changed.
  */
 class HistoryAdapter(
     private val onItemClick: (HistoryItem) -> Unit,
     private val onDeleteClick: ((HistoryItem) -> Unit)? = null
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : ListAdapter<HistoryAdapter.ListEntry, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     sealed class ListEntry {
         data class Header(val label: String) : ListEntry()
         data class Item(val historyItem: HistoryItem) : ListEntry()
     }
 
-    private var entries: List<ListEntry> = emptyList()
-
     fun submitGroupedList(items: List<HistoryItem>, sectionLabels: Map<Long, String>) {
         val newEntries = mutableListOf<ListEntry>()
         var lastSection = ""
-
         for (item in items) {
             val section = sectionLabels[item.id] ?: ""
             if (section != lastSection) {
@@ -40,16 +38,15 @@ class HistoryAdapter(
             }
             newEntries.add(ListEntry.Item(item))
         }
-        entries = newEntries
-        notifyDataSetChanged()
+        submitList(newEntries)
     }
 
-    override fun getItemViewType(position: Int): Int = when (entries[position]) {
+    fun submitEntries(entries: List<ListEntry>) = submitList(entries)
+
+    override fun getItemViewType(position: Int): Int = when (getItem(position)) {
         is ListEntry.Header -> VIEW_TYPE_HEADER
         is ListEntry.Item -> VIEW_TYPE_ITEM
     }
-
-    override fun getItemCount(): Int = entries.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_HEADER) {
@@ -63,7 +60,7 @@ class HistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val entry = entries[position]) {
+        when (val entry = getItem(position)) {
             is ListEntry.Header -> (holder as HeaderViewHolder).bind(entry.label)
             is ListEntry.Item -> (holder as ItemViewHolder).bind(entry.historyItem)
         }
@@ -81,7 +78,7 @@ class HistoryAdapter(
                 tvHistoryPlant.text = item.plantName
                 tvHistoryStatus.text = item.status
                 tvHistoryConfidence.text = "${item.confidence}%"
-                tvHistoryDate.text = item.date // This is now time-only
+                tvHistoryDate.text = item.date
 
                 val imagePath = item.imagePath
                 if (imagePath != null && File(imagePath).exists()) {
@@ -104,5 +101,19 @@ class HistoryAdapter(
     companion object {
         private const val VIEW_TYPE_HEADER = 0
         private const val VIEW_TYPE_ITEM = 1
+
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ListEntry>() {
+            override fun areItemsTheSame(oldItem: ListEntry, newItem: ListEntry): Boolean =
+                when {
+                    oldItem is ListEntry.Header && newItem is ListEntry.Header ->
+                        oldItem.label == newItem.label
+                    oldItem is ListEntry.Item && newItem is ListEntry.Item ->
+                        oldItem.historyItem.id == newItem.historyItem.id
+                    else -> false
+                }
+
+            override fun areContentsTheSame(oldItem: ListEntry, newItem: ListEntry): Boolean =
+                oldItem == newItem
+        }
     }
 }

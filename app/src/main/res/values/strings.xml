@@ -106,8 +106,16 @@
     <string name="septoria">Septoria</string>
 
     <string name="add_note">Add Note</string>
+    <string name="re_scan">Re-scan</string>
     <string name="export">Export</string>
     <string name="save">Save</string>
+    <string name="save_success">Saved to gallery</string>
+    <string name="save_failed">Couldn\'t save image</string>
+    <string name="export_success">PDF ready</string>
+    <string name="export_failed">Couldn\'t export PDF</string>
+    <string name="share_pdf_subject">LeafBloom diagnosis report</string>
+    <string name="share_pdf_chooser">Share report</string>
+    <string name="storage_permission_required">Storage permission required to save image</string>
     <string name="sep_dash"> - </string>
 
     <string name="identifying_plant">Identifying plant…</string>
@@ -140,16 +148,23 @@
     <!-- =========================
          Profile / Settings
          ========================= -->
-    <string name="model_management">Model Management</string>
-    <string name="edit_profile">Edit profile</string>
-    <string name="change_language">Change language</string>
-    <string name="account_setting">Account Setting</string>
     <string name="legal">Legal</string>
     <string name="terms_and_conditions">Terms and Conditions</string>
     <string name="privacy_policy">Privacy policy</string>
     <string name="help">Help</string>
-    <string name="logout">Logout</string>
+    <string name="support">Support</string>
+    <string name="data_section">Data</string>
     <string name="version">Version %1$s</string>
+    <string name="change_header_image">Change header image</string>
+    <string name="change_profile_picture">Change profile picture</string>
+    <string name="name_hint">Name</string>
+    <string name="email_hint">Email</string>
+    <string name="clear_history_dialog_title">Clear scan history?</string>
+    <string name="clear_history_dialog_message">This will permanently delete all your saved scans. This action cannot be undone.</string>
+    <string name="clear_history_dialog_confirm">Clear</string>
+    <string name="cancel">Cancel</string>
+    <string name="history_cleared">Scan history cleared</string>
+    <string name="image_load_failed">Couldn\'t load image</string>
 
     <!-- Splash -->
     <string name="splash_title">Tomato Care</string>
@@ -286,18 +301,9 @@
     <!-- =========================
          Profile
          ========================= -->
-    <string name="profile_placeholder_name">LeafBloom User</string>
-    <string name="profile_placeholder_email">user@leafbloom.app</string>
-    <string name="account">Account</string>
-    <string name="change_password">Change Password</string>
-    <string name="app_settings">App Settings</string>
-    <string name="storage_used">Storage Used</string>
-    <string name="check_for_updates">Check for Updates</string>
-    <string name="clear_model_cache">Clear Model Cache</string>
-    <string name="notifications">Notifications</string>
-    <string name="dark_mode">Dark Mode</string>
+    <string name="profile_placeholder_name">Your name</string>
+    <string name="profile_placeholder_email">your@email.com</string>
     <string name="clear_scan_history">Clear Scan History</string>
-    <string name="coming_soon">Coming Soon</string>
     <string name="profile">Profile</string>
 
     <!-- =========================
@@ -328,6 +334,7 @@
 
     <!-- History -->
     <string name="no_scans_yet">No scans yet. Use the scanner to diagnose your first plant!</string>
+    <string name="no_results_for">No results for \"%1$s\"</string>
     <string name="history_image_missing">Image no longer available</string>
     <string name="delete_history_item">Delete scan</string>
     <string name="today">Today</string>
@@ -358,6 +365,144 @@
     <string name="care_treatment_unknown">Look closely at the plant for any spots or color changes. If you see something wrong, remove those leaves. Watch the plant for a few days to see if it gets worse.</string>
     <string name="care_prevention_unknown">Water at the base and keep plants spaced apart. Add fertilizer and remove weeds regularly. Do not grow the same crop in the same spot every year. Check your plants often for any changes.</string>
 
+    <!-- Chat -->
+    <string name="chat_with_ai">Chat with AI</string>
+    <string name="chat_hint">Ask anything…</string>
+    <string name="ai_typing">AI is typing…</string>
+    <string name="ai_thinking">Gemini is thinking…</string>
+    <string name="chat_status_online">AI Assistant • Online</string>
+
+    <!-- =========================
+         Disease Library
+         ========================= -->
+    <string name="disease_library_title">Disease Library</string>
+    <string name="search_diseases_hint">Search diseases…</string>
+    <string name="stat_detectable">Detectable</string>
+    <string name="stat_in_library">In Library</string>
+    <string name="stat_high_risk">High Risk</string>
+    <string name="daily_plant_tip">Daily Plant Tip</string>
+    <string name="tip_index_format">%1$d/%2$d</string>
+    <string name="categories">Categories</string>
+    <string name="cat_fungal">Fungal</string>
+    <string name="cat_bacterial">Bacterial</string>
+    <string name="cat_viral">Viral</string>
+    <string name="cat_pest">Pest</string>
+    <string name="cat_count_format">%1$d diseases</string>
+    <string name="find_by_symptom">Find by Symptom</string>
+    <string name="symptom_yellow_spots">Yellow Spots</string>
+    <string name="symptom_brown_rings">Brown Rings</string>
+    <string name="symptom_wilting">Wilting</string>
+    <string name="symptom_white_powder">White Powder</string>
+    <string name="detected_by_app">Detected by App</string>
+    <string name="other_tomato_diseases">Other Tomato Diseases</string>
+    <string name="see_all">See all</string>
+    <string name="show_less">Show less</string>
+    <string name="severity_high">High</string>
+    <string name="severity_moderate">Moderate</string>
+    <string name="severity_low">Low</string>
+    <string name="severity_dot_format">%1$s · %2$s</string>
+
+    <!-- Tip carousel content -->
+    <string name="tip_carousel_water_tag">WATERING</string>
+    <string name="tip_carousel_water_title">Water at the base</string>
+    <string name="tip_carousel_water_body">Late Blight thrives on wet leaves. Aim the can at the soil, not the foliage.</string>
+    <string name="tip_carousel_sun_tag">SUNLIGHT</string>
+    <string name="tip_carousel_sun_title">Six hours of sun</string>
+    <string name="tip_carousel_sun_body">Tomatoes need full sun. Less than 6 hours weakens defenses against disease.</string>
+    <string name="tip_carousel_prune_tag">PRUNING</string>
+    <string name="tip_carousel_prune_title">Prune low branches</string>
+    <string name="tip_carousel_prune_body">Cut leaves touching the soil. They are the first to catch fungal spores.</string>
+
+    <!-- Disease names (extra) -->
+    <string name="disease_bacterial_spot">Bacterial Spot</string>
+    <string name="disease_bacterial_canker">Bacterial Canker</string>
+    <string name="disease_bacterial_wilt">Bacterial Wilt</string>
+    <string name="disease_mosaic_virus">Mosaic Virus</string>
+    <string name="disease_yellow_leaf_curl">Yellow Leaf Curl</string>
+    <string name="disease_spotted_wilt">Spotted Wilt</string>
+    <string name="disease_powdery_mildew">Powdery Mildew</string>
+    <string name="disease_anthracnose">Anthracnose</string>
+    <string name="disease_fusarium_wilt">Fusarium Wilt</string>
+    <string name="disease_verticillium_wilt">Verticillium Wilt</string>
+    <string name="disease_gray_mold">Gray Mold</string>
+
+    <!-- Scientific names (extra) -->
+    <string name="disease_scientific_bacterial_spot">Xanthomonas spp.</string>
+    <string name="disease_scientific_bacterial_canker">Clavibacter michiganensis</string>
+    <string name="disease_scientific_bacterial_wilt">Ralstonia solanacearum</string>
+    <string name="disease_scientific_mosaic_virus">Tobamovirus (TMV/ToMV)</string>
+    <string name="disease_scientific_yellow_leaf_curl">Begomovirus (TYLCV)</string>
+    <string name="disease_scientific_spotted_wilt">Tospovirus (TSWV)</string>
+    <string name="disease_scientific_powdery_mildew">Leveillula taurica</string>
+    <string name="disease_scientific_anthracnose">Colletotrichum coccodes</string>
+    <string name="disease_scientific_fusarium_wilt">Fusarium oxysporum</string>
+    <string name="disease_scientific_verticillium_wilt">Verticillium dahliae</string>
+    <string name="disease_scientific_gray_mold">Botrytis cinerea</string>
+
+    <!-- Care: Bacterial Spot -->
+    <string name="care_overview_bacterial_spot">Your plant has Bacterial Spot. Look for small water-soaked spots on leaves that turn brown or black, with raised scabby spots on green fruits. It spreads fast in warm wet weather.</string>
+    <string name="care_treatment_bacterial_spot">Remove and destroy infected leaves and fruits — do not compost them. Spray copper-based bactericide every 7–10 days. Avoid working in the garden when plants are wet to stop the spread.</string>
+    <string name="care_prevention_bacterial_spot">Use certified disease-free seeds. Rotate tomato plots every 2–3 years. Water at the base only and stake plants to keep foliage dry. Sterilize pruning tools between plants.</string>
+
+    <!-- Care: Bacterial Canker -->
+    <string name="care_overview_bacterial_canker">Your plant has Bacterial Canker. You will see one-sided wilting, brown leaf edges, and small white \"bird\'s-eye\" spots on the fruit. It often enters through pruning wounds.</string>
+    <string name="care_treatment_bacterial_canker">There is no cure once a plant is infected. Pull out and destroy the whole plant to protect the rest. Disinfect stakes, cages, and tools with bleach. Spray neighbors with copper as a precaution.</string>
+    <string name="care_prevention_bacterial_canker">Buy seeds and transplants from trusted sources. Avoid pruning when plants are wet. Sanitize all tools between plants. Do not save seeds from infected fields.</string>
+
+    <!-- Care: Bacterial Wilt -->
+    <string name="care_overview_bacterial_wilt">Your plant has Bacterial Wilt. The plant suddenly wilts and dies even though leaves stay green. Cut the stem and you will see a milky ooze coming out — that is the bacteria.</string>
+    <string name="care_treatment_bacterial_wilt">There is no chemical cure. Remove infected plants right away and burn or bag them. Do not plant tomatoes, peppers, eggplants, or potatoes in the same spot for at least 3 years.</string>
+    <string name="care_prevention_bacterial_wilt">Plant resistant varieties when available. Use raised beds with well-drained soil. Avoid wounding roots while weeding. Rotate crops with grasses or legumes for 3+ years.</string>
+
+    <!-- Care: Mosaic Virus -->
+    <string name="care_overview_mosaic_virus">Your plant has Mosaic Virus. Leaves show a mottled pattern of light and dark green, often with curling and stunted growth. Fruits may be small and discolored.</string>
+    <string name="care_treatment_mosaic_virus">There is no cure. Remove and destroy infected plants immediately to stop the spread. Wash hands and tools with soap before touching healthy plants. Tobacco users must wash hands extra carefully.</string>
+    <string name="care_prevention_mosaic_virus">Use certified virus-free seeds. Control aphids and whiteflies which spread the virus. Do not smoke or handle tobacco near tomato plants. Disinfect tools with milk or 10% bleach.</string>
+
+    <!-- Care: Yellow Leaf Curl -->
+    <string name="care_overview_yellow_leaf_curl">Your plant has Tomato Yellow Leaf Curl Virus. Leaves curl upward, turn yellow at the edges, and growth is severely stunted. It is spread by whiteflies.</string>
+    <string name="care_treatment_yellow_leaf_curl">No cure exists. Remove infected plants and destroy them in sealed bags. Treat surviving plants for whiteflies using yellow sticky traps and insecticidal soap or neem oil.</string>
+    <string name="care_prevention_yellow_leaf_curl">Plant resistant varieties (TYLCV-resistant). Use reflective mulch to repel whiteflies. Cover seedlings with fine mesh until flowering. Remove weeds that host the virus.</string>
+
+    <!-- Care: Spotted Wilt -->
+    <string name="care_overview_spotted_wilt">Your plant has Tomato Spotted Wilt Virus. You will see bronze or purple spots on leaves, dark streaks on stems, and ringspots on fruit. It is spread by tiny insects called thrips.</string>
+    <string name="care_treatment_spotted_wilt">No cure exists. Remove and destroy infected plants. Control thrips with blue sticky traps and spinosad-based insecticide. Check nearby ornamentals which often host the virus.</string>
+    <string name="care_prevention_spotted_wilt">Use TSWV-resistant tomato varieties. Keep weeds and flowering plants away from the tomato bed. Use reflective mulch. Cover transplants with row covers for the first 4 weeks.</string>
+
+    <!-- Care: Powdery Mildew -->
+    <string name="care_overview_powdery_mildew">Your plant has Powdery Mildew. White or gray powder appears on leaf surfaces, often on the upper side. Leaves may yellow and drop. It thrives in warm dry days with cool humid nights.</string>
+    <string name="care_treatment_powdery_mildew">Spray a mix of 1 teaspoon baking soda + a few drops dish soap in 1 liter water on affected leaves weekly. Or use sulfur-based or potassium bicarbonate fungicides. Remove badly infected leaves.</string>
+    <string name="care_prevention_powdery_mildew">Space plants for good air flow. Water in the morning at the base. Avoid heavy nitrogen fertilizers. Plant resistant varieties and prune low branches to improve air circulation.</string>
+
+    <!-- Care: Anthracnose -->
+    <string name="care_overview_anthracnose">Your plant has Anthracnose. Ripe fruits develop small sunken circular spots that grow and turn dark. The spots may have black dots in the center. It mostly attacks ripe fruit in wet weather.</string>
+    <string name="care_treatment_anthracnose">Pick and destroy all infected fruits — do not let them fall to the soil. Spray copper or chlorothalonil fungicide every 7–10 days as fruits ripen. Harvest ripe fruit promptly.</string>
+    <string name="care_prevention_anthracnose">Mulch around plants to prevent soil splashing onto fruit. Rotate crops every 3 years. Stake or cage plants so fruit does not touch the ground. Pick fruit at the breaker stage during wet spells.</string>
+
+    <!-- Care: Fusarium Wilt -->
+    <string name="care_overview_fusarium_wilt">Your plant has Fusarium Wilt. Lower leaves yellow and wilt — often only on one side of the plant. Cut the stem and you will see brown streaks inside. The plant dies slowly.</string>
+    <string name="care_treatment_fusarium_wilt">There is no cure. Remove infected plants and destroy them. The fungus stays in soil for many years, so do not plant tomatoes or related crops there for 5+ years.</string>
+    <string name="care_prevention_fusarium_wilt">Plant resistant varieties (look for VFN labels on seed packets). Keep soil pH between 6.5 and 7. Avoid heavy nitrogen. Solarize soil during hot months by covering with clear plastic for 6 weeks.</string>
+
+    <!-- Care: Verticillium Wilt -->
+    <string name="care_overview_verticillium_wilt">Your plant has Verticillium Wilt. You will see V-shaped yellow patches on lower leaves, wilting on hot afternoons but recovering at night, and brown streaks inside the stem.</string>
+    <string name="care_treatment_verticillium_wilt">No effective treatment. Remove infected plants. Keep remaining plants well-watered to reduce stress. Harvest what you can before the plant dies completely.</string>
+    <string name="care_prevention_verticillium_wilt">Plant resistant varieties (V on seed labels). Rotate with non-host crops like corn or beans for 4+ years. Solarize soil. Avoid planting after potatoes, peppers, or eggplants.</string>
+
+    <!-- Care: Gray Mold -->
+    <string name="care_overview_gray_mold">Your plant has Gray Mold (Botrytis). Look for fuzzy gray growth on dying leaves, stems, flowers, and fruit. It spreads in cool, damp, still air — especially in greenhouses.</string>
+    <string name="care_treatment_gray_mold">Cut off all moldy parts and bag them — do not shake or you will spread spores. Improve air flow with fans or pruning. Spray with a biological fungicide containing Bacillus subtilis.</string>
+    <string name="care_prevention_gray_mold">Space plants well and prune lower leaves. Water early in the day so foliage dries fast. Remove dead flowers and fallen fruit. Heat or ventilate greenhouses to reduce humidity below 85%.</string>
+
+    <!-- Care: Aphids (Pest category placeholder) -->
+    <string name="care_overview_aphids">You are looking at Aphids. These are tiny soft-bodied insects (green, black, or yellow) that cluster under leaves and on new growth. They suck sap and spread viruses.</string>
+    <string name="care_treatment_aphids">Spray plants with strong water jet to knock aphids off. Apply insecticidal soap or neem oil weekly until gone. Release ladybugs or lacewings as natural predators.</string>
+    <string name="care_prevention_aphids">Inspect new transplants before bringing them home. Avoid over-fertilizing with nitrogen. Plant marigolds, garlic, or chives nearby as repellents. Encourage beneficial insects with diverse flowers.</string>
+
+    <!-- Disease tip placeholders for new diseases (use generic content) -->
+    <string name="disease_tip1_title_generic">Inspect Daily</string>
+    <string name="disease_tip1_desc_generic">Check leaves, stems, and fruit every day during the growing season. Early action stops most problems.</string>
+    <string name="disease_tip2_title_generic">Sanitize Tools</string>
+    <string name="disease_tip2_desc_generic">Clean pruners and stakes with diluted bleach between plants to prevent spreading pathogens.</string>
 
 </resources>
-

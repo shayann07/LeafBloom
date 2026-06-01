@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/LeafBloomCard.Medium"
+    android:id="@+id/cardSymptom"
+    android:layout_width="@dimen/space_100"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/space_8"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/space_12">
+
+        <View
+            android:id="@+id/vSymptomColor"
+            android:layout_width="@dimen/space_28"
+            android:layout_height="@dimen/space_28"
+            android:background="@drawable/bg_circle_brand_container" />
+
+        <TextView
+            android:id="@+id/tvSymptomLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_8"
+            android:gravity="center"
+            android:minLines="2"
+            android:maxLines="2"
+            android:textAppearance="?attr/textAppearanceLabelSmall"
+            android:textColor="@color/text_primary"
+            tools:text="Yellow Spots" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

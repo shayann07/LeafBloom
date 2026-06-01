@@ -98,7 +98,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <LinearLayout
-                    android:id="@+id/actionAddNote"
+                    android:id="@+id/actionRescan"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -111,14 +111,14 @@
                         android:layout_width="@dimen/size_icon_24"
                         android:layout_height="@dimen/size_icon_24"
                         android:contentDescription="@null"
-                        android:src="@drawable/add_note_icon"
+                        android:src="@drawable/rescan_icon"
                         app:tint="@color/text_primary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/space_8"
-                        android:text="@string/add_note"
+                        android:text="@string/re_scan"
                         android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:textColor="?attr/colorOnSurface" />
                 </LinearLayout>
@@ -176,6 +176,24 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+            <!-- Chat FAB -->
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabChat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/safe_margin_h"
+                android:layout_marginBottom="@dimen/space_12"
+                android:contentDescription="@string/chat_with_ai"
+                android:src="@drawable/ic_gemini"
+                app:backgroundTint="@color/white"
+                app:fabSize="normal"
+                app:maxImageSize="30dp"
+                app:layout_constraintBottom_toTopOf="@id/actionBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:tint="@null"
+                app:elevation="6dp"
+                app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full" />
 
             <!-- Scrollable Content -->
             <androidx.core.widget.NestedScrollView
