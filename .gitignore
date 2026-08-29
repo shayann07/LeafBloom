@@ -110,3 +110,8 @@ _fmt_styles.txt
 
 # Consolidated Documentation folder
 documentation/
+
+# Extra Environment ignores
+*.env
+*.env.*
+!.env.example

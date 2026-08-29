@@ -1,0 +1,8 @@
+## Location of the Android SDK.
+# Windows: sdk.dir=C\:\Users\<USER>\AppData\Local\Android\Sdk
+# macOS/Linux: sdk.dir=/Users/<USER>/Library/Android/sdk
+sdk.dir=/path/to/your/android-sdk
+
+## Google Gemini API Key for in-app AI Chat feature.
+## Obtain a key from Google AI Studio: https://aistudio.google.com/
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY_HERE
