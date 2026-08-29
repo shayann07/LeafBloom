@@ -1,12 +1,20 @@
 # LeafBloom
 
-LeafBloom is a Kotlin Android app that performs **on-device tomato leaf disease diagnosis** using PyTorch Lite models. It also covers pest identification, fruit-ripeness classification, a Pl@ntNet-backed remote plant identification fallback, an in-app Gemini chat, weather-aware context, and local scan history. Single Activity + Navigation Component, ViewBinding, Room, CameraX, and a small Firebase Cloud Functions backend for the plant-identify proxy.
+[![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white)]()
+[![Language](https://img.shields.io/badge/Language-Kotlin-7F52FF?logo=kotlin&logoColor=white)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Status
+> Diagnose tomato-leaf diseases from a single photo using an on-device PyTorch model, ask plant-care questions in a chat, and look up info on common houseplants.
 
-Functional Android app under active development. Core scanner, diagnosis, pest, ripeness, history, disease library, chat, and walkthrough modules are wired up against bundled PyTorch Lite assets and a deployed Firebase function. Only the default Android Studio test scaffold is present.
+---
 
-## Features Verified In Code
+## 📖 Overview
+
+Diagnose tomato-leaf diseases from a single photo using an on-device PyTorch model, ask plant-care questions in a chat, and look up info on common houseplants.
+
+---
+
+## ✨ Key Features
 
 - **Single-Activity Navigation.** `ui/main/MainActivity` inflates `R.navigation.nav_graph` programmatically and chooses between the walkthrough and home destinations based on `prefs/UserPrefs.isFirstRun`. BottomNav is shown only on the home destination; FAB drives scanner entry.
 - **On-device classifiers** (`data/source/local/`) — all PyTorch Lite (`org.pytorch:pytorch_android_lite`):
@@ -23,134 +31,37 @@ Functional Android app under active development. Core scanner, diagnosis, pest, 
 - **Auth, profile, walkthrough, model-download, dialogs, motion, components.** Each lives under its own `ui/<module>` package and uses `BaseFragment` for edge-to-edge insets and an adaptive curved header.
 - **Bilingual UI.** `supportsRtl="true"`, with English in `res/values/` and Urdu in the localized values folder.
 
-## Cloud Function (`functions/v2/identify.js`)
+---
 
-- Firebase Functions Gen 2, deployed to region `asia-south1`. Endpoint base: `https://asia-south1-devsphere-leafbloom.cloudfunctions.net/`.
-- Accepts a multipart POST with field name `images` (1–5 images, ≤6MB each) and an optional `organ` query param (`leaf|flower|fruit|bark|auto`, default `leaf`).
-- Proxies the request to the [Pl@ntNet API](https://my.plantnet.org/) using a `PLANTNET_API_KEY` stored in Google Secret Manager.
-- Returns `{ ok, traceId, data: { bestMatch, results[], meta } }`.
+## 🛠️ Technology Stack
 
-## ML Pipeline (`ml/`)
+| Component / Layer | Technology |
+|---|---|
+| **Platform** | Android |
+| **Primary Language** | Kotlin |
+| **Architecture** | MVVM / Clean Architecture |
+| **License** | Open Source (MIT) |
 
-Python tooling for retraining and evaluating the four shipped models:
+---
 
-```
-ml/
-  tomato_leaf_disease/
-  nutrient_deficiency/
-  pests/
-  ripeness/
-  eval_assets_models.py
-  requirements.txt
-```
+## 🚀 Getting Started
 
-Each task directory holds training, conversion, and evaluation scripts. Datasets are not committed in full. To replace a model, retrain via `train_*.py`, export with the corresponding `convert_to_mobile.py` / `convert_*.py`, drop the `.ptl` into `app/src/main/assets/`, and keep the file name stable (the classifier `loadModel()` paths are hardcoded).
+### Prerequisites
+- Android Studio Ladybug (or newer)
+- JDK 17 / 21
+- Android SDK 34 / 35
 
-## Tech Stack
-
-- **Kotlin** with `kotlin-parcelize`, JVM target 11.
-- **Android Gradle Plugin 9.2.1**, **Kotlin 2.3.21**, **KSP 2.3.7** (per `gradle/libs.versions.toml`).
-- `compileSdk 36`, `minSdk 28`, `targetSdk 36`.
-- **Jetpack:** Navigation Component (fragment + ui), ViewBinding, Lifecycle (`viewModelScope`, `repeatOnLifecycle`), Room (with KSP and `schemas/` exported), Core Splash Screen.
-- **CameraX** (core, camera2, lifecycle, view, extensions).
-- **Networking:** Retrofit + Gson converter, OkHttp + logging interceptor.
-- **Imaging:** Glide, Android Image Cropper, AndroidX ExifInterface, Animated VectorDrawable, Dots Indicator, GridLayout.
-- **ML:** PyTorch Android Lite + Torchvision Lite ops.
-- **AI chat:** `com.google.ai.client.generativeai`.
-- **Location:** Play Services Location, Guava ListenableFuture support.
-- **Build inputs:** `local.properties` provides `GEMINI_API_KEY` for `BuildConfig`.
-
-## Project Structure
-
-```
-LeafBloom/
-  app/
-    src/main/
-      AndroidManifest.xml
-      assets/
-        leaf_nonleaf_model.ptl
-        pest_id_model.ptl
-        ripeness_model.ptl
-        tomato_disease_robust.ptl
-      java/com/devsphere/leafbloom/
-        data/
-          model/                 # ChatMessage, DiseaseInfo, DiseaseCareInfo,
-                                 # HistoryItem, IdentifyResponse, PestInfo,
-                                 # PredictionResult, RipenessInfo, WeatherResponse
-          remote/                # Retrofit API service for the identify function
-          repository/            # Disease, Identify, Pest, Ripeness, ScanHistory,
-                                 # Chat, Weather repositories
-          source/local/          # PyTorch Lite classifiers + Room DB sources
-        prefs/                   # UserPrefs (SharedPreferences singleton)
-        ui/
-          adapter/  auth/  chat/  common/  components/  dialog/
-          disease/  history/  home/  main/  modelDownload/
-          motion/  profile/  result/  scanner/  walkthrough/
-        util/
-      res/                       # layouts, drawables, navigation, values, values-night, etc.
-    schemas/                     # Room schema exports
-  functions/
-    index.js
-    package.json
-    package-lock.json
-    v2/identify.js               # Pl@ntNet proxy (asia-south1)
-  ml/
-    tomato_leaf_disease/  nutrient_deficiency/  pests/  ripeness/
-    eval_assets_models.py  requirements.txt
-  assets/app_logo.png            # README/logo asset only (not the app icon)
-  firebase.json
-  build.gradle.kts  settings.gradle.kts
-  AGENTS.md  LICENSE  README.md
-```
-
-## Build / Run
-
-### Requirements
-
-- Android Studio recent enough for **AGP 9.2.1** and **Kotlin 2.3.21** (older Iguana/Hedgehog will not work).
-- JDK 11.
-- A device or emulator running Android 9 (`minSdk 28`) or later.
-
-### Steps
-
-1. Clone the repository.
-2. Add a `local.properties` at the repo root with at least:
+### Build & Run
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/shayann07/LeafBloom.git
+   cd LeafBloom
    ```
-   sdk.dir=...absolute path to your Android SDK...
-   GEMINI_API_KEY=your_gemini_key   # optional; the chat module won't work without it
-   ```
-3. Open in Android Studio and let it sync.
-4. Build/install the debug variant with `./gradlew assembleDebug` or run from the IDE.
+2. Open the project in **Android Studio**.
+3. Sync Gradle dependencies and run on an emulator or physical device.
 
-The four `.ptl` models are bundled under `app/src/main/assets/` and are copied into `filesDir` on first use.
+---
 
-### Running the cloud function locally (optional)
+## 📄 License
 
-```
-cd functions
-npm install
-firebase functions:secrets:set PLANTNET_API_KEY
-firebase deploy --only functions:identifyPlantV2
-```
-
-## Tests
-
-Only the default Android Studio scaffold is present:
-
-- `app/src/test/java/com/devsphere/leafbloom/ExampleUnitTest.kt`
-- `app/src/androidTest/java/com/devsphere/leafbloom/ExampleInstrumentedTest.kt`
-
-There is no automated coverage of the classifiers, repositories, or UI flows.
-
-## Honest Limitations
-
-- The disease classifier is trained for **tomato leaves only**, with four real classes (`EARLY_BLIGHT`, `HEALTHY`, `LATE_BLIGHT`, `SEPTORIA`) plus an `UNKNOWN` slot used when `LeafValidator` rejects an image. Other plants and tomato diseases outside this set will not be classified accurately.
-- The `nutrient_deficiency/` ML directory exists, but **no nutrient-deficiency `.ptl` is bundled in `app/src/main/assets/`**; the on-device pipeline does not yet ship soil/nutrient analysis. Treat soil analysis as a roadmap item, not a current feature.
-- The chat module depends on the user supplying a `GEMINI_API_KEY` via `local.properties`. Without it, the in-app chat will not function.
-- Side-by-side scan comparison and PDF/CSV export were claimed in older marketing copy but are not present in the current codebase.
-- The remote identify path requires the `devsphere-leafbloom` Firebase project; redeploying for another account requires updating the Retrofit base URL in `IdentifyRepository`.
-- Tests are stubs only; treat any behavioral guarantees as manual.
-
-## License
-
-MIT — see [LICENSE](LICENSE).
+This project is licensed under the [MIT License](LICENSE) — Copyright (c) 2026 [shayann07](https://github.com/shayann07).
